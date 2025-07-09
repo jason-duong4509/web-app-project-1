@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Name Of Website - Login</title>
+        <!-- Links to the CSS file -->
+        <link rel="stylesheet" href="login.css">
+    </head>
+    
+    <body>
+        <h1>Name Of Website</h1>
+        <h2>Login</h2>
+        <!-- Login text box -->
+        <form action="/loginSubmit" target="_self" method="POST"> <!--Sends form to backend via /loginSubmit. Returns value to self, uses POST HTTP method-->
+            <input type="text" id="username" name="username" placeholder="Username"><br>
+            <input type="password" id="password" name="password" placeholder="Password"><br>
+            <input type="submit" value="Login">
+        </form>
+    </body>
+</html>
