@@ -38,7 +38,16 @@ Function runs if the user clicks on the login page (webpage whose URL ends with 
 """
 @webApp.route("/login", methods = ["GET"])
 def onLogin():
-    # TODO: return the login webpage from the DB
+    return render_template("login.html")
+
+"""
+
+"""
+@webApp.route("/loginSubmit", methods = ["POST"])
+def onLoginSubmit():
+    username = request.form["username"] # Gets the sent input from the one named "username"
+    password = request.form["password"] # Gets the sent input from the one named "password"
+    return render_template("error.html", error_message=f"username = {username}, password = {password}") # TODO: delete and replace with proper html file. testing purposes for now
 
 """
 """
