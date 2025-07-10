@@ -54,7 +54,7 @@ def onLoginSubmit():
 @webApp.route("/p/<user_id>", methods = ["GET"])
 def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a param as user_id
     #--Setup--
-    connection_to_db = psycopg2.connect(INSERT STUFF HERE) # Connect to the DB
+    connection_to_db = psycopg2.connect(DATABASE_URL) # Connect to the DB
     db_cursor = connection_to_db.cursor() # Gets the cursor of the DB so that we can pass commands to the DB
     username = fname = lname = bio = pfp = attachment1 = attachment2 = attachment3 = None
     #---------
@@ -87,6 +87,9 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
     if username == None: # user_id is not valid (user_id was not found in the DB)
         return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
     #-----------------------------------
+
+    db_cursor.close() # Teardown stuff
+    connection_to_db.close() # Teardown stuff
 
     return render_template(
                             "profile.html", 
