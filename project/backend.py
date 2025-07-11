@@ -112,14 +112,14 @@ def onSignup():
     # TODO: this
 
 """
-Function runs when the front-end JS sends a POST request to the database (to update the DB with information).
+# Function runs when the front-end JS sends a POST request to the database (to update the DB with information).
 """
 @webApp.route("/create_user", methods = ["POST"])
 def createUser():
     # TODO: add functionality for when the user wants to make an account. store it to the DB
 
 """
-Function runs when the front-end JS sends a POST request to the database (to update the DB with information).
+# Function runs when the front-end JS sends a POST request to the database (to update the DB with information).
 """
 @webApp.route("/delete_user", methods = ["POST"])
 def deleteUser():
