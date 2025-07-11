@@ -10,8 +10,9 @@ Import the Flask framework so it can be used.
 Import request to handle requests from the front-end.
 Import jsonify so communications to the front-end are in the form of JSON.
 - JSON is used as this uses the REST standard and JSON is commonly used.
+Import render_template so that flask can grab and serve HTML files from /templates/file.html
 """
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 
 """
 Used to connect to the database.
