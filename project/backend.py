@@ -29,8 +29,10 @@ __name__ denotes the current file, value varies by whether this file is imported
 """
 webApp = Flask(__name__)
 
-# TODO: get the url once database is created
-# DATABASE_URL = os.environ.get(INSERT DATABASE LINK HERE)
+"""
+Gets the database URL from Render's environmental variable named DATABASE_URL (configured in the Render website).
+"""
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 #--Connecting URLs to their corresponding function--
 """
