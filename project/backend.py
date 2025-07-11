@@ -104,7 +104,7 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
                             attachment2 = attachment2, 
                             attachment3 = attachment3
                             ) # Return profile.html to the front end with all of the placeholder values inserted into the file
-    
+"""    
 """
 """
 @webApp.route("/signup", methods = ["GET"])
@@ -124,5 +124,5 @@ Function runs when the front-end JS sends a POST request to the database (to upd
 @webApp.route("/delete_user", methods = ["POST"])
 def deleteUser():
     # TODO: add functionality for when the user wants to delete their account. delete it from the DB
-
+"""
 #---------------------------------------------------
