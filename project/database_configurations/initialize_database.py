@@ -18,7 +18,7 @@ database_cursor.execute(open("database_configurations.sql", "r").read()) # Read 
 database_cursor.execute("INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES ('bob', 'bobbob', 'bobobobob', '123456')") # Insert test data
 database_cursor.execute("SELECT * FROM user_info")
 print(database_cursor.fetchall())
-database_cursor.execute("INSERT INTO profile_info (Bio, ProfilePictureFileName, ProfilePictureByteData, Attachment1FileName, Attachment1ByteData, Attachment2FileName, Attachment2ByteData, Attachment3FileName, Attachment3ByteData) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)") # Insert test data
+database_cursor.execute("INSERT INTO profile_info (Bio, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType, Attachment1FileName, Attachment1ByteData, Attachment1MIMEType, Attachment2FileName, Attachment2ByteData, Attachment2MIMEType, Attachment3FileName, Attachment3ByteData, Attachment3MIMEType) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)") # Insert test data
 database_cursor.execute("SELECT * FROM profile_info")
 print(database_cursor.fetchall())
 #-------------------------------------------------------------------------
@@ -26,5 +26,3 @@ print(database_cursor.fetchall())
 connection_to_db.commit() # Commit the changes above
 database_cursor.close() # Teardown stuff
 connection_to_db.close() # Teardown stuff
-
-

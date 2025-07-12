@@ -30,14 +30,18 @@ CREATE TABLE profile_info(
 
     ProfilePictureFileName TEXT, --File name
     ProfilePictureByteData BYTEA, --File itself in binary
+    ProfilePictureMIMEType VARCHAR(255), --File type
 
     Attachment1FileName TEXT, --File name
     Attachment1ByteData BYTEA, --File itself in binary
+    Attachment1MIMEType VARCHAR(255), --File type
 
     Attachment2FileName TEXT, --File name
     Attachment2ByteData BYTEA, --File itself in binary
+    Attachment2MIMEType VARCHAR(255), --File type
 
     Attachment3FileName TEXT, --File name
-    Attachment3ByteData BYTEA --File itself in binary
+    Attachment3ByteData BYTEA, --File itself in binary
+    Attachment3MIMEType VARCHAR(255) --File type
 );
 -----------------------------------------------------
