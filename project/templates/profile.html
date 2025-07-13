@@ -9,9 +9,11 @@
     <body>
         <h1>{{username}}</h1>
         <h2>{{fname}}</h2>
-        <h2>{{lname}</h2>
+        <h2>{{lname}}</h2>
         <h3>{{bio}}</h3>
-      
+        
+        <!-- Call /profile/<user_id>/pfp to retrieve user profile picture -->
+        <img src="{{ url_for('getProfilePicture', user_id=user_id) }}">
       
     </body>
 </html>
