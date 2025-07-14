@@ -50,7 +50,13 @@ def onLogin():
     return render_template("login.html")
 
 """
+Function runs when the user attempts to save the changes made to their profile.
+"""
+@webApp.route("/p/<user_id>/save", methods = ["POST"])
+def saveProfileChanges(user_id):
+    #TODO: finish writing this
 
+"""
 """
 @webApp.route("/loginSubmit", methods = ["POST"])
 def onLoginSubmit():

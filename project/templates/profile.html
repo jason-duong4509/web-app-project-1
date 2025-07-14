@@ -7,13 +7,21 @@
     </head>
     
     <body>
-        <h1>{{username}}</h1>
-        <h2>{{fname}}</h2>
-        <h2>{{lname}}</h2>
-        <h3>{{bio}}</h3>
-        
+
+        <form id="profile_info">
+            <input type="text" name="username" id="username" value="{{username}}" disabled><br><br>
+            <input type="text" name="fname" id="fname" value="{{fname}}" disabled><br><br>
+            <input type="text" name="lname" id="lname" value="{{lname}}" disabled><br><br>
+            <input type="text" name="bio" id="bio" value="{{bio}}" disabled><br><br>
+            <input type="submit" id="save_changes" value="Save Changes" hidden disabled><br><br>
+        </form>
+
         <!-- Call /profile/<user_id>/pfp to retrieve user profile picture -->
         <img src="{{ url_for('getProfilePicture', user_id=user_id) }}">
-      
+
+        <button type="button" id="edit_profile_button">Edit</button>
+
+        <!-- Link to JS file -->
+        <script src="static/profile.js"></script>
     </body>
 </html>
