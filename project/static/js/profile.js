@@ -26,8 +26,14 @@ document.getElementById("profile_info").addEventListener("submit", async event =
     //------------------------
 
     //--Send the form--
-    const result = await fetch()
+    const result = await fetch("/p/<user_id>/save")
     //-----------------
+
+    //--Retrieve the results--
+    //------------------------
+
+    //--Interpret the results--
+    //-------------------------
 
     //--Switches the buttons around--
     document.getElementById("save_changes").hidden = true; //Makes this button hidden
@@ -37,9 +43,9 @@ document.getElementById("profile_info").addEventListener("submit", async event =
     //-------------------------------
 
     //--Disables each profile attribute so that they cannot be edited--
-    document.getElementById("username").disabled = false;
-    document.getElementById("fname").disabled = false;
-    document.getElementById("lname").disabled = false;
-    document.getElementById("bio").disabled = false;
+    document.getElementById("username").disabled = true;
+    document.getElementById("fname").disabled = true;
+    document.getElementById("lname").disabled = true;
+    document.getElementById("bio").disabled = true;
     //-----------------------------------------------------------------
 });
