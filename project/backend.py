@@ -12,8 +12,14 @@ Import jsonify so communications to the front-end are in the form of JSON.
 - JSON is used as this uses the REST standard and JSON is commonly used.
 Import render_template so that flask can grab and serve HTML files from /templates/file.html.
 Import send_file so that flask can send user-related files (profile picture) to the front-end.
+Import session so that flask can manage sessions.
 """
-from flask import Flask, request, jsonify, render_template, send_file
+from flask import Flask, request, jsonify, render_template, send_file, session
+
+"""
+Import LoginManager to help with handling log in functionality.
+"""
+from flask_login import LoginManager
 
 """
 Used to connect to the database.
@@ -26,7 +32,7 @@ Used to treat byte data as a file.
 import io
 
 """
-Used in the context of Render. Allows this file to connect to the database via a URL.
+Used in the context of Render. Allows this file to connect to the database via a URL and a secret key.
 """
 import os
 
@@ -37,9 +43,37 @@ __name__ denotes the current file, value varies by whether this file is imported
 webApp = Flask(__name__)
 
 """
+Creates a LoginManager instance and initializes it.
+"""
+login_manager = LoginManager()
+login_manager.init_app(webApp)
+
+"""
 Gets the database URL from Render's environmental variable named DATABASE_URL (configured in the Render website).
+Also gets the secret key used for Flask's sessions
 """
 DATABASE_URL = os.environ.get("DATABASE_URL")
+SECRET_KEY = os.environ.get("SECRET_KEY")
+
+#--Flask-login functions--
+@login_manager.user_loader
+def load_user(user_id):
+    user_id = f"{user_id}" # Converts it into a string in case it wasn't
+    
+    #--Check if the user_id is valid--
+    connection_to_db = psycopg2.connect(DATABASE_URL)
+    db_cursor = connection_to_db.cursor()
+
+    db_cursor.execute("SELECT UserID FROM user_info")
+    user_id_table = db_cursor.fetchall()
+
+    for id in user_id_table:
+        if id == int(user_id): # Found a matching entry
+            return User(user_id)
+    
+    return None # Reaches here if user_id is not valid (not present in the database)
+    #---------------------------------
+#-------------------------
 
 #--Connecting URLs to their corresponding function--
 """
@@ -57,11 +91,19 @@ def saveProfileChanges(user_id):
     #TODO: finish writing this
 
 """
+Function runs when the user submits their log in form
 """
 @webApp.route("/loginSubmit", methods = ["POST"])
 def onLoginSubmit():
+    #--Gets the submitted form details--
     username = request.form["username"] # Gets the sent input from the one named "username"
     password = request.form["password"] # Gets the sent input from the one named "password"
+    #-----------------------------------
+
+    #--Checks the database to see if any match the login form--
+    #----------------------------------------------------------
+
+    return jsonify.()
     return render_template("error.html", error_message=f"username = {username}, password = {password}") # TODO: delete and replace with proper html file. testing purposes for now
 
 """

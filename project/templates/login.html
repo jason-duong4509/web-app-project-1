@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Name Of Website - Login</title>
+        <title>Name Of Website</title>
         <!-- Links to the CSS file -->
         <link rel="stylesheet" href="login.css">
     </head>
@@ -10,10 +10,16 @@
         <h1>Name Of Website</h1>
         <h2>Login</h2>
         <!-- Login text box -->
-        <form action="/loginSubmit" target="_self" method="POST"> <!--Sends form to backend via /loginSubmit. Returns value to self, uses POST HTTP method-->
+        <form id="login_form">
             <input type="text" id="username" name="username" placeholder="Username"><br>
             <input type="password" id="password" name="password" placeholder="Password"><br>
             <input type="submit" value="Login">
         </form>
+
+        <p id="incorrect_login_details_text" style="color:red;" hidden>Incorrect login details. Please check your login information and try again.</p>
+        <p id="error_text" style="color:red;" hidden>An error occurred. Please try again.</p>
+
+        <!-- Link to the JS file -->
+        <script src="static/login.js"></script>
     </body>
 </html>
