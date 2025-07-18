@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Name Of Website</title>
+        <!-- Links to the CSS file -->
+        <link rel="stylesheet" href="sign_in.css">
+    </head>
+    
+    <body>
+        <h1>Name Of Website</h1>
+        <h2>Make an Account</h2>
+        <form id="sign_up_form">
+            <input type="text" id="fname" name="fname" placeholder="First Name"><br>
+            <input type="text" id="lname" name="lname" placeholder="Last Name"><br>
+            <input type="text" id="username" name="username" placeholder="Username"><br>
+            <input type="password" id="password" name="password" placeholder="Password"><br>
+            <input type="submit" value="Create Account">
+        </form>
+
+        <form action="/login" method="GET">
+            <input type="submit" value="Log in">
+        </form>
+
+        <p id="improper_details_text" style="color:red;" hidden>Invalid account details entered. Please check your information and try again.</p>
+        <p id="error_text" style="color:red;" hidden>An error occurred. Please try again.</p>
+
+        <!-- Link to the JS file -->
+        <script src="static/sign_in.js"></script>
+    </body>
+</html>

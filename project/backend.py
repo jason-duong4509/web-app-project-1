@@ -13,8 +13,10 @@ Import jsonify so communications to the front-end are in the form of JSON.
 Import render_template so that flask can grab and serve HTML files from /templates/file.html.
 Import send_file so that flask can send user-related files (profile picture) to the front-end.
 Import session so that flask can manage sessions.
+Import url_for so that flask can dynamically generate URLs during runtime.
+Import redirect so that flask can instruct the front-end to change URLs.
 """
-from flask import Flask, request, jsonify, render_template, send_file, session
+from flask import Flask, request, jsonify, render_template, send_file, session, url_for, redirect
 
 """
 Import LoginManager to help with handling log in functionality.
@@ -35,6 +37,11 @@ import io
 Used in the context of Render. Allows this file to connect to the database via a URL and a secret key.
 """
 import os
+
+"""
+Import the User class so that User objects can be made.
+"""
+from User import User
 
 """
 Create a Flask instance of the current file.
@@ -69,19 +76,79 @@ def load_user(user_id):
 
     for id in user_id_table:
         if id == int(user_id): # Found a matching entry
+            db_cursor.close() # Teardown stuff
+            connection_to_db.close() # Teardown stuff
             return User(user_id)
     
+    db_cursor.close() # Teardown stuff
+    connection_to_db.close() # Teardown stuff
     return None # Reaches here if user_id is not valid (not present in the database)
     #---------------------------------
 #-------------------------
 
 #--Connecting URLs to their corresponding function--
 """
+Function that runs when the base webpage is accessed (the sign in page)
+"""
+@webApp.route("/", methods = ["GET"])
+def signup():
+    return render_template("sign_in.html")
+
+"""
 Function runs if the user clicks on the login page (webpage whose URL ends with "/login").
 """
 @webApp.route("/login", methods = ["GET"])
 def onLogin():
     return render_template("login.html")
+
+"""
+Function that runs when the user attempts to create an account
+"""
+@webApp.route("/create_account", methods = ["POST"])
+def createAccount():
+    #--Gets the form inputs--
+    username = request.form["username"] # Takes the value from the "username" key
+    password = request.form["password"] # Takes the value from the "password" key
+    fname = request.form["fname"] # Takes the value from the "fname" key
+    lname = request.form["lname"] # Takes the value from the "lname" key
+    #------------------------
+
+    #--Validate the inputs--
+    # TODO: add validation checks
+    return jsonify({"success" : False}) # Input failed validation checks
+    #-----------------------
+
+    #--Create an account--
+    connection_to_db = psycopg2.connect(DATABASE_URL)
+    db_cursor = connection_to_db.cursor()
+    # TODO: hash password before adding user data to database
+    database_cursor.execute(f"INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES ('{fname}', '{lname}', '{username}', '{password}')") # Insert user data
+    connection_to_db.commit() # Saves the changes
+    
+    db_cursor.close()
+    connection_to_db.close()
+    
+    return jsonify({
+        "success" : True, 
+        "url" : redirect(url_for("/home")) # Tells the front end to redirect to the given url
+        })
+    #---------------------
+
+"""
+The default webpage after logging in
+"""
+@webApp.route("/home", methods = ["GET"])
+@login_required
+def displayHomepage():
+    return render_template("homepage.html")
+
+"""
+"""
+@webApp.route("/logout", methods = ["POST"])
+@login_required
+def onLogout():
+    logout_user() # Logs the user out via flask login
+    return render_template("sign_in.html")
 
 """
 Function runs when the user attempts to save the changes made to their profile.
@@ -100,11 +167,36 @@ def onLoginSubmit():
     password = request.form["password"] # Gets the sent input from the one named "password"
     #-----------------------------------
 
+    #--Make some initial input checks to potentially save time reading the DB--
+    if len(username) > 30 or len(username) <= 0 or len(password) > 200 or len(password) <= 0:
+        return jsonify.({"success" : False}) # Return a status message in JSON format
+    #--------------------------------------------------------------------------
+
     #--Checks the database to see if any match the login form--
+    connection_to_db = psycopg2.connect(DATABASE_URL)
+    db_cursor = connection_to_db.cursor()
+    db_cursor.execute("SELECT UserID, Username, UserPassword FROM user_info")
+    user_pass_table = db_cursor.fetchall()
+    db_cursor.close()
+    connection_to_db.close()
+
+    for entry in user_pass_table: # user_pass_table = [(UserID, Username, UserPassword), ...]
+        if username == entry[1] and password == entry[2]: # Found an entry that matches the user's input
+            login_user(load_user(entry[0])) # Log the user in using flask login 
+            return render_template("homepage.html") # Bring the user to the homepage after successful log in
     #----------------------------------------------------------
 
-    return jsonify.()
-    return render_template("error.html", error_message=f"username = {username}, password = {password}") # TODO: delete and replace with proper html file. testing purposes for now
+    #--Return a status message in JSON format--
+    return jsonify.({"success" : False})
+    #------------------------------------------
+
+"""
+Function is ran when the user wants to view their own profile
+"""
+@webApp.route("/p/own", methods = ["GET"])
+@login_required
+def onViewOwnProfile():
+    onViewProfile(current_user.id) # Call the other view profile method and pass in the user's ID
 
 """
 """
@@ -138,12 +230,13 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
 
     #--Check if user_id is valid input--
     if username == None: # user_id is not valid (user_id was not found in the DB)
+        db_cursor.close() # Teardown stuff
+        connection_to_db.close() # Teardown stuff
         return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
     #-----------------------------------
 
     db_cursor.close() # Teardown stuff
     connection_to_db.close() # Teardown stuff
-
     return render_template("profile.html", username = username, fname = fname, lname = lname, bio = bio) # Return profile.html to the front end with all of the text placeholder values inserted into the file
 
 """
