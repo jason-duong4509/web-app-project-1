@@ -14,9 +14,8 @@ Import render_template so that flask can grab and serve HTML files from /templat
 Import send_file so that flask can send user-related files (profile picture) to the front-end.
 Import session so that flask can manage sessions.
 Import url_for so that flask can dynamically generate URLs during runtime.
-Import redirect so that flask can instruct the front-end to change URLs.
 """
-from flask import Flask, request, jsonify, render_template, send_file, session, url_for, redirect
+from flask import Flask, request, jsonify, render_template, send_file, session, url_for
 
 """
 Import LoginManager to help with handling log in functionality.
@@ -114,7 +113,7 @@ def createAccount():
     #------------------------
 
     #--Validate the inputs--
-    # TODO: add validation checks
+    # TODO: add validation checks (+ equals ignore case duplicates)
     return jsonify({"success" : False}) # Input failed validation checks
     #-----------------------
 
@@ -130,7 +129,7 @@ def createAccount():
     
     return jsonify({
         "success" : True, 
-        "url" : redirect(url_for("/home")) # Tells the front end to redirect to the given url
+        "url" : url_for("/displayHomepage") # Gives the front end the URL it needs to change to
         })
     #---------------------
 
@@ -148,14 +147,61 @@ def displayHomepage():
 @login_required
 def onLogout():
     logout_user() # Logs the user out via flask login
-    return render_template("sign_in.html")
+    return jsonify({"url" : url_for("signup")})
 
 """
 Function runs when the user attempts to save the changes made to their profile.
 """
-@webApp.route("/p/<user_id>/save", methods = ["POST"])
-def saveProfileChanges(user_id):
-    #TODO: finish writing this
+@webApp.route("/p/edit/save", methods = ["POST"])
+@login_required
+def saveProfileChanges():
+    user_id = current_user.id
+    new_fname = request.form["fname"]
+    new_lname = request.form["lname"]
+    new_bio = request.form["bio"]
+    #TODO: finish adding the rest ^
+
+    #--Validate form inputs--
+    return jsonify({"success" : False})
+    #------------------------
+
+
+"""
+Searches the database for a given username and returns either the profile URL of the matching username or False to indicate the failure to find a user.
+"""
+@webApp.route("/search", methods = ["GET"])
+@login_required
+def searchForUser():
+    username = request.form["username"]
+
+    #--Input checks--
+    try:
+        float(username) # Attempts to turn the given username into a float
+        return jsonify({"success" : False}) # Failed input check (given a number as input)
+    except:
+        if (len(username) > 100 or len(username) <= 0):
+            return jsonify({"success" : False}) # Failed input check (string length invalid)
+    #----------------
+
+    #--Check the database for requested user--
+    connection_to_db = psycopg2.connect(DATABASE_URL)
+    db_cursor = connection_to_db.cursor()
+    
+    db_cursor.execute("SELECT Username, UserID FROM user_info")
+    user_data_table = db_cursor.fetchall()
+    db_cursor.close()
+    connection_to_db.close()
+
+    for entry in user_data_table: # user_data_table = [(Username, UserID), ...]
+        if username.lower() == entry[0].lower(): # Found an entry (considers upper/lower case)
+            return jsonify({
+                "success" : True,
+                "url" : url_for("onViewProfile", user_id = entry[1]) # Returns profile URL of the found username
+                })
+    #-----------------------------------------
+
+    return jsonify({"success" : False}) # Did not find specified username
+
 
 """
 Function runs when the user submits their log in form
@@ -187,7 +233,7 @@ def onLoginSubmit():
     #----------------------------------------------------------
 
     #--Return a status message in JSON format--
-    return jsonify.({"success" : False})
+    return jsonify({"success" : False})
     #------------------------------------------
 
 """
@@ -196,7 +242,7 @@ Function is ran when the user wants to view their own profile
 @webApp.route("/p/own", methods = ["GET"])
 @login_required
 def onViewOwnProfile():
-    onViewProfile(current_user.id) # Call the other view profile method and pass in the user's ID
+    return jsonify({"url" : url_for("onViewProfile", user_id = current_user.id)})
 
 """
 """
