@@ -82,6 +82,7 @@ def load_user(user_id):
     connection_to_db.close() # Teardown stuff
 
     for id in user_id_table:
+        print (f"ID ID I DI DI DI DI DID ID : {id}")
         if int(id) == int(user_id): # Found a matching entry
             return User(user_id)
     #TODO: CHANGE V TO NONE
