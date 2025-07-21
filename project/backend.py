@@ -131,7 +131,7 @@ def createAccount():
     connection_to_db = psycopg2.connect(DATABASE_URL)
     db_cursor = connection_to_db.cursor()
     # TODO: hash password before adding user data to database
-    database_cursor.execute(f"INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES ('{fname}', '{lname}', '{username}', '{password}')") # Insert user data
+    db_cursor.execute(f"INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES ('{fname}', '{lname}', '{username}', '{password}')") # Insert user data
     connection_to_db.commit() # Saves the changes
     
     db_cursor.close()
