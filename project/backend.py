@@ -69,6 +69,8 @@ login_manager.login_view = "signup" # Tells flask login where to redirect the us
 @login_manager.user_loader
 def load_user(user_id):
     user_id = f"{user_id}" # Converts it into a string in case it wasn't
+
+    print(f"\nUSER ID IN LOAD_USER: {user_id}")
     
     #--Check if the user_id is valid--
     connection_to_db = psycopg2.connect(DATABASE_URL)
@@ -76,16 +78,14 @@ def load_user(user_id):
 
     db_cursor.execute("SELECT UserID FROM user_info")
     user_id_table = db_cursor.fetchall()
+    db_cursor.close() # Teardown stuff
+    connection_to_db.close() # Teardown stuff
 
     for id in user_id_table:
         if id == int(user_id): # Found a matching entry
-            db_cursor.close() # Teardown stuff
-            connection_to_db.close() # Teardown stuff
             return User(user_id)
-    
-    db_cursor.close() # Teardown stuff
-    connection_to_db.close() # Teardown stuff
-    return None # Reaches here if user_id is not valid (not present in the database)
+    #TODO: CHANGE V TO NONE
+    return True # Reaches here if user_id is not valid (not present in the database)
     #---------------------------------
 #-------------------------
 
@@ -134,6 +134,8 @@ def createAccount():
     # TODO: hash password before adding user data to database
     db_cursor.execute(f"INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES ('{fname}', '{lname}', '{username}', '{password}')") # Insert user data
     connection_to_db.commit() # Saves the changes
+    db_cursor.execute(f"INSERT INTO profile_info VALUES ('Hi! I'm a new user.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)") # Insert user data
+    connection_to_db.commit() # Saves the changes
 
     #----Find the newly added user's UserID and log them in using it----
     db_cursor.execute("SELECT Username, UserID FROM user_info")
@@ -143,6 +145,7 @@ def createAccount():
 
     for entry in user_data_table: # user_data_table = [(Username, UserID), ...]
         if entry[0] == username: # User is found
+            print (f"USER ID: {entry[1]}. USERNAME: {entry[0]}")
             login_user(load_user(entry[1])) # Log the user in using flask login 
     #-------------------------------------------------------------------
 
