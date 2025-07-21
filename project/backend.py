@@ -134,8 +134,7 @@ def createAccount():
     # TODO: hash password before adding user data to database
     db_cursor.execute(f"INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES ('{fname}', '{lname}', '{username}', '{password}')") # Insert user data
     connection_to_db.commit() # Saves the changes
-    default_bio_message = "Hi! I'm a new user." # Define the message beforehand to avoid any interpretation issues by the DB
-    db_cursor.execute(f"INSERT INTO profile_info VALUES ('{default_bio_message}', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)") # Insert user data
+    db_cursor.execute("INSERT INTO profile_info VALUES ('Hi! I''m a new user.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)") # Insert user data
     connection_to_db.commit() # Saves the changes
 
     #----Find the newly added user's UserID and log them in using it----
