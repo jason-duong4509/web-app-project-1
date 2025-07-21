@@ -13,7 +13,7 @@ document.getElementById("sign_up_form").addEventListener("submit", async event =
     //-------------------
 
     //--Get the result and interpret it--
-    const results = request.json(); //Gets the results of the request to the backend
+    const results = await request.json(); //Gets the results of the request to the backend
     if (results.success == true){ //Account has been created
         window.location.replace(results.url); //Change the URL to the one provided
     } else if (results.success == false){ //Account was not created (user input rejected by backend)
