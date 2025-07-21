@@ -215,7 +215,7 @@ def onLoginSubmit():
 
     #--Make some initial input checks to potentially save time reading the DB--
     if len(username) > 30 or len(username) <= 0 or len(password) > 200 or len(password) <= 0:
-        return jsonify.({"success" : False}) # Return a status message in JSON format
+        return jsonify({"success" : False}) # Return a status message in JSON format
     #--------------------------------------------------------------------------
 
     #--Checks the database to see if any match the login form--
