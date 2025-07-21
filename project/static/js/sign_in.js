@@ -16,6 +16,8 @@ document.getElementById("sign_up_form").addEventListener("submit", async event =
     const results = request.json(); //Gets the results of the request to the backend
     if (results.success == true){ //Account has been created
         window.location.replace(results.url); //Change the URL to the one provided
+    } else{ //Account was not created
+        document.getElementById("improper_details_text").hidden = false; //Display error message to user
     }
     //-----------------------------------
 });

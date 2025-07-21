@@ -90,6 +90,13 @@ def load_user(user_id):
 
 #--Connecting URLs to their corresponding function--
 """
+Function that is called when the user accesses an invalid (does not exist) link.
+"""
+@webApp.errorhandler(404) # Accessing invalid links returns a HTTPS 404 error (page not found error)
+def invalidLink(error_code):
+    return render_template("error.html", error_message="Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
+
+"""
 Function that runs when the base webpage is accessed (the sign in page)
 """
 @webApp.route("/", methods = ["GET"])
@@ -117,7 +124,7 @@ def createAccount():
 
     #--Validate the inputs--
     # TODO: add validation checks (+ equals ignore case duplicates)
-    return jsonify({"success" : False}) # Input failed validation checks
+    # return jsonify({"success" : False}) # Input failed validation checks
     #-----------------------
 
     #--Create an account--
