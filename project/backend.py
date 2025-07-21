@@ -134,7 +134,7 @@ def createAccount():
     # TODO: hash password before adding user data to database
     db_cursor.execute(f"INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES ('{fname}', '{lname}', '{username}', '{password}')") # Insert user data
     connection_to_db.commit() # Saves the changes
-    db_cursor.execute("INSERT INTO profile_info VALUES ('Hi! I''m a new user.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)") # Insert user data
+    db_cursor.execute("INSERT INTO profile_info (Bio, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType, Attachment1FileName, Attachment1ByteData, Attachment1MIMEType, Attachment2FileName, Attachment2ByteData, Attachment2MIMEType, Attachment3FileName, Attachment3ByteData, Attachment3MIMEType) VALUES ('Hi! I''m a new user.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)") # Insert user data
     connection_to_db.commit() # Saves the changes
 
     #----Find the newly added user's UserID and log them in using it----
