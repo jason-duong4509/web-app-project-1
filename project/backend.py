@@ -82,7 +82,7 @@ def load_user(user_id):
     connection_to_db.close() # Teardown stuff
 
     for id in user_id_table:
-        if id == int(user_id): # Found a matching entry
+        if int(id) == int(user_id): # Found a matching entry
             return User(user_id)
     #TODO: CHANGE V TO NONE
     return True # Reaches here if user_id is not valid (not present in the database)
