@@ -20,8 +20,9 @@ from flask import Flask, request, jsonify, render_template, send_file, session, 
 """
 Import LoginManager to help with handling log in functionality.
 Import login_required to prevent unauthorized users from accessing certain parts of the web application.
+Import login_user to allow flask login to keep track of user logins.
 """
-from flask_login import LoginManager, login_required
+from flask_login import LoginManager, login_required, login_user
 
 """
 Used to connect to the database.
@@ -144,7 +145,7 @@ def createAccount():
         if entry[0] == username: # User is found
             login_user(load_user(entry[1])) # Log the user in using flask login 
     #-------------------------------------------------------------------
-    
+
     return jsonify({
         "success" : True, 
         "url" : url_for("displayHomepage") # Gives the front end the URL it needs to change to
