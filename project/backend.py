@@ -19,8 +19,9 @@ from flask import Flask, request, jsonify, render_template, send_file, session, 
 
 """
 Import LoginManager to help with handling log in functionality.
+Import login_required to prevent unauthorized users from accessing certain parts of the web application.
 """
-from flask_login import LoginManager
+from flask_login import LoginManager, login_required
 
 """
 Used to connect to the database.
@@ -53,6 +54,7 @@ Creates a LoginManager instance and initializes it.
 """
 login_manager = LoginManager()
 login_manager.init_app(webApp)
+login_manager.login_view = "signup" # Tells flask login where to redirect the user if they're not logged in and they attempted to access a restricted webpage
 
 """
 Gets the database URL from Render's environmental variable named DATABASE_URL (configured in the Render website).
