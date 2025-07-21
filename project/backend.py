@@ -44,10 +44,18 @@ Import the User class so that User objects can be made.
 from User import User
 
 """
+Gets the database URL from Render's environmental variable named DATABASE_URL (configured in the Render website).
+Also gets the secret key used for Flask's sessions
+"""
+DATABASE_URL = os.environ.get("DATABASE_URL")
+SECRET_KEY = os.environ.get("SECRET_KEY")
+
+"""
 Create a Flask instance of the current file.
 __name__ denotes the current file, value varies by whether this file is imported or ran directly.
 """
 webApp = Flask(__name__)
+webApp.secret_key = SECRET_KEY # Sets the secret key for flask to the one stored on Render
 
 """
 Creates a LoginManager instance and initializes it.
@@ -55,13 +63,6 @@ Creates a LoginManager instance and initializes it.
 login_manager = LoginManager()
 login_manager.init_app(webApp)
 login_manager.login_view = "signup" # Tells flask login where to redirect the user if they're not logged in and they attempted to access a restricted webpage
-
-"""
-Gets the database URL from Render's environmental variable named DATABASE_URL (configured in the Render website).
-Also gets the secret key used for Flask's sessions
-"""
-DATABASE_URL = os.environ.get("DATABASE_URL")
-SECRET_KEY = os.environ.get("SECRET_KEY")
 
 #--Flask-login functions--
 @login_manager.user_loader
