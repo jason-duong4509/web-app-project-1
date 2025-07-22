@@ -236,7 +236,7 @@ def onLoginSubmit():
 
     #--Make some initial input checks to potentially save time reading the DB--
     if len(username) > 30 or len(username) <= 0 or len(password) > 200 or len(password) <= 0:
-        print ("FAILED BACKEND CHECK")
+        print (f"FAILED BACKEND CHECK\n{username} and {password}")
         return jsonify({"success" : False}) # Return a status message in JSON format
     #--------------------------------------------------------------------------
 
