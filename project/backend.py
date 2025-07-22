@@ -22,8 +22,9 @@ Import LoginManager to help with handling log in functionality.
 Import login_required to prevent unauthorized users from accessing certain parts of the web application.
 Import login_user to allow flask login to keep track of user logins.
 Import logout_user to allow flask login to handle user logouts.
+Import current_user to allow flask login to keep track of the current user
 """
-from flask_login import LoginManager, login_required, login_user, logout_user
+from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 """
 Used to connect to the database.
@@ -247,12 +248,14 @@ def onLoginSubmit():
     connection_to_db.close()
 
     for entry in user_pass_table: # user_pass_table = [(UserID, Username, UserPassword), ...]
-        if username == entry[1] and password == entry[2]: # Found an entry that matches the user's input
+        if username.lower() == entry[1].lower() and password == entry[2]: # Found an entry that matches the user's input
+            print("IT WORKED IT WORKED IT WORKED")
             login_user(load_user(entry[0])) # Log the user in using flask login 
-            return render_template("homepage.html") # Bring the user to the homepage after successful log in
+            return jsonify({"success" : True, "url" : url_for("displayHomepage")}) # Bring the user to the homepage after successful log in
     #----------------------------------------------------------
 
     #--Return a status message in JSON format--
+    print ("IT DID NOT WORK IT DID NOT WORK")
     return jsonify({"success" : False})
     #------------------------------------------
 
