@@ -19,8 +19,12 @@ from flask import Flask, request, jsonify, render_template, send_file, session, 
 
 """
 Import LoginManager to help with handling log in functionality.
+Import login_required to prevent unauthorized users from accessing certain parts of the web application.
+Import login_user to allow flask login to keep track of user logins.
+Import logout_user to allow flask login to handle user logouts.
+Import current_user to allow flask login to keep track of the current user
 """
-from flask_login import LoginManager
+from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 """
 Used to connect to the database.
@@ -43,54 +47,64 @@ Import the User class so that User objects can be made.
 from User import User
 
 """
-Create a Flask instance of the current file.
-__name__ denotes the current file, value varies by whether this file is imported or ran directly.
-"""
-webApp = Flask(__name__)
-
-"""
-Creates a LoginManager instance and initializes it.
-"""
-login_manager = LoginManager()
-login_manager.init_app(webApp)
-
-"""
 Gets the database URL from Render's environmental variable named DATABASE_URL (configured in the Render website).
 Also gets the secret key used for Flask's sessions
 """
 DATABASE_URL = os.environ.get("DATABASE_URL")
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
+"""
+Create a Flask instance of the current file.
+__name__ denotes the current file, value varies by whether this file is imported or ran directly.
+"""
+webApp = Flask(__name__)
+webApp.secret_key = SECRET_KEY # Sets the secret key for flask to the one stored on Render
+
+"""
+Creates a LoginManager instance and initializes it.
+"""
+login_manager = LoginManager()
+login_manager.init_app(webApp)
+login_manager.login_view = "signup" # Tells flask login where to redirect the user if they're not logged in and they attempted to access a restricted webpage
+
 #--Flask-login functions--
 @login_manager.user_loader
 def load_user(user_id):
     user_id = f"{user_id}" # Converts it into a string in case it wasn't
-    
+
     #--Check if the user_id is valid--
     connection_to_db = psycopg2.connect(DATABASE_URL)
     db_cursor = connection_to_db.cursor()
 
     db_cursor.execute("SELECT UserID FROM user_info")
     user_id_table = db_cursor.fetchall()
-
-    for id in user_id_table:
-        if id == int(user_id): # Found a matching entry
-            db_cursor.close() # Teardown stuff
-            connection_to_db.close() # Teardown stuff
-            return User(user_id)
-    
     db_cursor.close() # Teardown stuff
     connection_to_db.close() # Teardown stuff
+
+    for entry in user_id_table: # user_id_table = [(UserID), ...]
+        if entry[0] == int(user_id): # Found a matching entry
+            return User(user_id)
+
     return None # Reaches here if user_id is not valid (not present in the database)
     #---------------------------------
 #-------------------------
 
 #--Connecting URLs to their corresponding function--
 """
+Function that is called when the user accesses an invalid (does not exist) link.
+"""
+@webApp.errorhandler(404) # Accessing invalid links returns a HTTPS 404 error (page not found error)
+def invalidLink(error_code):
+    return render_template("error.html", error_message="Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
+
+"""
 Function that runs when the base webpage is accessed (the sign in page)
 """
 @webApp.route("/", methods = ["GET"])
 def signup():
+    if current_user.is_authenticated: # If the user has already logged in
+        return render_template("homepage.html")
+
     return render_template("sign_in.html")
 
 """
@@ -98,6 +112,9 @@ Function runs if the user clicks on the login page (webpage whose URL ends with 
 """
 @webApp.route("/login", methods = ["GET"])
 def onLogin():
+    if current_user.is_authenticated: # If the user has already logged in
+        return render_template("homepage.html")
+        
     return render_template("login.html")
 
 """
@@ -114,22 +131,32 @@ def createAccount():
 
     #--Validate the inputs--
     # TODO: add validation checks (+ equals ignore case duplicates)
-    return jsonify({"success" : False}) # Input failed validation checks
+    # return jsonify({"success" : False}) # Input failed validation checks
     #-----------------------
 
     #--Create an account--
     connection_to_db = psycopg2.connect(DATABASE_URL)
     db_cursor = connection_to_db.cursor()
     # TODO: hash password before adding user data to database
-    database_cursor.execute(f"INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES ('{fname}', '{lname}', '{username}', '{password}')") # Insert user data
+    db_cursor.execute(f"INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES ('{fname}', '{lname}', '{username}', '{password}')") # Insert user data
     connection_to_db.commit() # Saves the changes
-    
+    db_cursor.execute("INSERT INTO profile_info (Bio, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType, Attachment1FileName, Attachment1ByteData, Attachment1MIMEType, Attachment2FileName, Attachment2ByteData, Attachment2MIMEType, Attachment3FileName, Attachment3ByteData, Attachment3MIMEType) VALUES ('Hi! I''m a new user.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)") # Insert user data
+    connection_to_db.commit() # Saves the changes
+
+    #----Find the newly added user's UserID and log them in using it----
+    db_cursor.execute("SELECT Username, UserID FROM user_info")
+    user_data_table = db_cursor.fetchall()
     db_cursor.close()
     connection_to_db.close()
-    
+
+    for entry in user_data_table: # user_data_table = [(Username, UserID), ...]
+        if entry[0] == username: # User is found
+            login_user(load_user(entry[1])) # Log the user in using flask login 
+    #-------------------------------------------------------------------
+
     return jsonify({
         "success" : True, 
-        "url" : url_for("/displayHomepage") # Gives the front end the URL it needs to change to
+        "url" : url_for("displayHomepage") # Gives the front end the URL it needs to change to
         })
     #---------------------
 
@@ -215,7 +242,7 @@ def onLoginSubmit():
 
     #--Make some initial input checks to potentially save time reading the DB--
     if len(username) > 30 or len(username) <= 0 or len(password) > 200 or len(password) <= 0:
-        return jsonify.({"success" : False}) # Return a status message in JSON format
+        return jsonify({"success" : False}) # Return a status message in JSON format
     #--------------------------------------------------------------------------
 
     #--Checks the database to see if any match the login form--
@@ -227,9 +254,9 @@ def onLoginSubmit():
     connection_to_db.close()
 
     for entry in user_pass_table: # user_pass_table = [(UserID, Username, UserPassword), ...]
-        if username == entry[1] and password == entry[2]: # Found an entry that matches the user's input
+        if username.lower() == entry[1].lower() and password == entry[2]: # Found an entry that matches the user's input
             login_user(load_user(entry[0])) # Log the user in using flask login 
-            return render_template("homepage.html") # Bring the user to the homepage after successful log in
+            return jsonify({"success" : True, "url" : url_for("displayHomepage")}) # Bring the user to the homepage after successful log in
     #----------------------------------------------------------
 
     #--Return a status message in JSON format--

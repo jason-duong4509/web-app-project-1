@@ -33,7 +33,7 @@ document.getElementById("profile_info").addEventListener("submit", async event =
     //-----------------
 
     //--Retrieve the results--
-    const results = request.json();
+    const results = await request.json();
     //------------------------
 
     //--Interpret the results--

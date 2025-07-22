@@ -3,7 +3,7 @@
     <head>
         <title>Name Of Website</title>
         <!-- Links to the CSS file -->
-        <link rel="stylesheet" href="profile.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
     </head>
     
     <body>
@@ -25,6 +25,6 @@
         <p id="error_message" style="color:red;" hidden>Unable to save changes. Please check your information and try again.</p>
         
         <!-- Link to JS file -->
-        <script src="static/profile.js"></script>
+        <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
     </body>
 </html>

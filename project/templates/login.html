@@ -3,7 +3,7 @@
     <head>
         <title>Name Of Website</title>
         <!-- Links to the CSS file -->
-        <link rel="stylesheet" href="login.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
     </head>
     
     <body>
@@ -20,6 +20,6 @@
         <p id="error_text" style="color:red;" hidden>An error occurred. Please try again.</p>
 
         <!-- Link to the JS file -->
-        <script src="static/login.js"></script>
+        <script src="{{ url_for('static', filename='js/login.js') }}"></script>
     </body>
 </html>
