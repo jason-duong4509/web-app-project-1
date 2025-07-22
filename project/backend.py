@@ -70,8 +70,6 @@ login_manager.login_view = "signup" # Tells flask login where to redirect the us
 def load_user(user_id):
     user_id = f"{user_id}" # Converts it into a string in case it wasn't
 
-    print(f"\nUSER ID IN LOAD_USER: {user_id}")
-    
     #--Check if the user_id is valid--
     connection_to_db = psycopg2.connect(DATABASE_URL)
     db_cursor = connection_to_db.cursor()
@@ -84,8 +82,8 @@ def load_user(user_id):
     for entry in user_id_table: # user_id_table = [(UserID), ...]
         if entry[0] == int(user_id): # Found a matching entry
             return User(user_id)
-    #TODO: CHANGE V TO NONE
-    return True # Reaches here if user_id is not valid (not present in the database)
+
+    return None # Reaches here if user_id is not valid (not present in the database)
     #---------------------------------
 #-------------------------
 
@@ -145,7 +143,6 @@ def createAccount():
 
     for entry in user_data_table: # user_data_table = [(Username, UserID), ...]
         if entry[0] == username: # User is found
-            print (f"USER ID: {entry[1]}. USERNAME: {entry[0]}")
             login_user(load_user(entry[1])) # Log the user in using flask login 
     #-------------------------------------------------------------------
 
