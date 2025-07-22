@@ -21,8 +21,9 @@ from flask import Flask, request, jsonify, render_template, send_file, session, 
 Import LoginManager to help with handling log in functionality.
 Import login_required to prevent unauthorized users from accessing certain parts of the web application.
 Import login_user to allow flask login to keep track of user logins.
+Import logout_user to allow flask login to handle user logouts.
 """
-from flask_login import LoginManager, login_required, login_user
+from flask_login import LoginManager, login_required, login_user, logout_user
 
 """
 Used to connect to the database.
