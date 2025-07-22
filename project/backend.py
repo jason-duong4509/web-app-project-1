@@ -102,6 +102,9 @@ Function that runs when the base webpage is accessed (the sign in page)
 """
 @webApp.route("/", methods = ["GET"])
 def signup():
+    if current_user.is_authenticated: # If the user has already logged in
+        return render_template("homepage.html")
+
     return render_template("sign_in.html")
 
 """
@@ -109,6 +112,9 @@ Function runs if the user clicks on the login page (webpage whose URL ends with 
 """
 @webApp.route("/login", methods = ["GET"])
 def onLogin():
+    if current_user.is_authenticated: # If the user has already logged in
+        return render_template("homepage.html")
+        
     return render_template("login.html")
 
 """

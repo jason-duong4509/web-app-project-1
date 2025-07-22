@@ -5,8 +5,6 @@ document.getElementById("login_form").addEventListener("submit", async event =>{
     const passwordInput = document.getElementById("password").value;
     const usernameInput = document.getElementById("username").value;
     if (usernameInput.length > 30 || usernameInput.length <= 0 || passwordInput.length > 200 || passwordInput.length <= 0) { //Password/username is unreasonably long/short
-        console.log("user: " + usernameInput);
-        console.log("pass: " + passwordInput);
         document.getElementById("incorrect_login_details_text").hidden = false; //Assume that the password is wrong
     //-------------------
     } else{
