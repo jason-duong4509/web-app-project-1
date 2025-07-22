@@ -81,9 +81,8 @@ def load_user(user_id):
     db_cursor.close() # Teardown stuff
     connection_to_db.close() # Teardown stuff
 
-    for id in user_id_table:
-        print (f"ID ID I DI DI DI DI DID ID : {id}")
-        if int(id) == int(user_id): # Found a matching entry
+    for entry in user_id_table: # user_id_table = [(UserID), ...]
+        if entry[0] == int(user_id): # Found a matching entry
             return User(user_id)
     #TODO: CHANGE V TO NONE
     return True # Reaches here if user_id is not valid (not present in the database)
