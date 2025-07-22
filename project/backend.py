@@ -279,6 +279,7 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
     connection_to_db = psycopg2.connect(DATABASE_URL) # Connect to the DB
     db_cursor = connection_to_db.cursor() # Gets the cursor of the DB so that we can pass commands to the DB
     username = fname = lname = bio = None
+    user_id = int(user_id) # Converts the user_id parameter into an integer to allow comparison with entries in the database
     #---------
 
     #--Gets relevant info about user_id from user_info--
@@ -301,15 +302,14 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
             break
     #------------------------------------------------------
 
-    #--Check if user_id is valid input--
-    if username == None: # user_id is not valid (user_id was not found in the DB)
-        db_cursor.close() # Teardown stuff
-        connection_to_db.close() # Teardown stuff
-        return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
-    #-----------------------------------
-
     db_cursor.close() # Teardown stuff
     connection_to_db.close() # Teardown stuff
+
+    #--Check if user_id is valid input--
+    if username == None: # user_id is not valid (user_id was not found in the DB)
+        return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
+    #-----------------------------------
+    
     return render_template("profile.html", username = username, fname = fname, lname = lname, bio = bio) # Return profile.html to the front end with all of the text placeholder values inserted into the file
 
 """

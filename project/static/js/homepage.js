@@ -20,7 +20,7 @@ document.getElementById("search_bar").addEventListener("keypress", async event =
     if (event.key === "Enter"){ //Checks that the key pressed is Enter. === means equal in value and type (will not accept strings "Enter")
         event.preventDefault();
         //--Input checking--
-        const userInput = document.getElementById("search_bar").innerHTML;
+        const userInput = document.getElementById("search_bar").value;
         if (userInput.length > 100 || userInput.length <= 0 || Number.isFinite(Number(userInput)) == true){ //User input is unrealistically large/small or is a number
             document.getElementById("error_message").hidden = false; //Presents user with an error message
         //------------------
