@@ -236,7 +236,6 @@ def onLoginSubmit():
 
     #--Make some initial input checks to potentially save time reading the DB--
     if len(username) > 30 or len(username) <= 0 or len(password) > 200 or len(password) <= 0:
-        print (f"FAILED BACKEND CHECK\n{username} and {password}")
         return jsonify({"success" : False}) # Return a status message in JSON format
     #--------------------------------------------------------------------------
 
@@ -250,13 +249,11 @@ def onLoginSubmit():
 
     for entry in user_pass_table: # user_pass_table = [(UserID, Username, UserPassword), ...]
         if username.lower() == entry[1].lower() and password == entry[2]: # Found an entry that matches the user's input
-            print("IT WORKED IT WORKED IT WORKED")
             login_user(load_user(entry[0])) # Log the user in using flask login 
             return jsonify({"success" : True, "url" : url_for("displayHomepage")}) # Bring the user to the homepage after successful log in
     #----------------------------------------------------------
 
     #--Return a status message in JSON format--
-    print ("IT DID NOT WORK IT DID NOT WORK")
     return jsonify({"success" : False})
     #------------------------------------------
 
