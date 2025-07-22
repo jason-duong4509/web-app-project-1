@@ -2,8 +2,8 @@ document.getElementById("login_form").addEventListener("submit", async event =>{
     event.preventDefault(); //Stops form from being submitted normally
 
     //--Check the input--
-    const passwordInput = document.getElementById("password").innerHTML;
-    const usernameInput = document.getElementById("username").innerHTML;
+    const passwordInput = document.getElementById("password").value;
+    const usernameInput = document.getElementById("username").value;
     if (usernameInput.length > 30 || usernameInput.length <= 0 || passwordInput.length > 200 || passwordInput.length <= 0) { //Password/username is unreasonably long/short
         console.log("user: " + usernameInput);
         console.log("pass: " + passwordInput);
