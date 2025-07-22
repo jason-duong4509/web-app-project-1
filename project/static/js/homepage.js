@@ -1,13 +1,13 @@
 document.getElementById("options").addEventListener("change", async event =>{//Change event -> when an option is selected
     if (event.target.value === "log_out"){ //Log out option was chosen
-        const request = await fetch("/logout", method = "POST"); //Call backend to log the user out
+        const request = await fetch("/logout", {method : "POST"}); //Call backend to log the user out
     
         //--Get the result and interpret it--
         const results = await request.json(); //Gets the results of the request to the backend
         window.location.replace(results.url); //Change the URL to the one provided
         //-----------------------------------
     } else if (event.target.value === "profile"){//View profile option was chosen
-        const request = await fetch("/p/own", method = "GET"); //Call backend to display the user's own profile
+        const request = await fetch("/p/own", {method : "GET"}); //Call backend to display the user's own profile
 
         //--Get the result and interpret it--
         const results = await request.json(); //Gets the results of the request to the backend
