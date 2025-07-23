@@ -336,6 +336,7 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
     connection_to_db.close()
     for entry in results_table: # entry = (UserID, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType)
         if entry[0] == user_id: # Found the desired user
+            print("PROFILE PICTURE LOADED")
             return send_file(path_or_file=io.BytesIO(bytes(entry[2])), mimetype=entry[3], as_attachment=False)
     #------------------------------------------------------
 
