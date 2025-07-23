@@ -45,3 +45,11 @@ CREATE TABLE profile_info(
     Attachment3MIMEType VARCHAR(255) --File type
 );
 -----------------------------------------------------
+
+--Create a table to hold all default data--
+CREATE TABLE default_data(
+    PFP_File_Name TEXT,
+    PFP_Byte_Data BYTEA,
+    PFP_MIME_Type VARCHAR(255)
+);
+-------------------------------------------

@@ -138,9 +138,15 @@ def createAccount():
     connection_to_db = psycopg2.connect(DATABASE_URL)
     db_cursor = connection_to_db.cursor()
     # TODO: hash password before adding user data to database
+    
+    db_cursor.execute("SELECT PFP_File_Name, PFP_Byte_Data, PFP_MIME_Type FROM default_data")
+    default_pfp = db_cursor.fetchall() # default_pfp = [(PFP_File_Name, PFP_Byte_Data, PFP_MIME_Type)]
+    default_pfp_name = default_pfp[0][0]
+    default_pfp_byte_data = bytes(default_pfp[0][1]) # Must convert into bytes since psycopg2 retrieves the byte data as an object for speed (convert object into byte data)
+    default_pfp_mime_type = default_pfp[0][2]
+
     db_cursor.execute(f"INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES ('{fname}', '{lname}', '{username}', '{password}')") # Insert user data
-    connection_to_db.commit() # Saves the changes
-    db_cursor.execute("INSERT INTO profile_info (Bio, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType, Attachment1FileName, Attachment1ByteData, Attachment1MIMEType, Attachment2FileName, Attachment2ByteData, Attachment2MIMEType, Attachment3FileName, Attachment3ByteData, Attachment3MIMEType) VALUES ('Hi! I''m a new user.', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)") # Insert user data
+    db_cursor.execute("INSERT INTO profile_info (Bio, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType, Attachment1FileName, Attachment1ByteData, Attachment1MIMEType, Attachment2FileName, Attachment2ByteData, Attachment2MIMEType, Attachment3FileName, Attachment3ByteData, Attachment3MIMEType) VALUES ('Hi! I''m a new user.', %s, %s, %s, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)", (default_pfp_name, default_pfp_byte_data, default_pfp_mime_type)) # Insert user data
     connection_to_db.commit() # Saves the changes
 
     #----Find the newly added user's UserID and log them in using it----
@@ -279,13 +285,14 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
     connection_to_db = psycopg2.connect(DATABASE_URL) # Connect to the DB
     db_cursor = connection_to_db.cursor() # Gets the cursor of the DB so that we can pass commands to the DB
     username = fname = lname = bio = None
+    user_id = int(user_id) # Converts the user_id parameter into an integer to allow comparison with entries in the database
     #---------
 
     #--Gets relevant info about user_id from user_info--
     db_cursor.execute("SELECT * FROM user_info") # Gets the entire table from the DB
     user_info_table = db_cursor.fetchall() # Stores the result of the DB query (result in form of list of tuples)
     for entry in user_info_table: # user_info_table = [(UserID, Firstname, Lastname, Username, UserPassword), ...]
-        if entry[0] == user_id:
+        if entry[0] == user_id: # Found the desired user
             fname = entry[1] # Grab the first name from the DB
             lname = entry[2] # Grab the last name from the DB
             username = entry[3] # Grab the username from the DB
@@ -296,21 +303,20 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
     db_cursor.execute("SELECT * FROM profile_info") # Gets the entire table from the DB
     profile_info_table = db_cursor.fetchall() # Stores the result of the DB query (result in form of list of tuples)
     for entry in profile_info_table: # profile_info_table = [(UserID, Bio, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType, Attachment1FileName, Attachment1ByteData, Attachment1MIMEType, Attachment2FileName, Attachment2ByteData, Attachment2MIMEType, Attachment3FileName, Attachment3ByteData, Attachment3MIMEType), ...]
-        if entry[0] == user_id:
+        if entry[0] == user_id: # Found the desired user
             bio = entry[1] # Grab the bio from the DB
             break
     #------------------------------------------------------
 
-    #--Check if user_id is valid input--
-    if username == None: # user_id is not valid (user_id was not found in the DB)
-        db_cursor.close() # Teardown stuff
-        connection_to_db.close() # Teardown stuff
-        return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
-    #-----------------------------------
-
     db_cursor.close() # Teardown stuff
     connection_to_db.close() # Teardown stuff
-    return render_template("profile.html", username = username, fname = fname, lname = lname, bio = bio) # Return profile.html to the front end with all of the text placeholder values inserted into the file
+
+    #--Check if user_id is valid input--
+    if username == None: # user_id is not valid (user_id was not found in the DB)
+        return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
+    #-----------------------------------
+    
+    return render_template("profile.html", user_id = user_id, username = username, fname = fname, lname = lname, bio = bio) # Return profile.html to the front end with all of the text placeholder values inserted into the file
 
 """
 Function that returns the profile picture of a given user ID.
@@ -318,6 +324,7 @@ Intended use alongside /profile/<user_id>.
 """
 @webApp.route("/profile/<user_id>/get_pfp", methods = ["GET"])
 def getProfilePicture(user_id): # user_id = the user id in the URL when the request has been made
+    user_id = int(user_id) # Converts the user_id parameter into an integer to allow comparison with entries in the database
     #--Connect to the database--
     connection_to_db = psycopg2.connect(DATABASE_URL)
     db_cursor = connection_to_db.cursor()
@@ -326,16 +333,14 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
     #--Find the profile picture for user_id and return it--
     db_cursor.execute("SELECT UserID, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType FROM profile_info") # Gets pfp info from database
     results_table = db_cursor.fetchall()
-    for entry in results_table: # entry = (UserID, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType FROM profile_info)
-        if entry[0] == user_id:
-            db_cursor.close()
-            connection_to_db.close()
-            return send_file(path_or_file=io.BytesIO(entry[2]), mimetype=entry[3], as_attachment=False)
+    db_cursor.close()
+    connection_to_db.close()
+    for entry in results_table: # entry = (UserID, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType)
+        if entry[0] == user_id: # Found the desired user
+            return send_file(path_or_file=io.BytesIO(bytes(entry[2])), mimetype=entry[3], as_attachment=False)
     #------------------------------------------------------
 
     #--user_id is not valid--
-    db_cursor.close()
-    connection_to_db.close()
     return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
     #------------------------
 
