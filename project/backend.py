@@ -202,11 +202,9 @@ def saveProfileChanges():
 """
 Searches the database for a given username and returns either the profile URL of the matching username or False to indicate the failure to find a user.
 """
-@webApp.route("/search", methods = ["GET"])
+@webApp.route("/search/<username>", methods = ["GET"])
 @login_required
-def searchForUser():
-    username = request.form["username"]
-
+def searchForUser(username):
     #--Input checks--
     try:
         float(username) # Attempts to turn the given username into a float
