@@ -324,6 +324,7 @@ Intended use alongside /profile/<user_id>.
 """
 @webApp.route("/profile/<user_id>/get_pfp", methods = ["GET"])
 def getProfilePicture(user_id): # user_id = the user id in the URL when the request has been made
+    user_id = int(user_id) # Converts the user_id parameter into an integer to allow comparison with entries in the database
     #--Connect to the database--
     connection_to_db = psycopg2.connect(DATABASE_URL)
     db_cursor = connection_to_db.cursor()
