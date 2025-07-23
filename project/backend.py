@@ -142,7 +142,7 @@ def createAccount():
     db_cursor.execute("SELECT PFP_File_Name, PFP_Byte_Data, PFP_MIME_Type FROM default_data")
     default_pfp = db_cursor.fetchall() # default_pfp = [(PFP_File_Name, PFP_Byte_Data, PFP_MIME_Type)]
     default_pfp_name = default_pfp[0][0]
-    default_pfp_byte_data = byte(default_pfp[0][1]) # Must convert into bytes since psycopg2 retrieves the byte data as an object for speed (convert object into byte data)
+    default_pfp_byte_data = bytes(default_pfp[0][1]) # Must convert into bytes since psycopg2 retrieves the byte data as an object for speed (convert object into byte data)
     default_pfp_mime_type = default_pfp[0][2]
 
     db_cursor.execute(f"INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES ('{fname}', '{lname}', '{username}', '{password}')") # Insert user data
