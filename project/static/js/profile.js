@@ -1,3 +1,117 @@
+//--Retreive temporary values passed through HTML--
+userID = document.getElementById("userID").textContent; //Retreive the user_id for later
+//-------------------------------------------------
+
+//--Remove the temporary HTML elements--
+document.getElementById("userID").remove();
+//--------------------------------------
+
+const getPFPResponse = await fetch("/p/"+userID+"/get_pfp", {method : "GET"}); //Wait for request to finish, then assign the response received to a variable
+if (getPFPResponse.status === 400){ //Input rejected by backend
+    const results = await getPFPResponse.json();
+    window.location.replace(results.url); //Switch window to 400 error page
+} else{ //Backend sent the attachment
+    //--Make and insert a file into the HTML--
+    const fileBlob = await getPFPResponse.blob(); //Get the binary data of the file that was sent 
+    const newFileElement = document.createElement("img");
+    newFileElement.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+    newFileElement.id = "profile_picture";
+    document.body.appendChild(newFileElement); //Add a new child to form (add the element to the HTML file)
+    //----------------------------------------
+
+    //--Style the new element--
+    //TODO: this
+    //-------------------------
+}
+
+const attachment1Response = await fetch("/p/"+userID+"/get_attachment/1", {method : "GET"}); //Wait for request to finish, then assign the response received to a variable
+if (attachment1Response.status === 404){ //Attachment does not exist response
+    //--Insert HTML element that says "No File Attached"--
+    const newElement = document.createElement("p");
+    newElement.textContent = "No File Attached";
+    newElement.id = "attachment_1";
+    document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
+    //----------------------------------------------------
+
+    //--Style the new element--
+    //TODO: this
+    //-------------------------
+} else if (attachment1Response.status === 400){ //Input rejected by backend
+    const results = await attachment1Response.json();
+    window.location.replace(results.url); //Switch window to 400 error page
+} else{ //Backend sent the attachment
+    //--Make and insert a file into the HTML--
+    const fileBlob = await attachment1Response.blob(); //Get the binary data of the file that was sent 
+    const newFileElement = document.createElement("iframe");
+    newFileElement.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+    newFileElement.id = "attachment_1";
+    document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
+    //----------------------------------------
+
+    //--Style the new element--
+    //TODO: this
+    //-------------------------
+}
+
+const attachment2Response = await fetch("/p/"+userID+"/get_attachment/2", {method : "GET"}); //Wait for request to finish, then assign the response received to a variable
+if (attachment2Response.status === 404){ //Attachment does not exist response
+    //--Insert HTML element that says "No File Attached"--
+    const newElement = document.createElement("p");
+    newElement.textContent = "No File Attached";
+    newElement.id = "attachment_2";
+    document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
+    //----------------------------------------------------
+
+    //--Style the new element--
+    //TODO: this
+    //-------------------------
+} else if (attachment2Response.status === 400){ //Input rejected by backend
+    const results = await attachment2Response.json();
+    window.location.replace(results.url); //Switch window to 400 error page
+} else{ //Backend sent the attachment
+    //--Make and insert a file into the HTML--
+    const fileBlob = await attachment2Response.blob(); //Get the binary data of the file that was sent 
+    const newFileElement = document.createElement("iframe");
+    newFileElement.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+    newFileElement.id = "attachment_2";
+    document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
+    //----------------------------------------
+
+    //--Style the new element--
+    //TODO: this
+    //-------------------------
+}
+
+const attachment3Response = await fetch("/p/"+userID+"/get_attachment/3", {method : "GET"}); //Wait for request to finish, then assign the response received to a variable
+if (attachment3Response.status === 404){ //Attachment does not exist response
+    //--Insert HTML element that says "No File Attached"--
+    const newElement = document.createElement("p");
+    newElement.textContent = "No File Attached";
+    newElement.id = "attachment_3";
+    document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
+    //----------------------------------------------------
+
+    //--Style the new element--
+    //TODO: this
+    //-------------------------
+} else if (attachment3Response.status === 400){ //Input rejected by backend
+    const results = await attachment3Response.json();
+    window.location.replace(results.url); //Switch window to 400 error page
+} else{ //Backend sent the attachment
+    //--Make and insert a file into the HTML--
+    const fileBlob = await attachment3Response.blob(); //Get the binary data of the file that was sent 
+    const newFileElement = document.createElement("iframe");
+    newFileElement.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+    newFileElement.id = "attachment_3";
+    document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
+    //----------------------------------------
+
+    //--Style the new element--
+    //TODO: this
+    //-------------------------
+}
+
+//--Functions--
 document.getElementById("edit_profile_button").addEventListener("click", event =>{
     event.preventDefault(); //Stops the event (clicking the button) from triggering its default behavior 
     
@@ -7,6 +121,154 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     document.getElementById("save_changes").hidden = false; //Makes the save changes button visible
     document.getElementById("save_changes").disabled = false; //Enables the save changes button 
     //-------------------------------
+
+    //--Set up elements that allow for change in profile picture--
+    document.getElementById("profile_picture").style.cursor = "pointer"; //Changes the pointer so it looks clickable
+    const pfp_input_btn = document.createElement("input");
+    pfp_input_btn.type = "file";
+    pfp_input_btn.accept = "image/png"; //Window shown to user defaults to pngs only
+    pfp_input_btn.id = "pfp_input_btn";
+    pfp_input_btn.name = "pfp_input_btn";
+    document.body.appendChild(pfp_input_btn);
+
+    //----Style pfp input button----
+    //TODO: THIS
+    //------------------------------
+
+    //----Add event listener----
+    pfp_input_btn.addEventListener("change", async event => {
+        const newPFP = pfp_input_btn.files[0]; //Gets the first (of 1) selected file
+
+        const formData = new FormData(); //Creates a FormData object to pass to the backend
+        formData.append("newPFP", newPFP); //Adds the new pfp file as a value with key 'newpfp'
+
+        const response = await fetch("/p/"+userID+"/submit_pfp", { //Send response to backend
+            method : "POST",
+            body : formData
+        });
+
+        if (response.status === 400){ //Backend rejected input
+            document.getElementById("pfp_error_message").hidden = false;//Display the error message to the user
+        } else{ //Backend sent back a file to render
+            const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
+            const currentPFP = document.getElementById("profile_picture");
+            currentPFP.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+            document.getElementById("pfp_error_message").hidden = true;
+        }
+    });
+    //--------------------------
+    //------------------------------------------------------------
+
+    //--Set up elements that allow for change in attachment--
+    document.getElementById("attachment_1").style.cursor = "pointer"; //Changes the pointer so it looks clickable
+    const attach_input_1 = document.createElement("input");
+    attach_input_1.type = "file";
+    attach_input_1.accept = "application/pdf"; //Window shown to user defaults to PDFs only
+    attach_input_1.id = "attach_input_1";
+    attach_input_1.name = "attach_input_1";
+    document.body.appendChild(attach_input_1);
+
+    //----Style app input button----
+    //TODO: THIS
+    //------------------------------
+
+    //----Add event listener----
+    attach_input_1.addEventListener("change", async event => {
+        const newAttach = attach_input_1.files[0]; //Gets the first (of 1) selected file
+
+        const formData = new FormData(); //Creates a FormData object to pass to the backend
+        formData.append("newAttach", newAttach); //Adds the new PDF file as a value with key 'newAttach'
+
+        const response = await fetch("/p/"+userID+"/change_attachment/1", { //Send response to backend
+            method : "POST",
+            body : formData
+        });
+
+        if (response.status === 400){ //Backend rejected input
+            document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
+        } else{ //Backend sent back a file to render
+            const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
+            const currentAttach = document.getElementById("attachment_1");
+            currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+            document.getElementById("attachment_error_message").hidden = true;
+        }
+    });
+    //--------------------------
+    //-------------------------------------------------------
+
+    //--Set up elements that allow for change in attachment--
+    document.getElementById("attachment_2").style.cursor = "pointer"; //Changes the pointer so it looks clickable
+    const attach_input_2 = document.createElement("input");
+    attach_input_2.type = "file";
+    attach_input_2.accept = "application/pdf"; //Window shown to user defaults to PDFs only
+    attach_input_2.id = "attach_input_2";
+    attach_input_2.name = "attach_input_2";
+    document.body.appendChild(attach_input_2);
+
+    //----Style app input button----
+    //TODO: THIS
+    //------------------------------
+
+    //----Add event listener----
+    attach_input_2.addEventListener("change", async event => {
+        const newAttach = attach_input_2.files[0]; //Gets the first (of 1) selected file
+
+        const formData = new FormData(); //Creates a FormData object to pass to the backend
+        formData.append("newAttach", newAttach); //Adds the new PDF file as a value with key 'newAttach'
+
+        const response = await fetch("/p/"+userID+"/change_attachment/2", { //Send response to backend
+            method : "POST",
+            body : formData
+        });
+
+        if (response.status === 400){ //Backend rejected input
+            document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
+        } else{ //Backend sent back a file to render
+            const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
+            const currentAttach = document.getElementById("attachment_2");
+            currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+            document.getElementById("attachment_error_message").hidden = true;
+        }
+    });
+    //--------------------------
+    //-------------------------------------------------------
+
+    //--Set up elements that allow for change in attachment--
+    document.getElementById("attachment_3").style.cursor = "pointer"; //Changes the pointer so it looks clickable
+    const attach_input_3 = document.createElement("input");
+    attach_input_3.type = "file";
+    attach_input_3.accept = "application/pdf"; //Window shown to user defaults to PDFs only
+    attach_input_3.id = "attach_input_3";
+    attach_input_3.name = "attach_input_3";
+    document.body.appendChild(attach_input_3);
+
+    //----Style app input button----
+    //TODO: THIS
+    //------------------------------
+
+    //----Add event listener----
+    attach_input_3.addEventListener("change", async event => {
+        const newAttach = attach_input_3.files[0]; //Gets the first (of 1) selected file
+
+        const formData = new FormData(); //Creates a FormData object to pass to the backend
+        formData.append("newAttach", newAttach); //Adds the new PDF file as a value with key 'newAttach'
+
+        const response = await fetch("/p/"+userID+"/change_attachment/3", { //Send response to backend
+            method : "POST",
+            body : formData
+        });
+
+        if (response.status === 400){ //Backend rejected input
+            document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
+        } else{ //Backend sent back a file to render
+            const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
+            const currentAttach = document.getElementById("attachment_3");
+            currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+            document.getElementById("attachment_error_message").hidden = true;
+        }
+    });
+    //--------------------------
+    //-------------------------------------------------------
 
     //--Enables each profile attribute so that they can be edited--
     document.getElementById("username").disabled = false;
@@ -45,6 +307,7 @@ document.getElementById("profile_info").addEventListener("submit", async event =
         document.getElementById("save_changes").disabled = true; //Disables this button (prevents accidental clicks)
         document.getElementById("edit_profile_button").hidden = false; //Makes the edit profile button visible
         document.getElementById("edit_profile_button").disabled = false; //Enables the edit profile button 
+        document.getElementById("profile_picture").style.cursor = "default"; //Changes the pointer so it doesn't look clickable
         //-------------------------------
 
         //--Disables each profile attribute so that they cannot be edited--
@@ -53,6 +316,21 @@ document.getElementById("profile_info").addEventListener("submit", async event =
         document.getElementById("lname").disabled = true;
         document.getElementById("bio").disabled = true;
         //-----------------------------------------------------------------
+
+        //--Delete input fields for the attachments and profile picture--
+        document.getElementById("pfp_input_btn").remove();
+        document.getElementById("attach_input_1").remove();
+        document.getElementById("attach_input_2").remove();
+        document.getElementById("attach_input_3").remove();
+        //---------------------------------------------------------------
+        
+        //--Change the pointers back to normal--
+        document.getElementById("profile_picture").style.cursor = "default";
+        document.getElementById("attachment_1").style.cursor = "default";
+        document.getElementById("attachment_2").style.cursor = "default";
+        document.getElementById("attachment_3").style.cursor = "default";
+        //--------------------------------------
     }
     //-------------------------
 });
+//-------------

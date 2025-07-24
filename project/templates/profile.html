@@ -8,6 +8,8 @@
     
     <body>
 
+        <p id="userID" hidden>{{user_id}}</p>
+
         <form id="profile_info">
             <input type="text" name="username" id="username" value="{{username}}" disabled><br><br>
             <input type="text" name="fname" id="fname" value="{{fname}}" disabled><br><br>
@@ -17,13 +19,14 @@
             <input type="submit" id="save_changes" value="Save Changes" hidden disabled><br><br>
         </form>
 
-        <!-- Call /profile/<user_id>/pfp to retrieve user profile picture -->
-        <img src="{{ url_for('getProfilePicture', user_id=user_id) }}">
-
         <button type="button" id="edit_profile_button">Edit</button>
 
         <p id="error_message" style="color:red;" hidden>Unable to save changes. Please check your information and try again.</p>
         
+        <p id="pfp_error_message" style="color:red;" hidden>Only PNG files are allowed.</p>
+
+        <p id="attachment_error_message" style="color:red;" hidden>Only PDF files are allowed.</p>
+
         <!-- Link to JS file -->
         <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
     </body>

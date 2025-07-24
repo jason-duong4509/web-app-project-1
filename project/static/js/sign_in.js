@@ -22,7 +22,6 @@ document.getElementById("sign_up_form").addEventListener("submit", async event =
     } else{ //Account was not created (ran into an error)
         document.getElementById("error_text").hidden = false; //Display error message to user
         document.getElementById("improper_details_text").hidden = true; //Hide message if present
-        document.getElementById("error_text").innerHTML = results.success;
     }
     //-----------------------------------
 });

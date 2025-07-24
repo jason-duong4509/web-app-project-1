@@ -25,10 +25,7 @@ document.getElementById("search_bar").addEventListener("keypress", async event =
             document.getElementById("error_message").hidden = false; //Presents user with an error message
         //------------------
         } else{
-            const request = await fetch("/search", {
-                method: "GET",
-                body: {"username" : userInput}
-            });
+            const request = await fetch("/search/" + userInput, {method: "GET"});
 
             //--Interpret the results--
             const results = await request.json();
