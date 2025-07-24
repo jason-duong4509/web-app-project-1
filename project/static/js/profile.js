@@ -1,3 +1,29 @@
+//--Retreive temporary values passed through HTML--
+userID = document.getElementById("userID").textContent; //Retreive the user_id for later
+attachment1Link = document.getElementById("attachment1Link").textContent; //Retreive the URL if needed
+attachment2Link = document.getElementById("attachment2Link").textContent; //Retreive the URL if needed
+attachment3Link = document.getElementById("attachment3Link").textContent; //Retreive the URL if needed
+//-------------------------------------------------
+
+//--Remove the temporary HTML elements--
+document.getElementById("userID").remove();
+document.getElementById("attachment1Link").remove();
+document.getElementById("attachment2Link").remove();
+document.getElementById("attachment3Link").remove();
+//--------------------------------------
+
+const getAttachment1Request = await fetch("/p/"+userID+"/get_attachment/1", {method : "GET"}); //Send request to backend to get user's attachment
+getAttachment1Request.then(async response =>{//Interpret the results
+    if (response.status === 404){ //Attachment does not exist response
+        //Insert HTML element that says "No File Attached"
+    } else if (response.status === 400){ //Input rejected by backend
+        window.location.replace(results.url); //Switch window to 400 error page
+    } else{ //Backend sent the attachment
+        //Render attachment
+    }
+});
+
+//--Functions--
 document.getElementById("edit_profile_button").addEventListener("click", event =>{
     event.preventDefault(); //Stops the event (clicking the button) from triggering its default behavior 
     
@@ -56,3 +82,4 @@ document.getElementById("profile_info").addEventListener("submit", async event =
     }
     //-------------------------
 });
+//-------------

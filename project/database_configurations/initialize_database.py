@@ -18,9 +18,6 @@ database_cursor.execute(open("database_configurations.sql", "r").read()) # Read 
 database_cursor.execute("INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES ('bob', 'bobbob', 'bobobobob', '123456')") # Insert test data
 database_cursor.execute("SELECT * FROM user_info")
 print(database_cursor.fetchall())
-database_cursor.execute("INSERT INTO profile_info (Bio, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType, Attachment1FileName, Attachment1ByteData, Attachment1MIMEType, Attachment2FileName, Attachment2ByteData, Attachment2MIMEType, Attachment3FileName, Attachment3ByteData, Attachment3MIMEType) VALUES (NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)") # Insert test data
-database_cursor.execute("SELECT * FROM profile_info")
-print(database_cursor.fetchall())
 
 #----Prepare the default data that will be inserted into the DB----
 default_pfp_name = "default_image.png"
@@ -30,6 +27,9 @@ default_pfp_mime_type = "image/png" # The MIME type of the image
 
 database_cursor.execute("INSERT INTO default_data (PFP_File_Name, PFP_Byte_Data, PFP_MIME_Type) VALUES (%s, %s, %s)", (default_pfp_name, default_pfp_byte_data, default_pfp_mime_type))
 database_cursor.execute("SELECT * FROM default_data")
+print(database_cursor.fetchall())
+database_cursor.execute("INSERT INTO profile_info (Bio, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType, Attachment1FileName, Attachment1ByteData, Attachment1MIMEType, Attachment2FileName, Attachment2ByteData, Attachment2MIMEType, Attachment3FileName, Attachment3ByteData, Attachment3MIMEType) VALUES ('Hi! I''m a new user.', %s, %s, %s, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)", (default_pfp_name, default_pfp_byte_data, default_pfp_mime_type)) # Insert test data
+database_cursor.execute("SELECT * FROM profile_info")
 print(database_cursor.fetchall())
 #-------------------------------------------------------------------------
 

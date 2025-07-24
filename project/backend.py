@@ -98,6 +98,13 @@ def invalidLink(error_code):
     return render_template("error.html", error_message="Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
 
 """
+Function that is called when a 400 error code (invalid input) is sent to the front end
+"""
+@webApp.route("/400_Bad_Request", methods = ["GET"])
+def get400WebPage():
+    return render_template("error.html", error_message="400 Error. The server rejected the request due to malformed user input. Please try again.")
+
+"""
 Function that runs when the base webpage is accessed (the sign in page)
 """
 @webApp.route("/", methods = ["GET"])
@@ -268,7 +275,7 @@ def onLoginSubmit():
     #------------------------------------------
 
 """
-Function is ran when the user wants to view their own profile
+Function is ran when the user wants to view their own profile.
 """
 @webApp.route("/p/own", methods = ["GET"])
 @login_required
@@ -276,14 +283,22 @@ def onViewOwnProfile():
     return jsonify({"url" : url_for("onViewProfile", user_id = current_user.id)})
 
 """
+Function that returns information about a given user (through their UserID).
 """
 @webApp.route("/p/<user_id>", methods = ["GET"])
+@login_required
 def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a param as user_id
+    #--Check if user_id is a number--
+    try:
+        user_id = int(user_id) # Converts the user_id parameter into an integer to allow comparison with entries in the database
+    except:
+        return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
+    #--------------------------------
+
     #--Setup--
     connection_to_db = psycopg2.connect(DATABASE_URL) # Connect to the DB
     db_cursor = connection_to_db.cursor() # Gets the cursor of the DB so that we can pass commands to the DB
     username = fname = lname = bio = None
-    user_id = int(user_id) # Converts the user_id parameter into an integer to allow comparison with entries in the database
     #---------
 
     #--Gets relevant info about user_id from user_info--
@@ -318,9 +333,9 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
 
 """
 Function that returns the profile picture of a given user ID.
-Intended use alongside /profile/<user_id>.
+Intended use alongside /p/<user_id>.
 """
-@webApp.route("/profile/<user_id>/get_pfp", methods = ["GET"])
+@webApp.route("/p/<user_id>/get_pfp", methods = ["GET"])
 def getProfilePicture(user_id): # user_id = the user id in the URL when the request has been made
     user_id = int(user_id) # Converts the user_id parameter into an integer to allow comparison with entries in the database
     #--Connect to the database--
@@ -338,11 +353,65 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
             return send_file(path_or_file=io.BytesIO(bytes(entry[2])), mimetype=entry[3], as_attachment=False)
     #------------------------------------------------------
 
-    #--user_id is not valid--
-    return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
-    #------------------------
+"""
+Function that returns the desired attachment of a given user ID.
+Intended to be used alongisde /p/<userid>.
+"""
+@webApp.route("/p/<user_id>/get_attachment/<attachment_number>", methods = ["GET"])
+@login_required
+def getAttachment(user_id, attachment_number):
+    #--Input check--
+    try:
+        #--Are the inputs integers?--
+        user_id = int(user_id)
+        attachment_number = int(attachment_number)
+        #----------------------------
 
-"""    
+        #--Are the inputs valid integers?--
+        attachment_number_is_invalid = attachment_number < 1 or attachment_number > 3
+        user_id_is_invalid = user_id <= 1
+        if attachment_number_is_invalid or user_id_is_invalid:
+            raise Exception
+        #----------------------------------
+    except:
+        return jsonify({"url" : url_for("/get400Webpage")}), 400 # Returns error code 400 (invalid input)
+    #---------------
+
+    #--Connect to the DB--
+    connection_to_db = psycopg2.connect(DATABASE_URL)
+    db_cursor = connection_to_db.cursor()
+    #---------------------
+
+    #--Find the desired user and return the desired attachment--
+    db_cursor.execute("SELECT * FROM profile_info") # Attachments are in profile_info
+    profile_info_table = db_cursor.fetchall()
+
+    for entry in profile_info_table: # profile_info_table = [(UserID, Bio, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType, Attachment1FileName, Attachment1ByteData, Attachment1MIMEType, Attachment2FileName, Attachment2ByteData, Attachment2MIMEType, Attachment3FileName, Attachment3ByteData, Attachment3MIMEType), ...]
+        UserID = entry[0]
+        if UserID == user_id: # Found the desired user
+            if attachment_number == 1: # Front-end requested attachment 1
+                attachment_1_mime_type = entry[7]
+                if attachment_1_mime_type == None: # No attachment exists
+                    return jsonify("exists" : False), 404 # Sends 404 error code (does not currently exist)
+                attachment_1_byte_data = bytes(entry[6])
+                return send_file(path_or_file=io.BytesIO(bytes(attachment_1_byte_data)), mimetype=attachment_1_mime_type, as_attachment=False)
+            elif attachment_number == 2: # Front-end requested attachment 2
+                attachment_2_mime_type = entry[10]
+                if attachment_2_mime_type == None: # No attachment exists
+                    return jsonify("exists" : False), 404 # Sends 404 error code (does not currently exist)
+                attachment_2_byte_data = bytes(entry[9])
+                return send_file(path_or_file=io.BytesIO(bytes(attachment_2_byte_data)), mimetype=attachment_2_mime_type, as_attachment=False)
+            elif attachment_number == 3: # Front-end requested attachment 3
+                attachment_3_mime_type = entry[13]
+                if attachment_3_mime_type == None: # No attachment exists
+                    return jsonify("exists" : False), 404 # Sends 404 error code (does not currently exist)
+                attachment_3_byte_data = bytes(entry[12])
+                return send_file(path_or_file=io.BytesIO(bytes(attachment_3_byte_data)), mimetype=attachment_3_mime_type, as_attachment=False)
+    #-----------------------------------------------------------
+
+    return jsonify({"url" : url_for("/get400Webpage")}), 400 # Only reaches here if user_id did not match any in the DB. Returns error code 400 (invalid input)
+
+"""
 """
 """
 @webApp.route("/signup", methods = ["GET"])

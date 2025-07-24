@@ -8,6 +8,11 @@
     
     <body>
 
+        <p id="userID" hidden>{{user_id}}</p>
+        <p id="attachment1Link" hidden>{{url_for('getAttachment', user_id=user_id, attachment_number=1)}}</p>
+        <p id="attachment2Link" hidden>{{url_for('getAttachment', user_id=user_id, attachment_number=2)}}</p>
+        <p id="attachment3Link" hidden>{{url_for('getAttachment', user_id=user_id, attachment_number=3)}}</p>
+
         <form id="profile_info">
             <input type="text" name="username" id="username" value="{{username}}" disabled><br><br>
             <input type="text" name="fname" id="fname" value="{{fname}}" disabled><br><br>
@@ -17,9 +22,11 @@
             <input type="submit" id="save_changes" value="Save Changes" hidden disabled><br><br>
         </form>
 
-        <!-- Call /profile/<user_id>/pfp to retrieve user profile picture -->
+        <!-- Display profile picture -->
         <img src="{{ url_for('getProfilePicture', user_id=user_id) }}">
 
+        <!-- Display attachment 1 -->
+        <iframe 
         <button type="button" id="edit_profile_button">Edit</button>
 
         <p id="error_message" style="color:red;" hidden>Unable to save changes. Please check your information and try again.</p>
