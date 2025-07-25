@@ -208,7 +208,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
             document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
         } else{ //Backend sent back a file to render
             const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
-            const currentAttach = document.getElementById("attachment_1");
+            let currentAttach = document.getElementById("attachment_1");
 
             //--Remove the old attachment and add the new one--
             currentAttach.remove(); //Remove old attachment
@@ -257,7 +257,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
             document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
         } else{ //Backend sent back a file to render
             const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
-            const currentAttach = document.getElementById("attachment_2");
+            let currentAttach = document.getElementById("attachment_2");
 
             //--Remove the old attachment and add the new one--
             currentAttach.remove(); //Remove old attachment
@@ -306,7 +306,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
             document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
         } else{ //Backend sent back a file to render
             const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
-            const currentAttach = document.getElementById("attachment_3");
+            let currentAttach = document.getElementById("attachment_3");
 
             //--Remove the old attachment and add the new one--
             currentAttach.remove(); //Remove old attachment
