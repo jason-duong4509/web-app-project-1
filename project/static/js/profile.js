@@ -48,9 +48,9 @@ fetch("/p/"+userID+"/get_attachment/1", {method : "GET"}) //Call fetch send a re
             return responseFromFetch.blob(); //Extract the binary data of the file that was sent and send it to the next then()
         }
     }).then(dataExtractedFromResponse => { //Take the extracted contents and do something with it
-        if (dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
+        if (dataExtractedFromResponse != null && dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
-        } else{ //dataExtractedFromResponse.url = null. File was sent instead
+        } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
             const newFileElement = document.createElement("iframe");
             newFileElement.src = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
             newFileElement.id = "attachment_1";
@@ -82,9 +82,9 @@ fetch("/p/"+userID+"/get_attachment/2", {method : "GET"}) //Call fetch send a re
             return responseFromFetch.blob(); //Extract the binary data of the file that was sent and send it to the next then()
         }
     }).then(dataExtractedFromResponse => { //Take the extracted contents and do something with it
-        if (dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
+        if (dataExtractedFromResponse != null && dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
-        } else{ //dataExtractedFromResponse.url = null. File was sent instead
+        } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
             const newFileElement = document.createElement("iframe");
             newFileElement.src = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
             newFileElement.id = "attachment_2";
@@ -116,9 +116,9 @@ fetch("/p/"+userID+"/get_attachment/3", {method : "GET"}) //Call fetch send a re
             return responseFromFetch.blob(); //Extract the binary data of the file that was sent and send it to the next then()
         }
     }).then(dataExtractedFromResponse => { //Take the extracted contents and do something with it
-        if (dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
+        if (dataExtractedFromResponse != null && dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
-        } else{ //dataExtractedFromResponse.url = null. File was sent instead
+        } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
             const newFileElement = document.createElement("iframe");
             newFileElement.src = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
             newFileElement.id = "attachment_3";
