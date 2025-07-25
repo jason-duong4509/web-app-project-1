@@ -460,7 +460,7 @@ def changePFP(user_id):
 
     #--Update profile info for the user in the DB--
     new_pfp_file_name = "%i_profile_picture.png" % user_id
-    db_cursor.execute("UPDATE profile_info SET ProfilePictureFileName = %s, ProfilePictureByteData = %s, ProfilePictureMIMEType = %s WHERE UserID = %i", (new_pfp_file_name, psycopg2.Binary(new_pfp_bytes), "image/png", user_id))
+    db_cursor.execute("UPDATE profile_info SET ProfilePictureFileName = %s, ProfilePictureByteData = %s, ProfilePictureMIMEType = %s WHERE UserID = %s", (new_pfp_file_name, psycopg2.Binary(new_pfp_bytes), "image/png", user_id))
     db_cursor.commit()
     #----------------------------------------------
 
@@ -478,15 +478,16 @@ def changeAttachment(user_id, attachment_number):
     #--Input check--
     try:
         user_id = int(user_id)
-        user_is_editing_someones_profile = user_id != current_user.id # UserID the user is editing is not their own
+        user_is_editing_someones_profile = user_id != int(current_user.id) # UserID the user is editing is not their own
 
         attachment_number = int(attachment_number)
         attachment_number_is_invalid = attachment_number > 3 or attachment_number < 1
 
-        new_attachment = request.files["file"] # Gets the file sent from the user (contents are in binary)
+        new_attachment = request.files["newAttach"] # Gets the file sent from the user (contents are in binary)
         file_mime_type = magic.from_buffer(new_attachment.read(2048), mime=True) # Reads the first 2048 bytes (recommended amount) of the file and guess the MIME type
         mime_type_is_incorrect = not (file_mime_type == "application/pdf") # Checks if the file's MIME type is a PNG
         new_attachment.seek(0) # Move the pointer back to the beginning of the file
+        file_bytes = new_attachment.read() # Read the file (in bytes) and store it
 
         #TODO: add file size check (too big = reject)
 
@@ -502,13 +503,13 @@ def changeAttachment(user_id, attachment_number):
     #--Update profile info for the user in the DB--
     if attachment_number == 1: # Change attachment 1
         new_attach_file_name = "%i_attachment_1.pdf" % attachment_number
-        db_cursor.execute("UPDATE profile_info SET Attachment1FileName = %s, Attachment1ByteData = %s, Attachment1MIMEType = %s WHERE UserID = %i", (new_attach_file_name, new_attachment, "application/pdf", user_id))
+        db_cursor.execute("UPDATE profile_info SET Attachment1FileName = %s, Attachment1ByteData = %s, Attachment1MIMEType = %s WHERE UserID = %s", (new_attach_file_name, psycopg2.Binary(file_bytes), "application/pdf", user_id))
     elif attachment_number == 2: # Change attachment 2
         new_attach_file_name = "%i_attachment_2.pdf" % attachment_number
-        db_cursor.execute("UPDATE profile_info SET Attachment2FileName = %s, Attachment2ByteData = %s, Attachment2MIMEType = %s WHERE UserID = %i", (new_attach_file_name, new_attachment, "application/pdf", user_id))
+        db_cursor.execute("UPDATE profile_info SET Attachment2FileName = %s, Attachment2ByteData = %s, Attachment2MIMEType = %s WHERE UserID = %s", (new_attach_file_name, psycopg2.Binary(file_bytes), "application/pdf", user_id))
     elif attachment_number == 3: # Change attachment 3
         new_attach_file_name = "%i_attachment_3.pdf" % attachment_number
-        db_cursor.execute("UPDATE profile_info SET Attachment3FileName = %s, Attachment3ByteData = %s, Attachment3MIMEType = %s WHERE UserID = %i", (new_attach_file_name, new_attachment, "application/pdf", user_id))
+        db_cursor.execute("UPDATE profile_info SET Attachment3FileName = %s, Attachment3ByteData = %s, Attachment3MIMEType = %s WHERE UserID = %s", (new_attach_file_name, psycopg2.Binary(file_bytes), "application/pdf", user_id))
         
     db_cursor.commit()
     #----------------------------------------------
@@ -516,7 +517,7 @@ def changeAttachment(user_id, attachment_number):
     db_cursor.close()
     connection_to_db.close()
 
-    return send_file(path_or_file=io.BytesIO(new_attachment), mimetype="application/pdf", as_attachment=False) # Send the new attachment back to the front end so it can display it to the user
+    return send_file(path_or_file=io.BytesIO(file_bytes), mimetype="application/pdf", as_attachment=False) # Send the new attachment back to the front end so it can display it to the user
 
 """
 """
