@@ -440,7 +440,7 @@ def changePFP(user_id):
     user_id = int(user_id)
     user_is_editing_someones_profile = user_id != current_user.id # UserID the user is editing is not their own
 
-    print(f"USERID SAFE. USER IS EDITING SOMEONES PROFILE {user_is_editing_someones_profile}\n")
+    print(f"USERID SAFE. USER IS EDITING SOMEONES PROFILE {user_is_editing_someones_profile}\nUR ID {current_user.id} SOMEONE ELSES ID {user_id}")
 
     new_pfp = request.files["file"] # Gets the file sent from the user (contents are in binary)
     file_mime_type = magic.from_buffer(new_pfp.read(2048), mime=True) # Reads the first 2048 bytes (recommended amount) of the file and guess the MIME type
@@ -484,6 +484,8 @@ def changePFP(user_id):
 
     db_cursor.close()
     connection_to_db.close()
+
+    print("SEND FILE SEND FILE SEND FILE SEND FILE SEND FILE SEND FILE SEND FILE SEND FILE")
 
     return send_file(path_or_file=io.BytesIO(new_pfp), mimetype="image/png", as_attachment=False) # Send the new PFP back to the front end so it can display it to the user
 
