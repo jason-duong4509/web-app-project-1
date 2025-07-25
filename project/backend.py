@@ -449,6 +449,7 @@ def changePFP(user_id):
         #TODO: add file size check (too big = reject)
 
         if user_is_editing_someones_profile or mime_type_is_incorrect:
+            print(f"UR EDITING SOMEONE ELSES PROFILE?? {user_is_editing_someones_profile}\nUR MIME TYPE IS INCORRECT? {mime_type_is_incorrect}")
             raise Exception
     except:
         return jsonify({"success" : False}), 400 # Return 400 error code
