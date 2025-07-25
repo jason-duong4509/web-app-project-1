@@ -169,6 +169,7 @@ def createAccount():
 
     for entry in user_data_table: # user_data_table = [(Username, UserID), ...]
         if entry[0] == username: # User is found
+            print("SUCCESSFULLY MADE ACCOUNT")
             login_user(load_user(entry[1])) # Log the user in using flask login 
     #-------------------------------------------------------------------
 
