@@ -6,110 +6,130 @@ userID = document.getElementById("userID").textContent; //Retreive the user_id f
 document.getElementById("userID").remove();
 //--------------------------------------
 
-const getPFPResponse = await fetch("/p/"+userID+"/get_pfp", {method : "GET"}); //Wait for request to finish, then assign the response received to a variable
-if (getPFPResponse.status === 400){ //Input rejected by backend
-    const results = await getPFPResponse.json();
-    window.location.replace(results.url); //Switch window to 400 error page
-} else{ //Backend sent the attachment
-    //--Make and insert a file into the HTML--
-    const fileBlob = await getPFPResponse.blob(); //Get the binary data of the file that was sent 
-    const newFileElement = document.createElement("img");
-    newFileElement.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
-    newFileElement.id = "profile_picture";
-    document.body.appendChild(newFileElement); //Add a new child to form (add the element to the HTML file)
-    //----------------------------------------
+fetch("/p/"+userID+"/get_pfp", {method : "GET"}) //Call fetch send a request to the backend
+    .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
+        if (responseFromFetch.status === 400){ //Input was rejected by backend
+            return responseFromFetch.json(); //Extract the JSON data sent and send it to the next then()
+        } else{ //Backend sent the attachment
+            return responseFromFetch.blob(); //Extract the binary data of the file that was sent and send it to the next then()
+        }
+    }).then(dataExtractedFromResponse => { //Take the extracted contents and do something with it
+        if (dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
+            window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
+        } else{ //dataExtractedFromResponse.url = null. File was sent instead
+            const newFileElement = document.createElement("img");
+            newFileElement.src = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            newFileElement.id = "profile_picture";
+            document.body.appendChild(newFileElement); //Add a new child to form (add the element to the HTML file)
+            //----------------------------------------
 
-    //--Style the new element--
-    //TODO: this
-    //-------------------------
-}
+            //--Style the new element--
+            //TODO: this
+            //-------------------------
+        }
+});
 
-const attachment1Response = await fetch("/p/"+userID+"/get_attachment/1", {method : "GET"}); //Wait for request to finish, then assign the response received to a variable
-if (attachment1Response.status === 404){ //Attachment does not exist response
-    //--Insert HTML element that says "No File Attached"--
-    const newElement = document.createElement("p");
-    newElement.textContent = "No File Attached";
-    newElement.id = "attachment_1";
-    document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
-    //----------------------------------------------------
+fetch("/p/"+userID+"/get_attachment/1", {method : "GET"}) //Call fetch send a request to the backend
+    .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
+        if (responseFromFetch.status === 400){ //Input was rejected by backend
+            return responseFromFetch.json(); //Extract the JSON data sent and send it to the next then()
+        } else if (responseFromFetch.status === 404){ //Attachment does not exist response
+            //--Insert HTML element that says "No File Attached"--
+            const newElement = document.createElement("p");
+            newElement.textContent = "No File Attached";
+            newElement.id = "attachment_1";
+            document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
+            //----------------------------------------------------
 
-    //--Style the new element--
-    //TODO: this
-    //-------------------------
-} else if (attachment1Response.status === 400){ //Input rejected by backend
-    const results = await attachment1Response.json();
-    window.location.replace(results.url); //Switch window to 400 error page
-} else{ //Backend sent the attachment
-    //--Make and insert a file into the HTML--
-    const fileBlob = await attachment1Response.blob(); //Get the binary data of the file that was sent 
-    const newFileElement = document.createElement("iframe");
-    newFileElement.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
-    newFileElement.id = "attachment_1";
-    document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
-    //----------------------------------------
+            //--Style the new element--
+            //TODO: this
+            //-------------------------
+        } else{ //Backend sent the attachment
+            return responseFromFetch.blob(); //Extract the binary data of the file that was sent and send it to the next then()
+        }
+    }).then(dataExtractedFromResponse => { //Take the extracted contents and do something with it
+        if (dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
+            window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
+        } else{ //dataExtractedFromResponse.url = null. File was sent instead
+            const newFileElement = document.createElement("iframe");
+            newFileElement.src = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            newFileElement.id = "attachment_1";
+            document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
+            //----------------------------------------
 
-    //--Style the new element--
-    //TODO: this
-    //-------------------------
-}
+            //--Style the new element--
+            //TODO: this
+            //-------------------------
+        }
+});
 
-const attachment2Response = await fetch("/p/"+userID+"/get_attachment/2", {method : "GET"}); //Wait for request to finish, then assign the response received to a variable
-if (attachment2Response.status === 404){ //Attachment does not exist response
-    //--Insert HTML element that says "No File Attached"--
-    const newElement = document.createElement("p");
-    newElement.textContent = "No File Attached";
-    newElement.id = "attachment_2";
-    document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
-    //----------------------------------------------------
+fetch("/p/"+userID+"/get_attachment/2", {method : "GET"}) //Call fetch send a request to the backend
+    .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
+        if (responseFromFetch.status === 400){ //Input was rejected by backend
+            return responseFromFetch.json(); //Extract the JSON data sent and send it to the next then()
+        } else if (responseFromFetch.status === 404){ //Attachment does not exist response
+            //--Insert HTML element that says "No File Attached"--
+            const newElement = document.createElement("p");
+            newElement.textContent = "No File Attached";
+            newElement.id = "attachment_2";
+            document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
+            //----------------------------------------------------
 
-    //--Style the new element--
-    //TODO: this
-    //-------------------------
-} else if (attachment2Response.status === 400){ //Input rejected by backend
-    const results = await attachment2Response.json();
-    window.location.replace(results.url); //Switch window to 400 error page
-} else{ //Backend sent the attachment
-    //--Make and insert a file into the HTML--
-    const fileBlob = await attachment2Response.blob(); //Get the binary data of the file that was sent 
-    const newFileElement = document.createElement("iframe");
-    newFileElement.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
-    newFileElement.id = "attachment_2";
-    document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
-    //----------------------------------------
+            //--Style the new element--
+            //TODO: this
+            //-------------------------
+        } else{ //Backend sent the attachment
+            return responseFromFetch.blob(); //Extract the binary data of the file that was sent and send it to the next then()
+        }
+    }).then(dataExtractedFromResponse => { //Take the extracted contents and do something with it
+        if (dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
+            window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
+        } else{ //dataExtractedFromResponse.url = null. File was sent instead
+            const newFileElement = document.createElement("iframe");
+            newFileElement.src = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            newFileElement.id = "attachment_2";
+            document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
+            //----------------------------------------
 
-    //--Style the new element--
-    //TODO: this
-    //-------------------------
-}
+            //--Style the new element--
+            //TODO: this
+            //-------------------------
+        }
+});
 
-const attachment3Response = await fetch("/p/"+userID+"/get_attachment/3", {method : "GET"}); //Wait for request to finish, then assign the response received to a variable
-if (attachment3Response.status === 404){ //Attachment does not exist response
-    //--Insert HTML element that says "No File Attached"--
-    const newElement = document.createElement("p");
-    newElement.textContent = "No File Attached";
-    newElement.id = "attachment_3";
-    document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
-    //----------------------------------------------------
+fetch("/p/"+userID+"/get_attachment/3", {method : "GET"}) //Call fetch send a request to the backend
+    .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
+        if (responseFromFetch.status === 400){ //Input was rejected by backend
+            return responseFromFetch.json(); //Extract the JSON data sent and send it to the next then()
+        } else if (responseFromFetch.status === 404){ //Attachment does not exist response
+            //--Insert HTML element that says "No File Attached"--
+            const newElement = document.createElement("p");
+            newElement.textContent = "No File Attached";
+            newElement.id = "attachment_3";
+            document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
+            //----------------------------------------------------
 
-    //--Style the new element--
-    //TODO: this
-    //-------------------------
-} else if (attachment3Response.status === 400){ //Input rejected by backend
-    const results = await attachment3Response.json();
-    window.location.replace(results.url); //Switch window to 400 error page
-} else{ //Backend sent the attachment
-    //--Make and insert a file into the HTML--
-    const fileBlob = await attachment3Response.blob(); //Get the binary data of the file that was sent 
-    const newFileElement = document.createElement("iframe");
-    newFileElement.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
-    newFileElement.id = "attachment_3";
-    document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
-    //----------------------------------------
+            //--Style the new element--
+            //TODO: this
+            //-------------------------
+        } else{ //Backend sent the attachment
+            return responseFromFetch.blob(); //Extract the binary data of the file that was sent and send it to the next then()
+        }
+    }).then(dataExtractedFromResponse => { //Take the extracted contents and do something with it
+        if (dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
+            window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
+        } else{ //dataExtractedFromResponse.url = null. File was sent instead
+            const newFileElement = document.createElement("iframe");
+            newFileElement.src = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            newFileElement.id = "attachment_3";
+            document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
+            //----------------------------------------
 
-    //--Style the new element--
-    //TODO: this
-    //-------------------------
-}
+            //--Style the new element--
+            //TODO: this
+            //-------------------------
+        }
+});
 
 //--Functions--
 document.getElementById("edit_profile_button").addEventListener("click", event =>{
