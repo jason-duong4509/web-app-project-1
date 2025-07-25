@@ -209,8 +209,20 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
         } else{ //Backend sent back a file to render
             const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
             const currentAttach = document.getElementById("attachment_1");
+
+            //--Remove the old attachment and add the new one--
+            currentAttach.remove(); //Remove old attachment
+            currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
+            currentAttach.id = "attachment_1";
+            document.body.appendChild(currentAttach);
             currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
-            document.getElementById("attachment_error_message").hidden = true;
+            //-------------------------------------------------
+
+            //--Style the new attachment--
+            //todo: this
+            //----------------------------
+            
+            document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
         }
     });
     //--------------------------
@@ -246,8 +258,20 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
         } else{ //Backend sent back a file to render
             const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
             const currentAttach = document.getElementById("attachment_2");
+
+            //--Remove the old attachment and add the new one--
+            currentAttach.remove(); //Remove old attachment
+            currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
+            currentAttach.id = "attachment_2";
+            document.body.appendChild(currentAttach);
             currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
-            document.getElementById("attachment_error_message").hidden = true;
+            //-------------------------------------------------
+
+            //--Style the new attachment--
+            //todo: this
+            //----------------------------
+            
+            document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
         }
     });
     //--------------------------
@@ -283,8 +307,20 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
         } else{ //Backend sent back a file to render
             const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
             const currentAttach = document.getElementById("attachment_3");
+
+            //--Remove the old attachment and add the new one--
+            currentAttach.remove(); //Remove old attachment
+            currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
+            currentAttach.id = "attachment_3";
+            document.body.appendChild(currentAttach);
             currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
-            document.getElementById("attachment_error_message").hidden = true;
+            //-------------------------------------------------
+
+            //--Style the new attachment--
+            //todo: this
+            //----------------------------
+            
+            document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
         }
     });
     //--------------------------
