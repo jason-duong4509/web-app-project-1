@@ -461,7 +461,7 @@ def changePFP(user_id):
     #--Update profile info for the user in the DB--
     new_pfp_file_name = "%i_profile_picture.png" % user_id
     db_cursor.execute("UPDATE profile_info SET ProfilePictureFileName = %s, ProfilePictureByteData = %s, ProfilePictureMIMEType = %s WHERE UserID = %s", (new_pfp_file_name, psycopg2.Binary(new_pfp_bytes), "image/png", user_id))
-    db_cursor.commit()
+    connection_to_db.commit()
     #----------------------------------------------
 
     db_cursor.close()
@@ -511,7 +511,7 @@ def changeAttachment(user_id, attachment_number):
         new_attach_file_name = "%i_attachment_3.pdf" % attachment_number
         db_cursor.execute("UPDATE profile_info SET Attachment3FileName = %s, Attachment3ByteData = %s, Attachment3MIMEType = %s WHERE UserID = %s", (new_attach_file_name, psycopg2.Binary(file_bytes), "application/pdf", user_id))
         
-    db_cursor.commit()
+    connection_to_db.commit()
     #----------------------------------------------
 
     db_cursor.close()
