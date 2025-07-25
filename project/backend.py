@@ -466,7 +466,7 @@ def changePFP(user_id):
     db_cursor.close()
     connection_to_db.close()
 
-    return send_file(path_or_file=io.BytesIO(new_pfp)), mimetype="image/png", as_attachment=False) # Send the new PFP back to the front end so it can display it to the user
+    return send_file(path_or_file=io.BytesIO(new_pfp), mimetype="image/png", as_attachment=False) # Send the new PFP back to the front end so it can display it to the user
 
 """
 Function that attempts to change one of the user's given attachments
