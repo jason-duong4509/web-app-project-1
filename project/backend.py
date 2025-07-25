@@ -169,7 +169,6 @@ def createAccount():
 
     for entry in user_data_table: # user_data_table = [(Username, UserID), ...]
         if entry[0] == username: # User is found
-            print("SUCCESSFULLY MADE ACCOUNT")
             login_user(load_user(entry[1])) # Log the user in using flask login 
     #-------------------------------------------------------------------
 
@@ -333,7 +332,7 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
         return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
     #-----------------------------------
     
-    return render_template("profile.html", user_id = user_id, username = username, fname = fname, lname = lname, bio = bio) # Return profile.html to the front end with all of the text placeholder values inserted into the file
+    return render_template("profile.html", user_id = user_id, current_user_id = current_user.id, username = username, fname = fname, lname = lname, bio = bio) # Return profile.html to the front end with all of the text placeholder values inserted into the file
 
 """
 Function that returns the profile picture of a given user ID.
@@ -353,7 +352,7 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
             raise Exception
         #----------------------------------
     except:
-        return jsonify({"url" : url_for("/get400Webpage")}), 400 # Returns error code 400 (invalid input)
+        return jsonify({"url" : url_for("get400Webpage")}), 400 # Returns error code 400 (invalid input)
     #---------------
 
     #--Connect to the database--
@@ -367,12 +366,11 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
     db_cursor.close()
     connection_to_db.close()
     for entry in results_table: # entry = (UserID, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType)
-        print (f"USER ID IN DB: {entry[0]} CURRENT USER ID: {user_id}")
         if entry[0] == user_id: # Found the desired user
             return send_file(path_or_file=io.BytesIO(bytes(entry[2])), mimetype=entry[3], as_attachment=False)
     #------------------------------------------------------
 
-    return jsonify({"url" : url_for("/get400Webpage")}), 400 # Reaches here if user_id is not found in the DB. Returns error code 400 (invalid input)
+    return jsonify({"url" : url_for("get400Webpage")}), 400 # Reaches here if user_id is not found in the DB. Returns error code 400 (invalid input)
 
 """
 Function that returns the desired attachment of a given user ID.
@@ -395,7 +393,7 @@ def getAttachment(user_id, attachment_number):
             raise Exception
         #----------------------------------
     except:
-        return jsonify({"url" : url_for("/get400Webpage")}), 400 # Returns error code 400 (invalid input)
+        return jsonify({"url" : url_for("get400Webpage")}), 400 # Returns error code 400 (invalid input)
     #---------------
 
     #--Connect to the DB--
@@ -430,7 +428,7 @@ def getAttachment(user_id, attachment_number):
                 return send_file(path_or_file=io.BytesIO(bytes(attachment_3_byte_data)), mimetype=attachment_3_mime_type, as_attachment=False)
     #-----------------------------------------------------------
 
-    return jsonify({"url" : url_for("/get400Webpage")}), 400 # Only reaches here if user_id did not match any in the DB. Returns error code 400 (invalid input)
+    return jsonify({"url" : url_for("get400Webpage")}), 400 # Only reaches here if user_id did not match any in the DB. Returns error code 400 (invalid input)
 
 """
 Function that attempts to change the user's profile picture
@@ -452,8 +450,7 @@ def changePFP(user_id):
 
         if user_is_editing_someones_profile or mime_type_is_incorrect:
             raise Exception
-    except Exception as e:
-        print (e)
+    except:
         return jsonify({"success" : False}), 400 # Return 400 error code
     #---------------
 

@@ -1,10 +1,18 @@
 //--Retreive temporary values passed through HTML--
 userID = document.getElementById("userID").textContent; //Retreive the user_id for later
+currentUserID = document.getElementById("currentUserID").textContent; //Retreive for later
 //-------------------------------------------------
 
 //--Remove the temporary HTML elements--
 document.getElementById("userID").remove();
+document.getElementById("currentUserID").remove();
 //--------------------------------------
+
+//--Check if the user is looking at their own profile--
+if (userID != currentUserID){ //User is looking at another user's profile
+    document.getElementById("edit_profile_button").hidden = true; //Prevents the user from editing this profile
+}
+//-----------------------------------------------------
 
 fetch("/p/"+userID+"/get_pfp", {method : "GET"}) //Call fetch send a request to the backend
     .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
