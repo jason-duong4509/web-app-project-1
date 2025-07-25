@@ -515,7 +515,7 @@ def changeAttachment(user_id, attachment_number):
     db_cursor.close()
     connection_to_db.close()
 
-    return send_file(path_or_file=io.BytesIO(new_attachment)), mimetype="application/pdf", as_attachment=False) # Send the new attachment back to the front end so it can display it to the user
+    return send_file(path_or_file=io.BytesIO(new_attachment), mimetype="application/pdf", as_attachment=False) # Send the new attachment back to the front end so it can display it to the user
 
 """
 """
