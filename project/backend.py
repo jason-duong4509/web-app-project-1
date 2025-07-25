@@ -440,10 +440,14 @@ def changePFP(user_id):
         user_id = int(user_id)
         user_is_editing_someones_profile = user_id != int(current_user.id) # UserID the user is editing is not their own
 
+        print(f"ARE YOU EDITING SOMEONE ELSES PROFILE {user_is_editing_someones_profile}")
+
         new_pfp = request.files["file"] # Gets the file sent from the user (contents are in binary)
         file_mime_type = magic.from_buffer(new_pfp.read(2048), mime=True) # Reads the first 2048 bytes (recommended amount) of the file and guess the MIME type
         mime_type_is_incorrect = not (file_mime_type == "image/png") # Checks if the file's MIME type is a PNG
         new_pfp.seek(0) # Move the pointer back to the beginning of the file
+
+        print(f"IS THE MIME TYPE INCORRECT {mime_type_is_incorrect}")
 
         #TODO: add file size check (too big = reject)
 
