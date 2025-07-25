@@ -443,7 +443,7 @@ def changePFP(user_id):
 
         new_pfp = request.files["file"] # Gets the file sent from the user (contents are in binary)
         file_mime_type = magic.from_buffer(new_pfp.read(2048), mime=True) # Reads the first 2048 bytes (recommended amount) of the file and guess the MIME type
-        mime_type_is_incorrect = !(file_mime_type === "image/png") # Checks if the file's MIME type is a PNG
+        mime_type_is_incorrect = !(file_mime_type == "image/png") # Checks if the file's MIME type is a PNG
         new_pfp.seek(0) # Move the pointer back to the beginning of the file
 
         #TODO: add file size check (too big = reject)
@@ -484,7 +484,7 @@ def changeAttachment(user_id, attachment_number):
 
         new_attachment = request.files["file"] # Gets the file sent from the user (contents are in binary)
         file_mime_type = magic.from_buffer(new_attachment.read(2048), mime=True) # Reads the first 2048 bytes (recommended amount) of the file and guess the MIME type
-        mime_type_is_incorrect = !(file_mime_type === "application/pdf") # Checks if the file's MIME type is a PNG
+        mime_type_is_incorrect = !(file_mime_type == "application/pdf") # Checks if the file's MIME type is a PNG
         new_attachment.seek(0) # Move the pointer back to the beginning of the file
 
         #TODO: add file size check (too big = reject)
