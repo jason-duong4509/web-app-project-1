@@ -218,7 +218,8 @@ def saveProfileChanges():
         if user_is_editing_wrong_profile:
             print(f"USER IS EDITING THE WRONG PROFILE {current_user_id} {request.form["user_id"]}")
             raise Exception
-    except:
+    except Exception as e:
+        print(e)
         return jsonify({"success" : False}), 400 #Backend rejects input
     #----------------
     
