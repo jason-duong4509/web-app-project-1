@@ -202,7 +202,7 @@ Function runs when the user attempts to save the changes made to their profile.
 def saveProfileChanges():
     #--Input checks--
     try:
-        user_is_editing_wrong_profile = int(current_user_id) != int(request.form["user_id"]) # Current user ID does not match the user ID of the profile being changed
+        user_is_editing_wrong_profile = int(current_user.id) != int(request.form["user_id"]) # Current user ID does not match the user ID of the profile being changed
 
         #--Get the user's submitted changes--
         new_username = request.form["username"]
