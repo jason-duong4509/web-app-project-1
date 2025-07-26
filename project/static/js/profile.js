@@ -393,25 +393,25 @@ document.getElementById("profile_info").addEventListener("submit", async event =
         //--Updates each profile attribute to reflect the changes the user made--
         document.getElementById("password").value = ""; //Wipes the password field (prevents being seen later)
 
-        if (document.getElementById("username").textContent.length == 0){//User did not change the attribute
+        if (document.getElementById("username").value.length == 0){//User did not change the attribute
             document.getElementById("username").value = document.getElementById("username").placeholder; //Restore the attribute 
         } else{ //User did change attribute
             document.getElementById("username").placeholder = document.getElementById("username").value; //Replace the attribute
         }
 
-        if (document.getElementById("fname").textContent.length == 0){//User did not change the attribute
+        if (document.getElementById("fname").value.length == 0){//User did not change the attribute
             document.getElementById("fname").value = document.getElementById("fname").placeholder; //Restore the attribute 
         } else{ //User did change attribute
             document.getElementById("fname").placeholder = document.getElementById("fname").value; //Replace the attribute
         }
 
-        if (document.getElementById("lname").textContent.length == 0){//User did not change the attribute
+        if (document.getElementById("lname").value.length == 0){//User did not change the attribute
             document.getElementById("lname").value = document.getElementById("lname").placeholder; //Restore the attribute 
         } else{ //User did change attribute
             document.getElementById("lname").placeholder = document.getElementById("lname").value; //Replace the attribute
         }
 
-        if (document.getElementById("bio").textContent.length == 0){//User did not change the attribute
+        if (document.getElementById("bio").value.length == 0){//User did not change the attribute
             document.getElementById("bio").value = document.getElementById("bio").placeholder; //Restore the attribute 
         } else{ //User did change attribute
             document.getElementById("bio").placeholder = document.getElementById("bio").value; //Replace the attribute
