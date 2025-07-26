@@ -200,16 +200,76 @@ Function runs when the user attempts to save the changes made to their profile.
 @webApp.route("/p/edit/save", methods = ["POST"])
 @login_required
 def saveProfileChanges():
-    user_id = current_user.id
-    new_fname = request.form["fname"]
-    new_lname = request.form["lname"]
-    new_bio = request.form["bio"]
-    #TODO: finish adding the rest ^
+    #--Input checks--
+    try:
+        user_is_editing_wrong_profile = int(current_user_id) != int(request.form["user_id"]) # Current user ID does not match the user ID of the profile being changed
 
-    #--Validate form inputs--
-    return jsonify({"success" : False})
-    #------------------------
+        #--Get the user's submitted changes--
+        new_username = request.form["username"]
+        new_fname = request.form["fname"]
+        new_lname = request.form["lname"]
+        new_bio = request.form["bio"]
+        new_pass = request.form["password"]
+        #------------------------------------
 
+        #TODO: do input checks on form elements
+        #TODO: ^ if length 0 is ok, if length is smaller than db requirements but not 0 not ok
+
+        if user_is_editing_wrong_profile:
+            raise Exception
+    except:
+        return jsonify({"success" : False}), 400 #Backend rejects input
+    #----------------
+    
+    connection_to_db = psycopg2.connect(DATABASE_URL)
+    db_cursor = connection_to_db.cursor()
+
+    #--Update username--
+    if len(new_username) > 0: # User typed something in (blank = no change)
+        db_cursor.execute("SELECT UserID, Username FROM user_info")
+        username_table = db_cursor.fetchall()
+
+        for entry in username_table: # username_table = [(UserID, Username), ...]
+            user_in_table = entry[1]
+            id_in_table = entry[0]
+
+            usernames_match = user_in_table.lower() == new_username.lower()
+            ids_dont_match = int(id_in_table) != int(current_user.id)
+
+            if usernames_match and ids_dont_match: # Username is already taken
+                return jsonify({"success" : False}) # Reject input
+
+        db_cursor.execute("UPDATE user_info SET Username = %s WHERE UserID = %s", (new_username, current_user.id)) # Change the username
+    #-------------------
+
+    #--Update password--
+    if len(new_pass) > 0: # User typed something in (blank = no change)
+        #TODO: HASH THE PASSWORD V
+        #new_pass = code to hash
+
+        db_cursor.execute("UPDATE user_info SET UserPassword = %s WHERE UserID = %s", (new_pass, current_user.id)) # Change the password
+    #-------------------
+
+    #--Update bio--
+    if len(new_bio) > 0: # User typed something in (blank = no change)
+        db_cursor.execute("UPDATE profile_info SET Bio = %s WHERE UserID = %s", (new_bio, current_user.id)) # Change the bio
+    #--------------
+
+    #--Update Fname--
+    if len(new_fname) > 0: # User typed something in (blank = no change)
+        db_cursor.execute("UPDATE user_info SET FirstName = %s WHERE UserID = %s", (new_fname, current_user.id)) # Change the fname
+    #----------------
+
+    #--Update Lname--
+    if len(new_lname) > 0: # User typed something in (blank = no change)
+        db_cursor.execute("UPDATE user_info SET LastName = %s WHERE UserID = %s", (new_lname, current_user.id)) # Change the fname
+    #----------------
+
+    connection_to_db.commit()
+    db_cursor.close()
+    connection_to_db.close()
+    return jsonify({"success" : True})
+    
 """
 Searches the database for a given username and returns either the profile URL of the matching username or False to indicate the failure to find a user.
 """

@@ -12,11 +12,11 @@
         <p id="currentUserID" hidden>{{current_user_id}}</p>
 
         <form id="profile_info">
-            <input type="text" name="username" id="username" value="{{username}}" disabled><br><br>
-            <input type="text" name="fname" id="fname" value="{{fname}}" disabled><br><br>
-            <input type="text" name="lname" id="lname" value="{{lname}}" disabled><br><br>
-            <input type="text" name="bio" id="bio" value="{{bio}}" disabled><br><br>
-            <!-- TODO: add the rest of the attachments -->
+            <input type="text" name="username" id="username" value="{{username}}" placeholder="{{username}}" disabled><br><br>
+            <input type="text" name="fname" id="fname" value="{{fname}}" placeholder="{{fname}}" disabled><br><br>
+            <input type="text" name="lname" id="lname" value="{{lname}}" placeholder="{{lname}}" disabled><br><br>
+            <input type="text" name="bio" id="bio" value="{{bio}}" placeholder="{{bio}}" disabled><br><br>
+            <input type="password" name="password" id="password" disabled hidden placeholder="********"><br><br>
             <input type="submit" id="save_changes" value="Save Changes" hidden disabled><br><br>
         </form>
 

@@ -336,9 +336,15 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
 
     //--Enables each profile attribute so that they can be edited--
     document.getElementById("username").disabled = false;
+    document.getElementById("username").value = "";
     document.getElementById("fname").disabled = false;
+    document.getElementById("fname").value = "";
     document.getElementById("lname").disabled = false;
+    document.getElementById("lname").value = "";
     document.getElementById("bio").disabled = false;
+    document.getElementById("bio").value = "";
+    document.getElementById("password").disabled = false;
+    document.getElementById("password").hidden = false;
     //-------------------------------------------------------------
 });
 
@@ -352,9 +358,11 @@ document.getElementById("profile_info").addEventListener("submit", async event =
     //------------------------
 
     //--Send the form--
+    const newProfileInfo = new FormData(event.target); //Convert the form's inputs into a FormData object
+    newProfileInfo.append("user_id", userID); //Add the userID of the profile to the form
     const request = await fetch("/p/edit/save", {
         method: "POST",
-        body: new FormData(event.target)
+        body: newProfileInfo
     });
     //-----------------
 
@@ -371,7 +379,6 @@ document.getElementById("profile_info").addEventListener("submit", async event =
         document.getElementById("save_changes").disabled = true; //Disables this button (prevents accidental clicks)
         document.getElementById("edit_profile_button").hidden = false; //Makes the edit profile button visible
         document.getElementById("edit_profile_button").disabled = false; //Enables the edit profile button 
-        document.getElementById("profile_picture").style.cursor = "default"; //Changes the pointer so it doesn't look clickable
         //-------------------------------
 
         //--Disables each profile attribute so that they cannot be edited--
@@ -379,7 +386,37 @@ document.getElementById("profile_info").addEventListener("submit", async event =
         document.getElementById("fname").disabled = true;
         document.getElementById("lname").disabled = true;
         document.getElementById("bio").disabled = true;
+        document.getElementById("passwprd").disabled = true;
+        document.getElementById("passwprd").hidden = true;
         //-----------------------------------------------------------------
+
+        //--Updates each profile attribute to reflect the changes the user made--
+        document.getElementById("passwprd").value = ""; //Wipes the password field (prevents being seen later)
+
+        if (document.getElementById("username").length == 0){//User did not change the attribute
+            document.getElementById("username").value = document.getElementById("username").placeholder; //Restore the attribute 
+        } else{ //User did change attribute
+            document.getElementById("username").placeholder = document.getElementById("username").value; //Replace the attribute
+        }
+
+        if (document.getElementById("fname").length == 0){//User did not change the attribute
+            document.getElementById("fname").value = document.getElementById("fname").placeholder; //Restore the attribute 
+        } else{ //User did change attribute
+            document.getElementById("fname").placeholder = document.getElementById("fname").value; //Replace the attribute
+        }
+
+        if (document.getElementById("lname").length == 0){//User did not change the attribute
+            document.getElementById("lname").value = document.getElementById("lname").placeholder; //Restore the attribute 
+        } else{ //User did change attribute
+            document.getElementById("lname").placeholder = document.getElementById("lname").value; //Replace the attribute
+        }
+
+        if (document.getElementById("bio").length == 0){//User did not change the attribute
+            document.getElementById("bio").value = document.getElementById("bio").placeholder; //Restore the attribute 
+        } else{ //User did change attribute
+            document.getElementById("bio").placeholder = document.getElementById("bio").value; //Replace the attribute
+        }
+        //-----------------------------------------------------------------------
 
         //--Delete input fields for the attachments and profile picture--
         document.getElementById("pfp_input_btn").remove();
