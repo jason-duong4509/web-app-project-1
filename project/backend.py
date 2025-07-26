@@ -216,6 +216,7 @@ def saveProfileChanges():
         #TODO: ^ if length 0 is ok, if length is smaller than db requirements but not 0 not ok
 
         if user_is_editing_wrong_profile:
+            print(f"USER IS EDITING THE WRONG PROFILE {current_user_id} {request.form["user_id"]}")
             raise Exception
     except:
         return jsonify({"success" : False}), 400 #Backend rejects input
@@ -412,7 +413,7 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
             raise Exception
         #----------------------------------
     except:
-        return jsonify({"url" : url_for("get400Webpage")}), 400 # Returns error code 400 (invalid input)
+        return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #---------------
 
     #--Connect to the database--
@@ -430,7 +431,7 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
             return send_file(path_or_file=io.BytesIO(bytes(entry[2])), mimetype=entry[3], as_attachment=False)
     #------------------------------------------------------
 
-    return jsonify({"url" : url_for("get400Webpage")}), 400 # Reaches here if user_id is not found in the DB. Returns error code 400 (invalid input)
+    return jsonify({"url" : url_for("get400WebPage")}), 400 # Reaches here if user_id is not found in the DB. Returns error code 400 (invalid input)
 
 """
 Function that returns the desired attachment of a given user ID.
@@ -453,7 +454,7 @@ def getAttachment(user_id, attachment_number):
             raise Exception
         #----------------------------------
     except:
-        return jsonify({"url" : url_for("get400Webpage")}), 400 # Returns error code 400 (invalid input)
+        return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #---------------
 
     #--Connect to the DB--
@@ -488,7 +489,7 @@ def getAttachment(user_id, attachment_number):
                 return send_file(path_or_file=io.BytesIO(bytes(attachment_3_byte_data)), mimetype=attachment_3_mime_type, as_attachment=False)
     #-----------------------------------------------------------
 
-    return jsonify({"url" : url_for("get400Webpage")}), 400 # Only reaches here if user_id did not match any in the DB. Returns error code 400 (invalid input)
+    return jsonify({"url" : url_for("get400WebPage")}), 400 # Only reaches here if user_id did not match any in the DB. Returns error code 400 (invalid input)
 
 """
 Function that attempts to change the user's profile picture
