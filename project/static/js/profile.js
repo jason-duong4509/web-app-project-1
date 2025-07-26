@@ -386,12 +386,12 @@ document.getElementById("profile_info").addEventListener("submit", async event =
         document.getElementById("fname").disabled = true;
         document.getElementById("lname").disabled = true;
         document.getElementById("bio").disabled = true;
-        document.getElementById("passwprd").disabled = true;
-        document.getElementById("passwprd").hidden = true;
+        document.getElementById("password").disabled = true;
+        document.getElementById("password").hidden = true;
         //-----------------------------------------------------------------
 
         //--Updates each profile attribute to reflect the changes the user made--
-        document.getElementById("passwprd").value = ""; //Wipes the password field (prevents being seen later)
+        document.getElementById("password").value = ""; //Wipes the password field (prevents being seen later)
 
         if (document.getElementById("username").length == 0){//User did not change the attribute
             document.getElementById("username").value = document.getElementById("username").placeholder; //Restore the attribute 
