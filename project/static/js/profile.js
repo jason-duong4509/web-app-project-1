@@ -345,6 +345,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     document.getElementById("bio").value = "";
     document.getElementById("password").disabled = false;
     document.getElementById("password").hidden = false;
+    document.getElementById("password_label").hidden = false;
     //-------------------------------------------------------------
 });
 
@@ -388,6 +389,7 @@ document.getElementById("profile_info").addEventListener("submit", async event =
         document.getElementById("bio").disabled = true;
         document.getElementById("password").disabled = true;
         document.getElementById("password").hidden = true;
+        document.getElementById("password_label").hidden = true;
         //-----------------------------------------------------------------
 
         //--Updates each profile attribute to reflect the changes the user made--
