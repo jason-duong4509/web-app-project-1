@@ -200,16 +200,76 @@ Function runs when the user attempts to save the changes made to their profile.
 @webApp.route("/p/edit/save", methods = ["POST"])
 @login_required
 def saveProfileChanges():
-    user_id = current_user.id
-    new_fname = request.form["fname"]
-    new_lname = request.form["lname"]
-    new_bio = request.form["bio"]
-    #TODO: finish adding the rest ^
+    #--Input checks--
+    try:
+        user_is_editing_wrong_profile = int(current_user.id) != int(request.form["user_id"]) # Current user ID does not match the user ID of the profile being changed
 
-    #--Validate form inputs--
-    return jsonify({"success" : False})
-    #------------------------
+        #--Get the user's submitted changes--
+        new_username = request.form["username"]
+        new_fname = request.form["fname"]
+        new_lname = request.form["lname"]
+        new_bio = request.form["bio"]
+        new_pass = request.form["password"]
+        #------------------------------------
 
+        #TODO: do input checks on form elements
+        #TODO: ^ if length 0 is ok, if length is smaller than db requirements but not 0 not ok
+
+        if user_is_editing_wrong_profile:
+            raise Exception
+    except:
+        return jsonify({"success" : False}), 400 #Backend rejects input
+    #----------------
+    
+    connection_to_db = psycopg2.connect(DATABASE_URL)
+    db_cursor = connection_to_db.cursor()
+
+    #--Update username--
+    if len(new_username) > 0: # User typed something in (blank = no change)
+        db_cursor.execute("SELECT UserID, Username FROM user_info")
+        username_table = db_cursor.fetchall()
+
+        for entry in username_table: # username_table = [(UserID, Username), ...]
+            user_in_table = entry[1]
+            id_in_table = entry[0]
+
+            usernames_match = user_in_table.lower() == new_username.lower()
+            ids_dont_match = int(id_in_table) != int(current_user.id)
+
+            if usernames_match and ids_dont_match: # Username is already taken
+                return jsonify({"success" : False}) # Reject input
+
+        db_cursor.execute("UPDATE user_info SET Username = %s WHERE UserID = %s", (new_username, current_user.id)) # Change the username
+    #-------------------
+
+    #--Update password--
+    if len(new_pass) > 0: # User typed something in (blank = no change)
+        #TODO: HASH THE PASSWORD V
+        #new_pass = code to hash
+
+        db_cursor.execute("UPDATE user_info SET UserPassword = %s WHERE UserID = %s", (new_pass, current_user.id)) # Change the password
+    #-------------------
+
+    #--Update bio--
+    if len(new_bio) > 0: # User typed something in (blank = no change)
+        db_cursor.execute("UPDATE profile_info SET Bio = %s WHERE UserID = %s", (new_bio, current_user.id)) # Change the bio
+    #--------------
+
+    #--Update Fname--
+    if len(new_fname) > 0: # User typed something in (blank = no change)
+        db_cursor.execute("UPDATE user_info SET FirstName = %s WHERE UserID = %s", (new_fname, current_user.id)) # Change the fname
+    #----------------
+
+    #--Update Lname--
+    if len(new_lname) > 0: # User typed something in (blank = no change)
+        db_cursor.execute("UPDATE user_info SET LastName = %s WHERE UserID = %s", (new_lname, current_user.id)) # Change the fname
+    #----------------
+
+    connection_to_db.commit()
+    db_cursor.close()
+    connection_to_db.close()
+    return jsonify({"success" : True})
+    
 """
 Searches the database for a given username and returns either the profile URL of the matching username or False to indicate the failure to find a user.
 """
@@ -332,7 +392,7 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
         return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
     #-----------------------------------
     
-    return render_template("profile.html", user_id = user_id, username = username, fname = fname, lname = lname, bio = bio) # Return profile.html to the front end with all of the text placeholder values inserted into the file
+    return render_template("profile.html", user_id = user_id, current_user_id = current_user.id, username = username, fname = fname, lname = lname, bio = bio) # Return profile.html to the front end with all of the text placeholder values inserted into the file
 
 """
 Function that returns the profile picture of a given user ID.
@@ -352,7 +412,7 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
             raise Exception
         #----------------------------------
     except:
-        return jsonify({"url" : url_for("/get400Webpage")}), 400 # Returns error code 400 (invalid input)
+        return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #---------------
 
     #--Connect to the database--
@@ -370,7 +430,7 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
             return send_file(path_or_file=io.BytesIO(bytes(entry[2])), mimetype=entry[3], as_attachment=False)
     #------------------------------------------------------
 
-    return jsonify({"url" : url_for("/get400Webpage")}), 400 # Reaches here if user_id is not found in the DB. Returns error code 400 (invalid input)
+    return jsonify({"url" : url_for("get400WebPage")}), 400 # Reaches here if user_id is not found in the DB. Returns error code 400 (invalid input)
 
 """
 Function that returns the desired attachment of a given user ID.
@@ -393,7 +453,7 @@ def getAttachment(user_id, attachment_number):
             raise Exception
         #----------------------------------
     except:
-        return jsonify({"url" : url_for("/get400Webpage")}), 400 # Returns error code 400 (invalid input)
+        return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #---------------
 
     #--Connect to the DB--
@@ -428,7 +488,7 @@ def getAttachment(user_id, attachment_number):
                 return send_file(path_or_file=io.BytesIO(bytes(attachment_3_byte_data)), mimetype=attachment_3_mime_type, as_attachment=False)
     #-----------------------------------------------------------
 
-    return jsonify({"url" : url_for("/get400Webpage")}), 400 # Only reaches here if user_id did not match any in the DB. Returns error code 400 (invalid input)
+    return jsonify({"url" : url_for("get400WebPage")}), 400 # Only reaches here if user_id did not match any in the DB. Returns error code 400 (invalid input)
 
 """
 Function that attempts to change the user's profile picture
@@ -436,15 +496,15 @@ Function that attempts to change the user's profile picture
 @webApp.route("/p/<user_id>/submit_pfp", methods = ["POST"])
 @login_required
 def changePFP(user_id):
-    #--Input check--
     try:
         user_id = int(user_id)
-        user_is_editing_someones_profile = user_id != current_user.id # UserID the user is editing is not their own
+        user_is_editing_someones_profile = user_id != int(current_user.id) # UserID the user is editing is not their own
 
-        new_pfp = request.files["file"] # Gets the file sent from the user (contents are in binary)
+        new_pfp = request.files["newPFP"] # Gets the file sent from the user (contents are in binary)
         file_mime_type = magic.from_buffer(new_pfp.read(2048), mime=True) # Reads the first 2048 bytes (recommended amount) of the file and guess the MIME type
-        mime_type_is_incorrect = !(file_mime_type === "image/png") # Checks if the file's MIME type is a PNG
+        mime_type_is_incorrect = not (file_mime_type == "image/png") # Checks if the file's MIME type is a PNG
         new_pfp.seek(0) # Move the pointer back to the beginning of the file
+        new_pfp_bytes = new_pfp.read() # Read the file (in bytes) and store it
 
         #TODO: add file size check (too big = reject)
 
@@ -459,14 +519,14 @@ def changePFP(user_id):
 
     #--Update profile info for the user in the DB--
     new_pfp_file_name = "%i_profile_picture.png" % user_id
-    db_cursor.execute("UPDATE profile_info SET ProfilePictureFileName = %s, ProfilePictureByteData = %s, ProfilePictureMIMEType = %s WHERE UserID = %i", (new_pfp_file_name, new_pfp, "image/png", user_id))
-    db_cursor.commit()
+    db_cursor.execute("UPDATE profile_info SET ProfilePictureFileName = %s, ProfilePictureByteData = %s, ProfilePictureMIMEType = %s WHERE UserID = %s", (new_pfp_file_name, psycopg2.Binary(new_pfp_bytes), "image/png", user_id))
+    connection_to_db.commit()
     #----------------------------------------------
 
     db_cursor.close()
     connection_to_db.close()
 
-    return send_file(path_or_file=io.BytesIO(new_pfp)), mimetype="image/png", as_attachment=False) # Send the new PFP back to the front end so it can display it to the user
+    return send_file(path_or_file=io.BytesIO(new_pfp_bytes), mimetype="image/png", as_attachment=False) # Send the new PFP back to the front end so it can display it to the user
 
 """
 Function that attempts to change one of the user's given attachments
@@ -477,15 +537,16 @@ def changeAttachment(user_id, attachment_number):
     #--Input check--
     try:
         user_id = int(user_id)
-        user_is_editing_someones_profile = user_id != current_user.id # UserID the user is editing is not their own
+        user_is_editing_someones_profile = user_id != int(current_user.id) # UserID the user is editing is not their own
 
         attachment_number = int(attachment_number)
         attachment_number_is_invalid = attachment_number > 3 or attachment_number < 1
 
-        new_attachment = request.files["file"] # Gets the file sent from the user (contents are in binary)
+        new_attachment = request.files["newAttach"] # Gets the file sent from the user (contents are in binary)
         file_mime_type = magic.from_buffer(new_attachment.read(2048), mime=True) # Reads the first 2048 bytes (recommended amount) of the file and guess the MIME type
-        mime_type_is_incorrect = !(file_mime_type === "application/pdf") # Checks if the file's MIME type is a PNG
+        mime_type_is_incorrect = not (file_mime_type == "application/pdf") # Checks if the file's MIME type is a PNG
         new_attachment.seek(0) # Move the pointer back to the beginning of the file
+        file_bytes = new_attachment.read() # Read the file (in bytes) and store it
 
         #TODO: add file size check (too big = reject)
 
@@ -501,21 +562,21 @@ def changeAttachment(user_id, attachment_number):
     #--Update profile info for the user in the DB--
     if attachment_number == 1: # Change attachment 1
         new_attach_file_name = "%i_attachment_1.pdf" % attachment_number
-        db_cursor.execute("UPDATE profile_info SET Attachment1FileName = %s, Attachment1ByteData = %s, Attachment1MIMEType = %s WHERE UserID = %i", (new_attach_file_name, new_attachment, "application/pdf", user_id))
+        db_cursor.execute("UPDATE profile_info SET Attachment1FileName = %s, Attachment1ByteData = %s, Attachment1MIMEType = %s WHERE UserID = %s", (new_attach_file_name, psycopg2.Binary(file_bytes), "application/pdf", user_id))
     elif attachment_number == 2: # Change attachment 2
         new_attach_file_name = "%i_attachment_2.pdf" % attachment_number
-        db_cursor.execute("UPDATE profile_info SET Attachment2FileName = %s, Attachment2ByteData = %s, Attachment2MIMEType = %s WHERE UserID = %i", (new_attach_file_name, new_attachment, "application/pdf", user_id))
+        db_cursor.execute("UPDATE profile_info SET Attachment2FileName = %s, Attachment2ByteData = %s, Attachment2MIMEType = %s WHERE UserID = %s", (new_attach_file_name, psycopg2.Binary(file_bytes), "application/pdf", user_id))
     elif attachment_number == 3: # Change attachment 3
         new_attach_file_name = "%i_attachment_3.pdf" % attachment_number
-        db_cursor.execute("UPDATE profile_info SET Attachment3FileName = %s, Attachment3ByteData = %s, Attachment3MIMEType = %s WHERE UserID = %i", (new_attach_file_name, new_attachment, "application/pdf", user_id))
+        db_cursor.execute("UPDATE profile_info SET Attachment3FileName = %s, Attachment3ByteData = %s, Attachment3MIMEType = %s WHERE UserID = %s", (new_attach_file_name, psycopg2.Binary(file_bytes), "application/pdf", user_id))
         
-    db_cursor.commit()
+    connection_to_db.commit()
     #----------------------------------------------
 
     db_cursor.close()
     connection_to_db.close()
 
-    return send_file(path_or_file=io.BytesIO(new_attachment)), mimetype="application/pdf", as_attachment=False) # Send the new attachment back to the front end so it can display it to the user
+    return send_file(path_or_file=io.BytesIO(file_bytes), mimetype="application/pdf", as_attachment=False) # Send the new attachment back to the front end so it can display it to the user
 
 """
 """
