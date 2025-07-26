@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <!-- Prevents the browser from caching this webpage when it leaves this webpage -->
-        <meta http-equiv="Cache-Control" content="no-store">
         <title>Name Of Website</title>
         <!-- Links to the CSS file -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
@@ -20,6 +18,11 @@
 
         <p id="incorrect_login_details_text" style="color:red;" hidden>Incorrect login details. Please check your login information and try again.</p>
         <p id="error_text" style="color:red;" hidden>An error occurred. Please try again.</p>
+
+        <!-- Back button that goes to the create account page -->
+        <form action="/" method="GET">
+            <input type="submit" value="Sign Up">
+        </form>
 
         <!-- Link to the JS file -->
         <script src="{{ url_for('static', filename='js/login.js') }}"></script>

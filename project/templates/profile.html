@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <!-- Prevents the browser from caching this webpage when it leaves this webpage -->
-        <meta http-equiv="Cache-Control" content="no-store">
         <title>Name Of Website</title>
         <!-- Links to the CSS file -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
@@ -12,6 +10,11 @@
 
         <p id="userID" hidden>{{user_id}}</p>
         <p id="currentUserID" hidden>{{current_user_id}}</p>
+
+        <!-- Back button that goes to the homepage -->
+        <form action="/home" method="GET">
+            <input type="submit" value="Back">
+        </form>
 
         <form id="profile_info">
             <label for="username">Username:</label>
