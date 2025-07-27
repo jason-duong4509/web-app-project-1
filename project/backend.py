@@ -94,6 +94,17 @@ def load_user(user_id):
     #---------------------------------
 #-------------------------
 
+#--"Teardown" method--
+"""
+Runs after each function request call, right before the backend sends a response to the front end.
+Modifies the response to disable caching (flask by default allows caching).
+"""
+@webApp.after_request
+def afterEachRequest(responseObject): # responseObject is what the backend sends to the frontend
+    responseObject.cache_control.no_store = True # No store = True -> Prevents the browser from storing anything about the response
+    return responseObject # Return the response object after it's been modified
+#---------------------
+
 #--Connecting URLs to their corresponding function--
 """
 Function that is called when the user accesses an invalid (does not exist) link.
