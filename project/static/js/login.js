@@ -21,9 +21,7 @@ document.getElementById("login_form").addEventListener("submit", async event =>{
             document.getElementById("incorrect_login_details_text").hidden = false;
             document.getElementById("error_text").hidden = true;
         } else if (results.success == true){ //The user's login info was correct
-            //window.location.replace(results.url); //Change the URL to the one provided
-            //window.location.href = results.url;
-            window.location.assign(results.url);
+            window.location.replace(results.url); //Change the URL to the one provided
         } else{ //An error occurred during login and the user is not logged in
             document.getElementById("error_text").hidden = false;
             document.getElementById("incorrect_login_details_text").hidden = true;

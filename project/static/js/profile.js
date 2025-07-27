@@ -433,6 +433,12 @@ document.getElementById("profile_info").addEventListener("submit", async event =
         document.getElementById("attachment_2").style.cursor = "default";
         document.getElementById("attachment_3").style.cursor = "default";
         //--------------------------------------
+
+        //--Hide the error messages--
+        document.getElementById("error_message").hidden = true;
+        document.getElementById("pfp_error_message").hidden = true;
+        document.getElementById("attachment_error_message").hidden = true;
+        //---------------------------
     }
     //-------------------------
 });
