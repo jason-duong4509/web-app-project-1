@@ -412,8 +412,6 @@ def onLoginSubmit():
         Username = entry[1]
         UserPassword = entry[2]
 
-        print(f"USER PASSWORD {UserPassword} LENGTH {len(UserPassword)}")
-
         username_matches = username.lower() == Username.lower() # Check if usernames match, not case sensitive
         password_matches = bcrypt.checkpw(bytes(password, "utf-8"), bytes(UserPassword, "utf-8")) # Hash password and check with the one in the DB
 
@@ -496,7 +494,7 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
         #----------------------------
 
         #--Are the inputs valid integers?--
-        user_id_is_invalid = user_id <= 1
+        user_id_is_invalid = user_id < 1
         if user_id_is_invalid:
             raise Exception
         #----------------------------------
@@ -537,7 +535,7 @@ def getAttachment(user_id, attachment_number):
 
         #--Are the inputs valid integers?--
         attachment_number_is_invalid = attachment_number < 1 or attachment_number > 3
-        user_id_is_invalid = user_id <= 1
+        user_id_is_invalid = user_id < 1
         if attachment_number_is_invalid or user_id_is_invalid:
             raise Exception
         #----------------------------------
