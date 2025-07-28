@@ -1,6 +1,6 @@
 userID = document.getElementById("user_id").value; //Get the stored user_id
-//document.getElementById("user_id").remove(); //Delete the element after grabbing the user_id
-
+document.getElementById("user_id").remove(); //Delete the element after grabbing the user_id
+console.log(userID)
 document.getElementById("user_details_form").addEventListener("submit", async event => {
     event.preventDefault();
 
