@@ -412,6 +412,8 @@ def onLoginSubmit():
         Username = entry[1]
         UserPassword = entry[2]
 
+        print(f"USER PASSWORD {UserPassword} LENGTH {len(UserPassword)}")
+
         username_matches = username.lower() == Username.lower() # Check if usernames match, not case sensitive
         password_matches = bcrypt.checkpw(bytes(password, "utf-8"), bytes(UserPassword, "utf-8")) # Hash password and check with the one in the DB
 
