@@ -166,7 +166,7 @@ def createAccount():
     connection_to_db = psycopg2.connect(DATABASE_URL)
     db_cursor = connection_to_db.cursor()
 
-    password = bcrypt.hashpw(bytes(password), bcrypt.gensalt()) # Hash the byte version of the user's password using a generic salt provided by bcrypt
+    password = bcrypt.hashpw(bytes(password, "utf-8"), bcrypt.gensalt()) # Hash the byte version of the user's password using a generic salt provided by bcrypt
     
     db_cursor.execute("SELECT PFP_File_Name, PFP_Byte_Data, PFP_MIME_Type FROM default_data")
     default_pfp = db_cursor.fetchall() # default_pfp = [(PFP_File_Name, PFP_Byte_Data, PFP_MIME_Type)]
@@ -227,8 +227,6 @@ def deleteAccount(user_id):
         return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #----------------
 
-    #TODO: hash the user's password
-
     #--Check if the user entered the correct account details--
     connection_to_db = psycopg2.connect(DATABASE_URL)
     db_cursor = connection_to_db.cursor()
@@ -244,7 +242,7 @@ def deleteAccount(user_id):
         #--Checks--
         found_user = UserID == int(user_id)
         username_matches = Username.lower() == entered_username.lower()
-        password_matches = bcrypt.checkpw(entered_password, UserPass) # Use bcrypt to hash the entered password and compare it to the one in the database
+        password_matches = bcrypt.checkpw(bytes(entered_password, "utf-8"), UserPass) # Use bcrypt to hash the entered password and compare it to the one in the database
         #----------
 
         if found_user and username_matches and password_matches: # User entered the correct information
@@ -327,7 +325,7 @@ def saveProfileChanges():
 
     #--Update password--
     if len(new_pass) > 0: # User typed something in (blank = no change)
-        new_pass = bcrypt.hashpw(bytes(new_pass), bcrypt.gensalt()) # Hash password
+        new_pass = bcrypt.hashpw(bytes(new_pass, "utf-8"), bcrypt.gensalt()) # Hash password
 
         db_cursor.execute("UPDATE user_info SET UserPassword = %s WHERE UserID = %s", (new_pass, current_user.id)) # Change the password
     #-------------------
@@ -415,7 +413,7 @@ def onLoginSubmit():
         UserPassword = entry[2]
 
         username_matches = username.lower() == Username.lower() # Check if usernames match, not case sensitive
-        password_matches = bcrypt.checkpw(password, UserPass) # Hash password and check with the one in the DB
+        password_matches = bcrypt.checkpw(bytes(password, "utf-8"), UserPass) # Hash password and check with the one in the DB
 
         if username_matches and password_matches: # Found an entry that matches the user's input
             login_user(load_user(UserID)) # Log the user in using flask login 
