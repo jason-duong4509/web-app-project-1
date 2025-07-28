@@ -251,8 +251,8 @@ def deleteAccount(user_id):
         #----------
 
         if found_user and username_matches and password_matches: # User entered the correct information
-            db_cursor.execute("DELETE FROM user_info WHERE UserID = %s", (user_id)) # Delete the user from this table
-            db_cursor.execute("DELETE FROM profile_info WHERE UserID = %s", (user_id)) # Delete the user from this table
+            db_cursor.execute("DELETE FROM user_info WHERE UserID = %s", (user_id,)) # Delete the user from this table
+            db_cursor.execute("DELETE FROM profile_info WHERE UserID = %s", (user_id,)) # Delete the user from this table
             db_cursor.commit()
             db_cursor.close()
             connection_to_db.close()
