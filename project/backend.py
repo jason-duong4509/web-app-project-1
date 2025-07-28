@@ -209,11 +209,19 @@ def deleteAccount(user_id):
         entered_username = request.form["username"]
         entered_password = request.form["password"]
 
+        print("FORMS ARE OKAY")
+
+        print(f"USER ID IS {user_id}")
+
         #--Is it an integer?--
         user_id = int(user_id)
         #---------------------
 
+        print("USER ID OK")
+
         user_is_deleting_someone_else = int(current_user.id) != user_id
+
+        print(f"is user deleting someone: {user_is_deleting_someone_else}")
 
         if user_is_deleting_someone_else:
             raise Exception
