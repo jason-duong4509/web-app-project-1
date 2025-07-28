@@ -193,7 +193,7 @@ def createAccount():
 Function that runs when the user attempts to delete their account.
 Takes the user to a separate page where they must validate their account before their account is deleted.
 """
-@webApp.route("/p/delete_account", methods = ["GET"])
+@webApp.route("/p/delete_account/<user_id>", methods = ["GET"])
 @login_required
 def onDeleteAccount(user_id):
     return render_template("delete_account.html", user_id=user_id)
