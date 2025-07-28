@@ -32,8 +32,8 @@
 
         <button type="button" id="edit_profile_button">Edit</button>
 
-        <form action="{{url_for('onDeleteAccount', user_id='user_id')}}">
-            <button type="submit">Delete Account</button>
+        <form action="{{url_for('onDeleteAccount', user_id=user_id)}}">
+            <button id="delete_button" type="submit" disabled hidden>Delete Account</button>
         </form>
 
         <p id="error_message" style="color:red;" hidden>Unable to save changes. Please check your information and try again.</p>
