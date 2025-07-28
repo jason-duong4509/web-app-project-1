@@ -413,7 +413,7 @@ def onLoginSubmit():
         UserPassword = entry[2]
 
         username_matches = username.lower() == Username.lower() # Check if usernames match, not case sensitive
-        password_matches = bcrypt.checkpw(bytes(password, "utf-8"), UserPass) # Hash password and check with the one in the DB
+        password_matches = bcrypt.checkpw(bytes(password, "utf-8"), UserPassword) # Hash password and check with the one in the DB
 
         if username_matches and password_matches: # Found an entry that matches the user's input
             login_user(load_user(UserID)) # Log the user in using flask login 
