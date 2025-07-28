@@ -217,7 +217,8 @@ def deleteAccount(user_id):
 
         if user_is_deleting_someone_else:
             raise Exception
-    except:
+    except Exception as e:
+        print (e)
         return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #----------------
 
