@@ -52,6 +52,11 @@ Import the User class so that User objects can be made.
 from User import User
 
 """
+Import bcrypt to hash passwords.
+"""
+import bcrypt
+
+"""
 Gets the database URL from Render's environmental variable named DATABASE_URL (configured in the Render website).
 Also gets the secret key used for Flask's sessions
 """
@@ -93,6 +98,17 @@ def load_user(user_id):
     return None # Reaches here if user_id is not valid (not present in the database)
     #---------------------------------
 #-------------------------
+
+#--"Teardown" method--
+"""
+Runs after each function request call, right before the backend sends a response to the front end.
+Modifies the response to disable caching (flask by default allows caching).
+"""
+@webApp.after_request
+def afterEachRequest(responseObject): # responseObject is what the backend sends to the frontend
+    responseObject.cache_control.no_store = True # No store = True -> Prevents the browser from storing anything about the response
+    return responseObject # Return the response object after it's been modified
+#---------------------
 
 #--Connecting URLs to their corresponding function--
 """
@@ -149,7 +165,8 @@ def createAccount():
     #--Create an account--
     connection_to_db = psycopg2.connect(DATABASE_URL)
     db_cursor = connection_to_db.cursor()
-    # TODO: hash password before adding user data to database
+
+    password = (bcrypt.hashpw(bytes(password, "utf-8"), bcrypt.gensalt())).decode("utf-8") # Hash the byte version of the user's password using a generic salt provided by bcrypt. Decode the result to store it as a string in the DB
     
     db_cursor.execute("SELECT PFP_File_Name, PFP_Byte_Data, PFP_MIME_Type FROM default_data")
     default_pfp = db_cursor.fetchall() # default_pfp = [(PFP_File_Name, PFP_Byte_Data, PFP_MIME_Type)]
@@ -157,7 +174,7 @@ def createAccount():
     default_pfp_byte_data = bytes(default_pfp[0][1]) # Must convert into bytes since psycopg2 retrieves the byte data as an object for speed (convert object into byte data)
     default_pfp_mime_type = default_pfp[0][2]
 
-    db_cursor.execute(f"INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES ('{fname}', '{lname}', '{username}', '{password}')") # Insert user data
+    db_cursor.execute("INSERT INTO user_info (FirstName, LastName, Username, UserPassword) VALUES (%s, %s, %s, %s)", (fname, lname, username, password)) # Insert user data
     db_cursor.execute("INSERT INTO profile_info (Bio, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType, Attachment1FileName, Attachment1ByteData, Attachment1MIMEType, Attachment2FileName, Attachment2ByteData, Attachment2MIMEType, Attachment3FileName, Attachment3ByteData, Attachment3MIMEType) VALUES ('Hi! I''m a new user.', %s, %s, %s, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL)", (default_pfp_name, default_pfp_byte_data, default_pfp_mime_type)) # Insert user data
     connection_to_db.commit() # Saves the changes
 
@@ -177,6 +194,70 @@ def createAccount():
         "url" : url_for("displayHomepage") # Gives the front end the URL it needs to change to
         })
     #---------------------
+
+"""
+Function that runs when the user attempts to delete their account.
+Takes the user to a separate page where they must validate their account before their account is deleted.
+"""
+@webApp.route("/p/delete_account/<user_id>", methods = ["GET"])
+@login_required
+def onDeleteAccount(user_id):
+    return render_template("delete_account.html", user_id=user_id)
+
+"""
+Function that validates the user's confirmation before deleting their account
+"""
+@webApp.route("/p/<user_id>/confirm_delete_account", methods = ["POST"])
+@login_required
+def deleteAccount(user_id):
+    #--Input checks--
+    try:
+        entered_username = request.form["username"]
+        entered_password = request.form["password"]
+
+        #--Is it an integer?--
+        user_id = int(user_id)
+        #---------------------
+
+        user_is_deleting_someone_else = int(current_user.id) != user_id
+
+        if user_is_deleting_someone_else:
+            raise Exception
+    except:
+        return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
+    #----------------
+
+    #--Check if the user entered the correct account details--
+    connection_to_db = psycopg2.connect(DATABASE_URL)
+    db_cursor = connection_to_db.cursor()
+
+    db_cursor.execute("SELECT * FROM user_info")
+    table_of_users = db_cursor.fetchall()
+
+    for entry in table_of_users: # table_of_users = [(UserID, FirstName, LastName, Username, UserPassword,), ...]
+        UserID = entry[0]
+        Username = entry[3]
+        UserPass = entry[4]
+
+        #--Checks--
+        found_user = UserID == int(user_id)
+        username_matches = Username.lower() == entered_username.lower()
+        password_matches = bcrypt.checkpw(bytes(entered_password, "utf-8"), bytes(UserPass, "utf-8")) # Use bcrypt to hash the entered password and compare it to the one in the database
+        #----------
+
+        if found_user and username_matches and password_matches: # User entered the correct information
+            db_cursor.execute("DELETE FROM user_info WHERE UserID = %s", (user_id,)) # Delete the user from this table
+            db_cursor.execute("DELETE FROM profile_info WHERE UserID = %s", (user_id,)) # Delete the user from this table
+            connection_to_db.commit()
+            db_cursor.close()
+            connection_to_db.close()
+            logout_user() # Logs the user out
+            return jsonify({"success" : True, "url" : url_for("signup")}) # Brings the user back to the sign in page
+    
+    db_cursor.close()
+    connection_to_db.close()
+    return jsonify({"success" : False})
+    #---------------------------------------------------------
 
 """
 The default webpage after logging in
@@ -244,8 +325,7 @@ def saveProfileChanges():
 
     #--Update password--
     if len(new_pass) > 0: # User typed something in (blank = no change)
-        #TODO: HASH THE PASSWORD V
-        #new_pass = code to hash
+        new_pass = (bcrypt.hashpw(bytes(new_pass, "utf-8"), bcrypt.gensalt())).decode("utf-8") # Hash password. Decode the result into a string to store in the DB properly
 
         db_cursor.execute("UPDATE user_info SET UserPassword = %s WHERE UserID = %s", (new_pass, current_user.id)) # Change the password
     #-------------------
@@ -328,8 +408,15 @@ def onLoginSubmit():
     connection_to_db.close()
 
     for entry in user_pass_table: # user_pass_table = [(UserID, Username, UserPassword), ...]
-        if username.lower() == entry[1].lower() and password == entry[2]: # Found an entry that matches the user's input
-            login_user(load_user(entry[0])) # Log the user in using flask login 
+        UserID = entry[0]
+        Username = entry[1]
+        UserPassword = entry[2]
+
+        username_matches = username.lower() == Username.lower() # Check if usernames match, not case sensitive
+        password_matches = bcrypt.checkpw(bytes(password, "utf-8"), bytes(UserPassword, "utf-8")) # Hash password and check with the one in the DB
+
+        if username_matches and password_matches: # Found an entry that matches the user's input
+            login_user(load_user(UserID)) # Log the user in using flask login 
             return jsonify({"success" : True, "url" : url_for("displayHomepage")}) # Bring the user to the homepage after successful log in
     #----------------------------------------------------------
 
@@ -407,7 +494,7 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
         #----------------------------
 
         #--Are the inputs valid integers?--
-        user_id_is_invalid = user_id <= 1
+        user_id_is_invalid = user_id < 1
         if user_id_is_invalid:
             raise Exception
         #----------------------------------
@@ -448,7 +535,7 @@ def getAttachment(user_id, attachment_number):
 
         #--Are the inputs valid integers?--
         attachment_number_is_invalid = attachment_number < 1 or attachment_number > 3
-        user_id_is_invalid = user_id <= 1
+        user_id_is_invalid = user_id < 1
         if attachment_number_is_invalid or user_id_is_invalid:
             raise Exception
         #----------------------------------

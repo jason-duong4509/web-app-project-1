@@ -16,10 +16,9 @@ CREATE TABLE user_info(
     CHECK (char_length(LastName) > 0), --Ensures that a name is entered
 
     Username VARCHAR(255) UNIQUE NOT NULL, --Username must be unique and not NULL
-    CHECK (char_length(Username) >= 5 and char_length(Username) <= 10), --Ensures that usernames are of a certain length
+    CHECK (char_length(Username) >= 5 and char_length(Username) <= 20), --Ensures that usernames are of a certain length
 
-    UserPassword VARCHAR(255) NOT NULL, --TODO: add password hashing? constraints on pass to prevent injection attacks? maybe not since you only need to check if two passwords match and nothing more 
-    CHECK (char_length(UserPassword) >= 5) -- Ensures that passwords are of a certain length
+    UserPassword VARCHAR(255) NOT NULL --TODO: add password hashing? constraints on pass to prevent injection attacks? maybe not since you only need to check if two passwords match and nothing more 
 );
 -------------------------------------------------
 
