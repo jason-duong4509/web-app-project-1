@@ -32,6 +32,10 @@
 
         <button type="button" id="edit_profile_button">Edit</button>
 
+        <form action="{{url_for(onDeleteAccount)}}">
+            <button type="submit">Delete Account</button>
+        </form>
+
         <p id="error_message" style="color:red;" hidden>Unable to save changes. Please check your information and try again.</p>
         
         <p id="pfp_error_message" style="color:red;" hidden>Only PNG files are allowed.</p>

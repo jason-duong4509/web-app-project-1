@@ -190,6 +190,72 @@ def createAccount():
     #---------------------
 
 """
+Function that runs when the user attempts to delete their account.
+Takes the user to a separate page where they must validate their account before their account is deleted.
+"""
+@webApp.route("/p/delete_account", methods = ["GET"])
+@login_required
+def onDeleteAccount(user_id):
+    return render_template("delete_account.html", user_id=user_id)
+
+"""
+Function that validates the user's confirmation before deleting their account
+"""
+@webApp.route("/p/<user_id>/confirm_delete_account", methods = ["POST"])
+@login_required
+def deleteAccount(user_id):
+    #--Input checks--
+    try:
+        entered_username = request.form["username"]
+        entered_password = request.form["password"]
+
+        #--Is it an integer?--
+        user_id = int(user_id)
+        #---------------------
+
+        user_is_deleting_someone_else = int(current_user.id) != user_id
+
+        if user_is_deleting_someone_else:
+            raise Exception
+    except:
+        return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
+    #----------------
+
+    #TODO: hash the user's password
+
+    #--Check if the user entered the correct account details--
+    connection_to_db = psycopg2.connect(DATABASE_URL)
+    db_cursor = connection_to_db.cursor()
+
+    db_cursor.execute("SELECT * FROM user_info")
+    table_of_users = db_cursor.fetchall()
+
+    for entry in table_of_users: # table_of_users = [(UserID, FirstName, LastName, Username, UserPassword,), ...]
+        UserID = entry[0]
+        Username = entry[3]
+        UserPass = entry[4]
+
+        #--Checks--
+        found_user = UserID == int(user_id)
+        username_matches = Username.lower() == entered_username.lower()
+        password_matches = UserPass.lower() == entered_password.lower()
+        #----------
+
+        if found_user and username_matches and password_matches: # User entered the correct information
+            db_cursor.execute("DELETE FROM user_info WHERE UserID = %s", (user_id)) # Delete the user from this table
+            db_cursor.execute("DELETE FROM profile_info WHERE UserID = %s", (user_id)) # Delete the user from this table
+            db_cursor.commit()
+            db_cursor.close()
+            connection_to_db.close()
+            logout_user() # Logs the user out
+            return jsonify({"success" : True, "url" : url_for("signup")}) # Brings the user back to the sign in page
+    
+    db_cursor.close()
+    connection_to_db.close()
+    return jsonify({"success" : False})
+    #---------------------------------------------------------
+
+"""
 The default webpage after logging in
 """
 @webApp.route("/home", methods = ["GET"])

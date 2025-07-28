@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Delete Account</title>
+        <!-- Links to the CSS file -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/delete_account.css') }}">
+    </head>
+    
+    <body>
+        <p id="user_id" value="{{user_id}}"></p>
+
+        <h1>Delete Your Account</h1>
+        <p>Type in your credentials to delete your account. This action cannot be undone!</p>
+        
+        <p id="error_message" style="color:red" hidden>Account credentials are invalid.</p>
+
+        <form id="user_details_form">
+            <input name="username" placeholder="Username">
+            <input name="password" placeholder="Password">
+            <button type="submit">Delete Account</button>
+        </form>
+
+        <form action="/p/{{user_id}}" method="GET">
+            <button type="submit">Cancel</button>
+        </form>
+
+        <!-- Link to JS file -->
+        <script src="{{url_for('static', filename='js/delete_account.js')}}"></script>
+    </body>
+</html>

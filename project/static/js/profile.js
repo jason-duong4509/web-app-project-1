@@ -347,6 +347,11 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     document.getElementById("password").hidden = false;
     document.getElementById("password_label").hidden = false;
     //-------------------------------------------------------------
+
+    //--Enable delete account button--
+    document.getElementById("delete_button").disabled = false;
+    document.getElementById("delete_button").hidden = false;
+    //--------------------------------
 });
 
 document.getElementById("profile_info").addEventListener("submit", async event =>{//Async to allow for await (wait for a result)
@@ -439,6 +444,11 @@ document.getElementById("profile_info").addEventListener("submit", async event =
         document.getElementById("pfp_error_message").hidden = true;
         document.getElementById("attachment_error_message").hidden = true;
         //---------------------------
+
+        //--Disable delete account button--
+        document.getElementById("delete_button").disabled = true;
+        document.getElementById("delete_button").hidden = true;
+        //---------------------------------
     }
     //-------------------------
 });
