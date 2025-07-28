@@ -52,6 +52,11 @@ Import the User class so that User objects can be made.
 from User import User
 
 """
+Import bcrypt to hash passwords.
+"""
+import bcrypt
+
+"""
 Gets the database URL from Render's environmental variable named DATABASE_URL (configured in the Render website).
 Also gets the secret key used for Flask's sessions
 """
@@ -160,7 +165,8 @@ def createAccount():
     #--Create an account--
     connection_to_db = psycopg2.connect(DATABASE_URL)
     db_cursor = connection_to_db.cursor()
-    # TODO: hash password before adding user data to database
+
+    password = bcrypt.hashpw(bytes(password), bcrypt.gensalt()) # Hash the byte version of the user's password using a generic salt provided by bcrypt
     
     db_cursor.execute("SELECT PFP_File_Name, PFP_Byte_Data, PFP_MIME_Type FROM default_data")
     default_pfp = db_cursor.fetchall() # default_pfp = [(PFP_File_Name, PFP_Byte_Data, PFP_MIME_Type)]
@@ -209,24 +215,15 @@ def deleteAccount(user_id):
         entered_username = request.form["username"]
         entered_password = request.form["password"]
 
-        print("FORMS ARE OKAY")
-
-        print(f"USER ID IS {user_id}")
-
         #--Is it an integer?--
         user_id = int(user_id)
         #---------------------
 
-        print("USER ID OK")
-
         user_is_deleting_someone_else = int(current_user.id) != user_id
-
-        print(f"is user deleting someone: {user_is_deleting_someone_else}")
 
         if user_is_deleting_someone_else:
             raise Exception
-    except Exception as e:
-        print (e)
+    except:
         return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #----------------
 
@@ -247,7 +244,7 @@ def deleteAccount(user_id):
         #--Checks--
         found_user = UserID == int(user_id)
         username_matches = Username.lower() == entered_username.lower()
-        password_matches = UserPass.lower() == entered_password.lower()
+        password_matches = bcrypt.checkpw(entered_password, UserPass) # Use bcrypt to hash the entered password and compare it to the one in the database
         #----------
 
         if found_user and username_matches and password_matches: # User entered the correct information
@@ -330,8 +327,7 @@ def saveProfileChanges():
 
     #--Update password--
     if len(new_pass) > 0: # User typed something in (blank = no change)
-        #TODO: HASH THE PASSWORD V
-        #new_pass = code to hash
+        new_pass = bcrypt.hashpw(bytes(new_pass), bcrypt.gensalt()) # Hash password
 
         db_cursor.execute("UPDATE user_info SET UserPassword = %s WHERE UserID = %s", (new_pass, current_user.id)) # Change the password
     #-------------------
@@ -414,8 +410,15 @@ def onLoginSubmit():
     connection_to_db.close()
 
     for entry in user_pass_table: # user_pass_table = [(UserID, Username, UserPassword), ...]
-        if username.lower() == entry[1].lower() and password == entry[2]: # Found an entry that matches the user's input
-            login_user(load_user(entry[0])) # Log the user in using flask login 
+        UserID = entry[0]
+        Username = entry[1]
+        UserPassword = entry[2]
+
+        username_matches = username.lower() == Username.lower() # Check if usernames match, not case sensitive
+        password_matches = bcrypt.checkpw(password, UserPass) # Hash password and check with the one in the DB
+
+        if username_matches and password_matches: # Found an entry that matches the user's input
+            login_user(load_user(UserID)) # Log the user in using flask login 
             return jsonify({"success" : True, "url" : url_for("displayHomepage")}) # Bring the user to the homepage after successful log in
     #----------------------------------------------------------
 
