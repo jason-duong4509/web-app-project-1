@@ -27,6 +27,16 @@ Import current_user to allow flask login to keep track of the current user
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 """
+Import Limiter to add rate limiting when accessing end-points.
+"""
+from flask_limiter import Limiter
+
+"""
+Import the helper function get_remote_address to get the client's IP address. This is used to add rate limiting on a client-basis.
+"""
+from flask_limiter.util import get_remote_address
+
+"""
 Used to connect to the database.
 """
 import psycopg2
@@ -42,9 +52,14 @@ Used to detect the MIME type of a file by reading its contents
 import magic
 
 """
-Used in the context of Render. Allows this file to connect to the database via a URL and a secret key.
+Used in the context of Render. Allows this file to connect to the database via a URL and allows it to access a secret key.
 """
 import os
+
+"""
+Used for input checking.
+"""
+import string
 
 """
 Import the User class so that User objects can be made.
@@ -69,6 +84,16 @@ __name__ denotes the current file, value varies by whether this file is imported
 """
 webApp = Flask(__name__)
 webApp.secret_key = SECRET_KEY # Sets the secret key for flask to the one stored on Render
+
+"""
+Set-up flask limiter.
+Configure the limiter to apply to all routes.
+"""
+limiter = Limiter(
+    get_remote_address, # Rate limit based on the client's IP address
+    app=webApp # Connect the limiter to this applcation
+    default_limits = ["600 per hour"] # The default number of requests is 600 per hour (10 per min)
+)
 
 """
 Creates a LoginManager instance and initializes it.
@@ -119,6 +144,13 @@ def invalidLink(error_code):
     return render_template("error.html", error_message="Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
 
 """
+Function that is called when flask throws a 429 HTTPS error (too many requests).
+"""
+@webApp.errorhandler(429)
+def tooManyRequests(error_code):
+    return render_template("error.html", error_message="Too many requests have been made. Please try again later") # returns an error page to the user
+
+"""
 Function that is called when a 400 error code (invalid input) is sent to the front end
 """
 @webApp.route("/400_Bad_Request", methods = ["GET"])
@@ -150,17 +182,32 @@ Function that runs when the user attempts to create an account
 """
 @webApp.route("/create_account", methods = ["POST"])
 def createAccount():
-    #--Gets the form inputs--
-    username = request.form["username"] # Takes the value from the "username" key
-    password = request.form["password"] # Takes the value from the "password" key
-    fname = request.form["fname"] # Takes the value from the "fname" key
-    lname = request.form["lname"] # Takes the value from the "lname" key
-    #------------------------
+    #--Input checks--
+    try:
+        #--Gets the form inputs--
+        username = request.form["username"] # Takes the value from the "username" key
+        password = request.form["password"] # Takes the value from the "password" key
+        fname = request.form["fname"] # Takes the value from the "fname" key
+        lname = request.form["lname"] # Takes the value from the "lname" key
+        #------------------------
+    except:
+        return jsonify({"error": True}) # Let the front-end know that an error has occurred
+    
+    try:
+        #--Validate the inputs--
+        # TODO: add validation checks (+ equals ignore case duplicates)
+        # return jsonify({"success" : False}) # Input failed validation checks
 
-    #--Validate the inputs--
-    # TODO: add validation checks (+ equals ignore case duplicates)
-    # return jsonify({"success" : False}) # Input failed validation checks
-    #-----------------------
+        allowed_symbols = set(string.ascii_letters + string.digits) # Constructs a set filled with alphanumeric symbols
+
+        username_contains_invalid_symbols = any(character not in allowed_symbols for character in username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
+
+        if username_contains_invalid_symbols:
+            raise Exception
+        #-----------------------
+    except:
+        return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+    #----------------
 
     #--Create an account--
     connection_to_db = psycopg2.connect(DATABASE_URL)
