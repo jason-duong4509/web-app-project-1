@@ -377,9 +377,9 @@ document.getElementById("profile_info").addEventListener("submit", async event =
     //------------------------
 
     //--Interpret the results--
-    if (results.success == false){ //Form was rejected by backend
+    if (results.success === false){ //Form was rejected by backend
         document.getElementById("error_message").hidden = false //Reveals the error message to the user
-    } else{//Form was accepted by backend
+    } else if (results.success === true){//Form was accepted by backend
         //--Switches the buttons around--
         document.getElementById("save_changes").hidden = true; //Makes this button hidden
         document.getElementById("save_changes").disabled = true; //Disables this button (prevents accidental clicks)
@@ -443,13 +443,16 @@ document.getElementById("profile_info").addEventListener("submit", async event =
         document.getElementById("error_message").hidden = true;
         document.getElementById("pfp_error_message").hidden = true;
         document.getElementById("attachment_error_message").hidden = true;
+        document.getElementById("something_went_wrong_message").hidden = true;
         //---------------------------
 
         //--Disable delete account button--
         document.getElementById("delete_button").disabled = true;
         document.getElementById("delete_button").hidden = true;
         //---------------------------------
-    }
+    } else{ //An error occurred in the backend
+        document.getElementById("something_went_wrong_message").hidden = false //Reveals the error message to the user
+    } //TODO: NOTE THAT IN BACKEND YOU MUST CHANGE THE ERROR THROWS SO THAT ERRORS ARE THROWN AS SUCCESS : NONE WHILE REJECTS ARE SUCCESS : FALSE
     //-------------------------
 });
 //-------------

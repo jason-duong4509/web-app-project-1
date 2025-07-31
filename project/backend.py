@@ -190,29 +190,56 @@ def createAccount():
         fname = request.form["fname"] # Takes the value from the "fname" key
         lname = request.form["lname"] # Takes the value from the "lname" key
         #------------------------
-    except:
-        return jsonify({"error": True}) # Let the front-end know that an error has occurred
     
-    try:
         #--Validate the inputs--
-        # TODO: add validation checks (+ equals ignore case duplicates)
-        # return jsonify({"success" : False}) # Input failed validation checks
+        #----Check password----
+        password_too_short = len(password) < 6
 
+        if password_too_short:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #----------------------
+
+        #----Check Fname and Lname----
+        fname_too_short = len(fname) < 1
+        lname_too_short = len(lname) < 1
+        
+        allowed_symbols = set(string.ascii_letters)
+
+        fname_has_invalid_symbols = any(character not in allowed_symbols for character in fname)
+        lname_has_invalid_symbols = any(character not in allowed_symbols for character in lname)
+
+        if fname_too_short or lname_too_short or fname_has_invalid_symbols or lname_has_invalid_symbols:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #-----------------------------
+
+        #----Check the username----
         allowed_symbols = set(string.ascii_letters + string.digits) # Constructs a set filled with alphanumeric symbols
 
         username_contains_invalid_symbols = any(character not in allowed_symbols for character in username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
+        username_length_invalid = len(username) > 20 or len(username) < 5
+        
+        if username_contains_invalid_symbols or username_length_invalid:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        
+        connection_to_db = psycopg2.connect(DATABASE_URL)
+        db_cursor = connection_to_db.cursor() 
+        db_cursor.execute("SELECT Username FROM user_info")
+        username_table = db_cursor.fetchall()
 
-        if username_contains_invalid_symbols:
-            raise Exception
+        for entry in username_table: # username_table = [(Username), ...]
+            username_in_table = entry[0]
+
+            if username_in_table.lower() == username.lower(): # Found duplicate username
+                db_cursor.close()
+                connection_to_db.close()
+                return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #--------------------------
         #-----------------------
     except:
-        return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        return jsonify({"success": None}) # Let the front-end know that an error has occurred
     #----------------
 
     #--Create an account--
-    connection_to_db = psycopg2.connect(DATABASE_URL)
-    db_cursor = connection_to_db.cursor()
-
     password = (bcrypt.hashpw(bytes(password, "utf-8"), bcrypt.gensalt())).decode("utf-8") # Hash the byte version of the user's password using a generic salt provided by bcrypt. Decode the result to store it as a string in the DB
     
     db_cursor.execute("SELECT PFP_File_Name, PFP_Byte_Data, PFP_MIME_Type FROM default_data")
@@ -270,6 +297,16 @@ def deleteAccount(user_id):
 
         if user_is_deleting_someone_else:
             raise Exception
+        
+        #--Is the username one that could exist?--
+        allowed_symbols = set(string.ascii_letters + string.digits) # Constructs a set filled with alphanumeric symbols
+
+        username_contains_invalid_symbols = any(character not in allowed_symbols for character in username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
+        username_length_invalid = len(username) > 20 or len(username) < 5
+
+        if username_contains_invalid_symbols or username_length_invalid:
+            return jsonify({"success" : False})
+        #-----------------------------------------
     except:
         return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #----------------
@@ -332,6 +369,9 @@ def saveProfileChanges():
     try:
         user_is_editing_wrong_profile = int(current_user.id) != int(request.form["user_id"]) # Current user ID does not match the user ID of the profile being changed
 
+        if user_is_editing_wrong_profile:
+            raise Exception
+
         #--Get the user's submitted changes--
         new_username = request.form["username"]
         new_fname = request.form["fname"]
@@ -343,8 +383,50 @@ def saveProfileChanges():
         #TODO: do input checks on form elements
         #TODO: ^ if length 0 is ok, if length is smaller than db requirements but not 0 not ok
 
-        if user_is_editing_wrong_profile:
-            raise Exception
+        
+
+        #----Check password----
+        password_too_short = len(password) < 6
+
+        if password_too_short:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #----------------------
+
+        #----Check Fname and Lname----
+        fname_too_short = len(fname) < 1
+        lname_too_short = len(lname) < 1
+        
+        allowed_symbols = set(string.ascii_letters)
+
+        fname_has_invalid_symbols = any(character not in allowed_symbols for character in fname)
+        lname_has_invalid_symbols = any(character not in allowed_symbols for character in lname)
+
+        if fname_too_short or lname_too_short or fname_has_invalid_symbols or lname_has_invalid_symbols:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #-----------------------------
+
+        #----Check the username----
+        allowed_symbols = set(string.ascii_letters + string.digits) # Constructs a set filled with alphanumeric symbols
+
+        username_contains_invalid_symbols = any(character not in allowed_symbols for character in username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
+        username_length_invalid = len(username) > 20 or len(username) < 5
+        
+        if username_contains_invalid_symbols or username_length_invalid:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        
+        connection_to_db = psycopg2.connect(DATABASE_URL)
+        db_cursor = connection_to_db.cursor() 
+        db_cursor.execute("SELECT Username FROM user_info")
+        username_table = db_cursor.fetchall()
+
+        for entry in username_table: # username_table = [(Username), ...]
+            username_in_table = entry[0]
+
+            if username_in_table.lower() == username.lower(): # Found duplicate username
+                db_cursor.close()
+                connection_to_db.close()
+                return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #--------------------------
     except:
         return jsonify({"success" : False}), 400 #Backend rejects input
     #----------------
