@@ -9,7 +9,9 @@ document.getElementById("user_details_form").addEventListener("submit", async ev
     const invalidUsernameLength = document.getElementById("username").value.length > 20 || document.getElementById("username").value.length < 5;
     const invalidUsernameFormat = !(regex.test(document.getElementById("username").value)); //Returns true if the username matches the regular expression, then negated and stored in the variable
 
-    if (invalidUsernameFormat || invalidUsernameLength){//User input failed front-end check
+    const passwordTooShort = document.getElementById("password").value < 6;
+
+    if (invalidUsernameFormat || invalidUsernameLength || passwordTooShort){//User input failed front-end check
         document.getElementById("error_message").hidden = false; //Show the error message to the user
     //----------------
     } else{ //User input passed front-end check

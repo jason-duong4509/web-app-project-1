@@ -358,101 +358,118 @@ document.getElementById("profile_info").addEventListener("submit", async event =
     event.preventDefault(); //Stops the event (clicking the button) from triggering its default behavior (sending the request to the back-end)
     
     //--Validates user input--
-    // TODO: do this
-    // if all input is same as before, continue but do not run code that sends form
-    // if any input is invalid, deny
+    let regex = /^[a-zA-Z0-9]*$/; //Define an alphanumeric regex
+    const invalidUsernameLength = (document.getElementById("username").value.length > 20 || document.getElementById("username").value.length < 5) && document.getElementById("username").value.length != 0;
+    const invalidUsernameFormat = !(regex.test(document.getElementById("username").value)); //Returns true if the username matches the regular expression, then negated and stored in the variable
+
+    regex = /^[a-zA-Z]*$/; //Define a regex that contains the English alphabet
+    const invalidFnameLength = document.getElementById("fname").value.length < 0;
+    const invalidLnameLength = document.getElementById("lname").value.length < 0;
+    const invalidFnameFormat = !(regex.test(document.getElementById("fname").value));
+    const invalidLnameFormat = !(regex.test(document.getElementById("lname").value));
+
+    const passwordTooShort = document.getElementById("password").value < 6 && document.getElementById("password").value != 0;
+
+    const bioTooLong = document.getElementById("bio").value > 300
+
+    if (invalidUsernameLength || invalidUsernameFormat || invalidFnameFormat || invalidFnameLength || invalidLnameLength || invalidLnameFormat || passwordTooShort || bioTooLong){ //Form failed front-end checks
+        document.getElementById("error_message").hidden = false; //Display message to user
+        document.getElementById("something_went_wrong_message").hidden = true; //Hide error message if present
     //------------------------
+    } else{ //User input accepted by front-end
+        //--Send the form--
+        const newProfileInfo = new FormData(event.target); //Convert the form's inputs into a FormData object
+        newProfileInfo.append("user_id", userID); //Add the userID of the profile to the form
+        const request = await fetch("/p/edit/save", {
+            method: "POST",
+            body: newProfileInfo
+        });
+        //-----------------
 
-    //--Send the form--
-    const newProfileInfo = new FormData(event.target); //Convert the form's inputs into a FormData object
-    newProfileInfo.append("user_id", userID); //Add the userID of the profile to the form
-    const request = await fetch("/p/edit/save", {
-        method: "POST",
-        body: newProfileInfo
-    });
-    //-----------------
+        //--Retrieve the results--
+        const results = await request.json();
+        //------------------------
 
-    //--Retrieve the results--
-    const results = await request.json();
-    //------------------------
+        //--Interpret the results--
+        if (results.success === false){ //Form was rejected by backend
+            document.getElementById("error_message").hidden = false; //Reveals the error message to the user
+            document.getElementById("something_went_wrong_message").hidden = true; //Hide error message if present
+        } else if (results.success === true){//Form was accepted by backend
+            //--Switches the buttons around--
+            document.getElementById("save_changes").hidden = true; //Makes this button hidden
+            document.getElementById("save_changes").disabled = true; //Disables this button (prevents accidental clicks)
+            document.getElementById("edit_profile_button").hidden = false; //Makes the edit profile button visible
+            document.getElementById("edit_profile_button").disabled = false; //Enables the edit profile button 
+            //-------------------------------
 
-    //--Interpret the results--
-    if (results.success === false){ //Form was rejected by backend
-        document.getElementById("error_message").hidden = false //Reveals the error message to the user
-    } else if (results.success === true){//Form was accepted by backend
-        //--Switches the buttons around--
-        document.getElementById("save_changes").hidden = true; //Makes this button hidden
-        document.getElementById("save_changes").disabled = true; //Disables this button (prevents accidental clicks)
-        document.getElementById("edit_profile_button").hidden = false; //Makes the edit profile button visible
-        document.getElementById("edit_profile_button").disabled = false; //Enables the edit profile button 
-        //-------------------------------
+            //--Disables each profile attribute so that they cannot be edited--
+            document.getElementById("username").disabled = true;
+            document.getElementById("fname").disabled = true;
+            document.getElementById("lname").disabled = true;
+            document.getElementById("bio").disabled = true;
+            document.getElementById("password").disabled = true;
+            document.getElementById("password").hidden = true;
+            document.getElementById("password_label").hidden = true;
+            //-----------------------------------------------------------------
 
-        //--Disables each profile attribute so that they cannot be edited--
-        document.getElementById("username").disabled = true;
-        document.getElementById("fname").disabled = true;
-        document.getElementById("lname").disabled = true;
-        document.getElementById("bio").disabled = true;
-        document.getElementById("password").disabled = true;
-        document.getElementById("password").hidden = true;
-        document.getElementById("password_label").hidden = true;
-        //-----------------------------------------------------------------
+            //--Updates each profile attribute to reflect the changes the user made--
+            document.getElementById("password").value = ""; //Wipes the password field (prevents being seen later)
 
-        //--Updates each profile attribute to reflect the changes the user made--
-        document.getElementById("password").value = ""; //Wipes the password field (prevents being seen later)
+            if (document.getElementById("username").value.length == 0){//User did not change the attribute
+                document.getElementById("username").value = document.getElementById("username").placeholder; //Restore the attribute 
+            } else{ //User did change attribute
+                document.getElementById("username").placeholder = document.getElementById("username").value; //Replace the attribute
+            }
 
-        if (document.getElementById("username").value.length == 0){//User did not change the attribute
-            document.getElementById("username").value = document.getElementById("username").placeholder; //Restore the attribute 
-        } else{ //User did change attribute
-            document.getElementById("username").placeholder = document.getElementById("username").value; //Replace the attribute
+            if (document.getElementById("fname").value.length == 0){//User did not change the attribute
+                document.getElementById("fname").value = document.getElementById("fname").placeholder; //Restore the attribute 
+            } else{ //User did change attribute
+                document.getElementById("fname").placeholder = document.getElementById("fname").value; //Replace the attribute
+            }
+
+            if (document.getElementById("lname").value.length == 0){//User did not change the attribute
+                document.getElementById("lname").value = document.getElementById("lname").placeholder; //Restore the attribute 
+            } else{ //User did change attribute
+                document.getElementById("lname").placeholder = document.getElementById("lname").value; //Replace the attribute
+            }
+
+            if (document.getElementById("bio").value.length == 0){//User did not change the attribute
+                document.getElementById("bio").value = document.getElementById("bio").placeholder; //Restore the attribute 
+            } else{ //User did change attribute
+                document.getElementById("bio").placeholder = document.getElementById("bio").value; //Replace the attribute
+            }
+            //-----------------------------------------------------------------------
+
+            //--Delete input fields for the attachments and profile picture--
+            document.getElementById("pfp_input_btn").remove();
+            document.getElementById("attach_input_1").remove();
+            document.getElementById("attach_input_2").remove();
+            document.getElementById("attach_input_3").remove();
+            //---------------------------------------------------------------
+            
+            //--Change the pointers back to normal--
+            document.getElementById("profile_picture").style.cursor = "default";
+            document.getElementById("attachment_1").style.cursor = "default";
+            document.getElementById("attachment_2").style.cursor = "default";
+            document.getElementById("attachment_3").style.cursor = "default";
+            //--------------------------------------
+
+            //--Hide the error messages--
+            document.getElementById("error_message").hidden = true;
+            document.getElementById("pfp_error_message").hidden = true;
+            document.getElementById("attachment_error_message").hidden = true;
+            document.getElementById("something_went_wrong_message").hidden = true;
+            //---------------------------
+
+            //--Disable delete account button--
+            document.getElementById("delete_button").disabled = true;
+            document.getElementById("delete_button").hidden = true;
+            //---------------------------------
+        } else{ //An error occurred in the backend
+            document.getElementById("something_went_wrong_message").hidden = false; //Reveals the error message to the user
+            document.getElementById("error_message").hidden = true; //Hides the error message from the user if shown
         }
-
-        if (document.getElementById("fname").value.length == 0){//User did not change the attribute
-            document.getElementById("fname").value = document.getElementById("fname").placeholder; //Restore the attribute 
-        } else{ //User did change attribute
-            document.getElementById("fname").placeholder = document.getElementById("fname").value; //Replace the attribute
-        }
-
-        if (document.getElementById("lname").value.length == 0){//User did not change the attribute
-            document.getElementById("lname").value = document.getElementById("lname").placeholder; //Restore the attribute 
-        } else{ //User did change attribute
-            document.getElementById("lname").placeholder = document.getElementById("lname").value; //Replace the attribute
-        }
-
-        if (document.getElementById("bio").value.length == 0){//User did not change the attribute
-            document.getElementById("bio").value = document.getElementById("bio").placeholder; //Restore the attribute 
-        } else{ //User did change attribute
-            document.getElementById("bio").placeholder = document.getElementById("bio").value; //Replace the attribute
-        }
-        //-----------------------------------------------------------------------
-
-        //--Delete input fields for the attachments and profile picture--
-        document.getElementById("pfp_input_btn").remove();
-        document.getElementById("attach_input_1").remove();
-        document.getElementById("attach_input_2").remove();
-        document.getElementById("attach_input_3").remove();
-        //---------------------------------------------------------------
-        
-        //--Change the pointers back to normal--
-        document.getElementById("profile_picture").style.cursor = "default";
-        document.getElementById("attachment_1").style.cursor = "default";
-        document.getElementById("attachment_2").style.cursor = "default";
-        document.getElementById("attachment_3").style.cursor = "default";
-        //--------------------------------------
-
-        //--Hide the error messages--
-        document.getElementById("error_message").hidden = true;
-        document.getElementById("pfp_error_message").hidden = true;
-        document.getElementById("attachment_error_message").hidden = true;
-        document.getElementById("something_went_wrong_message").hidden = true;
-        //---------------------------
-
-        //--Disable delete account button--
-        document.getElementById("delete_button").disabled = true;
-        document.getElementById("delete_button").hidden = true;
-        //---------------------------------
-    } else{ //An error occurred in the backend
-        document.getElementById("something_went_wrong_message").hidden = false //Reveals the error message to the user
-    } //TODO: NOTE THAT IN BACKEND YOU MUST CHANGE THE ERROR THROWS SO THAT ERRORS ARE THROWN AS SUCCESS : NONE WHILE REJECTS ARE SUCCESS : FALSE
-    //-------------------------
+        //-------------------------
+    }
 });
 //-------------

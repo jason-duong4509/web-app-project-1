@@ -298,15 +298,16 @@ def deleteAccount(user_id):
         if user_is_deleting_someone_else:
             raise Exception
         
-        #--Is the username one that could exist?--
+        #--Is the username/password one that could exist?--
         allowed_symbols = set(string.ascii_letters + string.digits) # Constructs a set filled with alphanumeric symbols
 
-        username_contains_invalid_symbols = any(character not in allowed_symbols for character in username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
-        username_length_invalid = len(username) > 20 or len(username) < 5
+        username_contains_invalid_symbols = any(character not in allowed_symbols for character in entered_username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
+        username_length_invalid = len(entered_username) > 20 or len(entered_username) < 5
+        password_length_invalid = len(entered_password) < 6
 
         if username_contains_invalid_symbols or username_length_invalid:
             return jsonify({"success" : False})
-        #-----------------------------------------
+        #--------------------------------------------------
     except:
         return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #----------------
@@ -380,26 +381,21 @@ def saveProfileChanges():
         new_pass = request.form["password"]
         #------------------------------------
 
-        #TODO: do input checks on form elements
-        #TODO: ^ if length 0 is ok, if length is smaller than db requirements but not 0 not ok
-
-        
-
         #----Check password----
-        password_too_short = len(password) < 6
+        password_too_short = len(new_pass) < 6 and len(new_pass) != 0
 
         if password_too_short:
             return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
         #----------------------
 
         #----Check Fname and Lname----
-        fname_too_short = len(fname) < 1
-        lname_too_short = len(lname) < 1
+        fname_too_short = len(new_fname) < 0
+        lname_too_short = len(new_lname) < 0
         
         allowed_symbols = set(string.ascii_letters)
 
-        fname_has_invalid_symbols = any(character not in allowed_symbols for character in fname)
-        lname_has_invalid_symbols = any(character not in allowed_symbols for character in lname)
+        fname_has_invalid_symbols = any(character not in allowed_symbols for character in new_fname)
+        lname_has_invalid_symbols = any(character not in allowed_symbols for character in new_lname)
 
         if fname_too_short or lname_too_short or fname_has_invalid_symbols or lname_has_invalid_symbols:
             return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
@@ -408,27 +404,21 @@ def saveProfileChanges():
         #----Check the username----
         allowed_symbols = set(string.ascii_letters + string.digits) # Constructs a set filled with alphanumeric symbols
 
-        username_contains_invalid_symbols = any(character not in allowed_symbols for character in username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
-        username_length_invalid = len(username) > 20 or len(username) < 5
+        username_contains_invalid_symbols = any(character not in allowed_symbols for character in new_username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
+        username_length_invalid = (len(new_username) > 20 or len(new_username) < 5) and len(new_username) != 0
         
         if username_contains_invalid_symbols or username_length_invalid:
             return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
-        
-        connection_to_db = psycopg2.connect(DATABASE_URL)
-        db_cursor = connection_to_db.cursor() 
-        db_cursor.execute("SELECT Username FROM user_info")
-        username_table = db_cursor.fetchall()
-
-        for entry in username_table: # username_table = [(Username), ...]
-            username_in_table = entry[0]
-
-            if username_in_table.lower() == username.lower(): # Found duplicate username
-                db_cursor.close()
-                connection_to_db.close()
-                return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
         #--------------------------
+
+        #----Check the bio----
+        bio_size_invalid = len(new_bio) < 0 or len(new_bio) > 300
+
+        if bio_size_invalid:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #---------------------
     except:
-        return jsonify({"success" : False}), 400 #Backend rejects input
+        return jsonify({"success" : None}), 400 #An error occurred
     #----------------
     
     connection_to_db = psycopg2.connect(DATABASE_URL)
@@ -447,6 +437,8 @@ def saveProfileChanges():
             ids_dont_match = int(id_in_table) != int(current_user.id)
 
             if usernames_match and ids_dont_match: # Username is already taken
+                db_cursor.close()
+                connection_to_db.close()
                 return jsonify({"success" : False}) # Reject input
 
         db_cursor.execute("UPDATE user_info SET Username = %s WHERE UserID = %s", (new_username, current_user.id)) # Change the username
@@ -485,14 +477,15 @@ Searches the database for a given username and returns either the profile URL of
 @webApp.route("/search/<username>", methods = ["GET"])
 @login_required
 def searchForUser(username):
-    #--Input checks--
-    try:
-        float(username) # Attempts to turn the given username into a float
-        return jsonify({"success" : False}) # Failed input check (given a number as input)
-    except:
-        if (len(username) > 100 or len(username) <= 0):
-            return jsonify({"success" : False}) # Failed input check (string length invalid)
-    #----------------
+    #--Input checks (check the given username)--
+    allowed_symbols = set(string.ascii_letters + string.digits) # Constructs a set filled with alphanumeric symbols
+
+    username_contains_invalid_symbols = any(character not in allowed_symbols for character in username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
+    username_length_invalid = (len(username) > 20 or len(username) < 5)
+    
+    if username_contains_invalid_symbols or username_length_invalid:
+        return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+    #-------------------------------------------
 
     #--Check the database for requested user--
     connection_to_db = psycopg2.connect(DATABASE_URL)
@@ -514,19 +507,28 @@ def searchForUser(username):
     return jsonify({"success" : False}) # Did not find specified username
 
 """
-Function runs when the user submits their log in form
+Function runs when the user submits their log in form.
 """
 @webApp.route("/loginSubmit", methods = ["POST"])
 def onLoginSubmit():
-    #--Gets the submitted form details--
-    username = request.form["username"] # Gets the sent input from the one named "username"
-    password = request.form["password"] # Gets the sent input from the one named "password"
-    #-----------------------------------
+    #--Input checks--
+    try:
+        #--Gets the submitted form details--
+        username = request.form["username"] # Gets the sent input from the one named "username"
+        password = request.form["password"] # Gets the sent input from the one named "password"
+        #-----------------------------------
 
-    #--Make some initial input checks to potentially save time reading the DB--
-    if len(username) > 30 or len(username) <= 0 or len(password) > 200 or len(password) <= 0:
-        return jsonify({"success" : False}) # Return a status message in JSON format
-    #--------------------------------------------------------------------------
+        allowed_symbols = set(string.ascii_letters + string.digits) # Constructs a set filled with alphanumeric symbols
+
+        username_contains_invalid_symbols = any(character not in allowed_symbols for character in username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
+        username_length_invalid = (len(username) > 20 or len(username) < 5)
+        password_length_invalid = len(password) < 6
+
+        if username_contains_invalid_symbols or username_length_invalid or password_length_invalid:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+    except:
+        return jsonify({"success" : None}) # Let the front-end know that an error occurred
+    #----------------
 
     #--Checks the database to see if any match the login form--
     connection_to_db = psycopg2.connect(DATABASE_URL)
@@ -550,7 +552,7 @@ def onLoginSubmit():
     #----------------------------------------------------------
 
     #--Return a status message in JSON format--
-    return jsonify({"success" : False})
+    return jsonify({"success" : False}) # No user with the entered username and password were found
     #------------------------------------------
 
 """
@@ -570,6 +572,9 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
     #--Check if user_id is a number--
     try:
         user_id = int(user_id) # Converts the user_id parameter into an integer to allow comparison with entries in the database
+
+        if user_id < 1: # Invalid userID given
+            raise Exception
     except:
         return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
     #--------------------------------
@@ -622,11 +627,11 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
         user_id = int(user_id)
         #----------------------------
 
-        #--Are the inputs valid integers?--
+        #--Are the inputs valid IDs?--
         user_id_is_invalid = user_id < 1
         if user_id_is_invalid:
             raise Exception
-        #----------------------------------
+        #-----------------------------
     except:
         return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #---------------
@@ -712,6 +717,7 @@ Function that attempts to change the user's profile picture
 @webApp.route("/p/<user_id>/submit_pfp", methods = ["POST"])
 @login_required
 def changePFP(user_id):
+    #--Input check--
     try:
         user_id = int(user_id)
         user_is_editing_someones_profile = user_id != int(current_user.id) # UserID the user is editing is not their own
@@ -793,26 +799,3 @@ def changeAttachment(user_id, attachment_number):
     connection_to_db.close()
 
     return send_file(path_or_file=io.BytesIO(file_bytes), mimetype="application/pdf", as_attachment=False) # Send the new attachment back to the front end so it can display it to the user
-
-"""
-"""
-"""
-@webApp.route("/signup", methods = ["GET"])
-def onSignup():
-    # TODO: this
-
-"""
-# Function runs when the front-end JS sends a POST request to the database (to update the DB with information).
-"""
-@webApp.route("/create_user", methods = ["POST"])
-def createUser():
-    # TODO: add functionality for when the user wants to make an account. store it to the DB
-
-"""
-# Function runs when the front-end JS sends a POST request to the database (to update the DB with information).
-"""
-@webApp.route("/delete_user", methods = ["POST"])
-def deleteUser():
-    # TODO: add functionality for when the user wants to delete their account. delete it from the DB
-"""
-#---------------------------------------------------
