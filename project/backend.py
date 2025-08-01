@@ -84,6 +84,7 @@ __name__ denotes the current file, value varies by whether this file is imported
 """
 webApp = Flask(__name__)
 webApp.secret_key = SECRET_KEY # Sets the secret key for flask to the one stored on Render
+webApp.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000 # Sets the maximum allowed size of data sent from the front-end until flask raises a 413 (Payload Too Large) error. Max size is 16MB
 
 """
 Set-up flask limiter.
@@ -142,6 +143,13 @@ Function that is called when the user accesses an invalid (does not exist) link.
 @webApp.errorhandler(404) # Accessing invalid links returns a HTTPS 404 error (page not found error)
 def invalidLink(error_code):
     return render_template("error.html", error_message="Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
+
+"""
+Function that is called when the user uploads data larger than 16MB.
+"""
+@webApp.errorhandler(413)
+def uploadToolarge(error_code):
+    return jsonify({"success" : False}), 413 # Sends a 413 error to the front-end so it knows what went wrong
 
 """
 Function that is called when flask throws a 429 HTTPS error (too many requests).
@@ -728,8 +736,6 @@ def changePFP(user_id):
         new_pfp.seek(0) # Move the pointer back to the beginning of the file
         new_pfp_bytes = new_pfp.read() # Read the file (in bytes) and store it
 
-        #TODO: add file size check (too big = reject)
-
         if user_is_editing_someones_profile or mime_type_is_incorrect:
             raise Exception
     except:
@@ -769,8 +775,6 @@ def changeAttachment(user_id, attachment_number):
         mime_type_is_incorrect = not (file_mime_type == "application/pdf") # Checks if the file's MIME type is a PNG
         new_attachment.seek(0) # Move the pointer back to the beginning of the file
         file_bytes = new_attachment.read() # Read the file (in bytes) and store it
-
-        #TODO: add file size check (too big = reject)
 
         if user_is_editing_someones_profile or mime_type_is_incorrect or attachment_number_is_invalid:
             raise Exception

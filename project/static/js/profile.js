@@ -167,21 +167,44 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     pfp_input_btn.addEventListener("change", async event => {
         const newPFP = pfp_input_btn.files[0]; //Gets the first (of 1) selected file
 
-        const formData = new FormData(); //Creates a FormData object to pass to the backend
-        formData.append("newPFP", newPFP); //Adds the new pfp file as a value with key 'newpfp'
+        if (newPFP){//File exists
+            //--Input checks--
+            const fileMIMEType = newPFP.type; //Get the MIME type of the file
+            const fileSize = newPFP.size; // Get the size of the file in bytes
 
-        const response = await fetch("/p/"+userID+"/submit_pfp", { //Send response to backend
-            method : "POST",
-            body : formData
-        });
+            const wrongFileType = fileMIMEType === "image/png";
+            const fileTooLarge = fileSize > 16000000; // checks if the file size is greater than 16MB
 
-        if (response.status === 400){ //Backend rejected input
-            document.getElementById("pfp_error_message").hidden = false;//Display the error message to the user
-        } else{ //Backend sent back a file to render
-            const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
-            const currentPFP = document.getElementById("profile_picture");
-            currentPFP.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
-            document.getElementById("pfp_error_message").hidden = true;
+            if (wrongFileType){//User input failed front-end check
+                document.getElementById("pfp_error_message").hidden = false;
+                document.getElementById("pfp_too_large").hidden = true;
+            } else if (fileTooLarge){ //User input failed front-end check
+                document.getElementById("pfp_too_large").hidden = false;
+                document.getElementById("pfp_error_message").hidden = true;
+            //----------------
+            } else{//User input passed front-end check
+                const formData = new FormData(); //Creates a FormData object to pass to the backend
+                formData.append("newPFP", newPFP); //Adds the new pfp file as a value with key 'newpfp'
+
+                const response = await fetch("/p/"+userID+"/submit_pfp", { //Send response to backend
+                    method : "POST",
+                    body : formData
+                });
+
+                if (response.status === 400){ //Backend rejected input
+                    document.getElementById("pfp_error_message").hidden = false;//Display the error message to the user
+                    document.getElementById("pfp_too_large").hidden = true;//Display to user
+                } else if (response.status === 413){ //Input is too large
+                    document.getElementById("pfp_too_large").hidden = false;//Display to user
+                    document.getElementById("pfp_error_message").hidden = true;//Display to user
+                } else{ //Backend sent back a file to render
+                    const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
+                    const currentPFP = document.getElementById("profile_picture");
+                    currentPFP.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    document.getElementById("pfp_error_message").hidden = true;
+                    document.getElementById("pfp_too_large").hidden = true;
+                }
+            }
         }
     });
     //--------------------------
@@ -204,33 +227,56 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     attach_input_1.addEventListener("change", async event => {
         const newAttach = attach_input_1.files[0]; //Gets the first (of 1) selected file
 
-        const formData = new FormData(); //Creates a FormData object to pass to the backend
-        formData.append("newAttach", newAttach); //Adds the new PDF file as a value with key 'newAttach'
+        if (newAttach){//File exists
+            //--Input checks--
+            const fileMIMEType = newAttach.type; //Get the MIME type of the file
+            const fileSize = newAttach.size; // Get the size of the file in bytes
 
-        const response = await fetch("/p/"+userID+"/change_attachment/1", { //Send response to backend
-            method : "POST",
-            body : formData
-        });
+            const wrongFileType = fileMIMEType === "application/pdf";
+            const fileTooLarge = fileSize > 16000000; // checks if the file size is greater than 16MB
 
-        if (response.status === 400){ //Backend rejected input
-            document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
-        } else{ //Backend sent back a file to render
-            const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
-            let currentAttach = document.getElementById("attachment_1");
+            if (wrongFileType){//User input failed front-end check
+                document.getElementById("attachment_error_message").hidden = false;
+                document.getElementById("attachment_too_large").hidden = true;
+            } else if (fileTooLarge){ //User input failed front-end check
+                document.getElementById("attachment_too_large").hidden = false;
+                document.getElementById("attachment_error_message").hidden = true;
+            //----------------
+            } else{//User input passed front-end check
+                const formData = new FormData(); //Creates a FormData object to pass to the backend
+                formData.append("newAttach", newAttach); //Adds the new PDF file as a value with key 'newAttach'
 
-            //--Remove the old attachment and add the new one--
-            currentAttach.remove(); //Remove old attachment
-            currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
-            currentAttach.id = "attachment_1";
-            document.body.appendChild(currentAttach);
-            currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
-            //-------------------------------------------------
+                const response = await fetch("/p/"+userID+"/change_attachment/1", { //Send response to backend
+                    method : "POST",
+                    body : formData
+                });
 
-            //--Style the new attachment--
-            //todo: this
-            //----------------------------
-            
-            document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
+                if (response.status === 400){ //Backend rejected input
+                    document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
+                    document.getElementById("attachment_too_large").hidden = true;
+                } else if (response.status === 413){ //Input is too large
+                    document.getElementById("attachment_too_large").hidden = false;
+                    document.getElementById("attachment_error_message").hidden = true;
+                } else{ //Backend sent back a file to render
+                    const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
+                    let currentAttach = document.getElementById("attachment_1");
+
+                    //--Remove the old attachment and add the new one--
+                    currentAttach.remove(); //Remove old attachment
+                    currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
+                    currentAttach.id = "attachment_1";
+                    document.body.appendChild(currentAttach);
+                    currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    //-------------------------------------------------
+
+                    //--Style the new attachment--
+                    //todo: this
+                    //----------------------------
+                    
+                    document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
+                    document.getElementById("attachment_too_large").hidden = true;
+                }
+            }
         }
     });
     //--------------------------
@@ -253,33 +299,56 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     attach_input_2.addEventListener("change", async event => {
         const newAttach = attach_input_2.files[0]; //Gets the first (of 1) selected file
 
-        const formData = new FormData(); //Creates a FormData object to pass to the backend
-        formData.append("newAttach", newAttach); //Adds the new PDF file as a value with key 'newAttach'
+        if (newAttach){//File exists
+            //--Input checks--
+            const fileMIMEType = newAttach.type; //Get the MIME type of the file
+            const fileSize = newAttach.size; // Get the size of the file in bytes
 
-        const response = await fetch("/p/"+userID+"/change_attachment/2", { //Send response to backend
-            method : "POST",
-            body : formData
-        });
+            const wrongFileType = fileMIMEType === "application/pdf";
+            const fileTooLarge = fileSize > 16000000; // checks if the file size is greater than 16MB
 
-        if (response.status === 400){ //Backend rejected input
-            document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
-        } else{ //Backend sent back a file to render
-            const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
-            let currentAttach = document.getElementById("attachment_2");
+            if (wrongFileType){//User input failed front-end check
+                document.getElementById("attachment_error_message").hidden = false;
+                document.getElementById("attachment_too_large").hidden = true;
+            } else if (fileTooLarge){ //User input failed front-end check
+                document.getElementById("attachment_too_large").hidden = false;
+                document.getElementById("attachment_error_message").hidden = true;
+            //----------------
+            } else{//User input passed front-end check
+                const formData = new FormData(); //Creates a FormData object to pass to the backend
+                formData.append("newAttach", newAttach); //Adds the new PDF file as a value with key 'newAttach'
 
-            //--Remove the old attachment and add the new one--
-            currentAttach.remove(); //Remove old attachment
-            currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
-            currentAttach.id = "attachment_2";
-            document.body.appendChild(currentAttach);
-            currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
-            //-------------------------------------------------
+                const response = await fetch("/p/"+userID+"/change_attachment/2", { //Send response to backend
+                    method : "POST",
+                    body : formData
+                });
 
-            //--Style the new attachment--
-            //todo: this
-            //----------------------------
-            
-            document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
+                if (response.status === 400){ //Backend rejected input
+                    document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
+                    document.getElementById("attachment_too_large").hidden = true;
+                } else if(response.status === 413){ //Input is too large
+                    document.getElementById("attachment_too_large").hidden = false;
+                    document.getElementById("attachment_error_message").hidden = true;
+                } else{ //Backend sent back a file to render
+                    const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
+                    let currentAttach = document.getElementById("attachment_2");
+
+                    //--Remove the old attachment and add the new one--
+                    currentAttach.remove(); //Remove old attachment
+                    currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
+                    currentAttach.id = "attachment_2";
+                    document.body.appendChild(currentAttach);
+                    currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    //-------------------------------------------------
+
+                    //--Style the new attachment--
+                    //todo: this
+                    //----------------------------
+                    
+                    document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
+                    document.getElementById("attachment_too_large").hidden = true;
+                }
+            }
         }
     });
     //--------------------------
@@ -302,33 +371,56 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     attach_input_3.addEventListener("change", async event => {
         const newAttach = attach_input_3.files[0]; //Gets the first (of 1) selected file
 
-        const formData = new FormData(); //Creates a FormData object to pass to the backend
-        formData.append("newAttach", newAttach); //Adds the new PDF file as a value with key 'newAttach'
+        if (newAttach){//File exists
+            //--Input checks--
+            const fileMIMEType = newAttach.type; //Get the MIME type of the file
+            const fileSize = newAttach.size; // Get the size of the file in bytes
 
-        const response = await fetch("/p/"+userID+"/change_attachment/3", { //Send response to backend
-            method : "POST",
-            body : formData
-        });
+            const wrongFileType = fileMIMEType === "application/pdf";
+            const fileTooLarge = fileSize > 16000000; // checks if the file size is greater than 16MB
 
-        if (response.status === 400){ //Backend rejected input
-            document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
-        } else{ //Backend sent back a file to render
-            const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
-            let currentAttach = document.getElementById("attachment_3");
+            if (wrongFileType){//User input failed front-end check
+                document.getElementById("attachment_error_message").hidden = false;
+                document.getElementById("attachment_too_large").hidden = true;
+            } else if (fileTooLarge){ //User input failed front-end check
+                document.getElementById("attachment_too_large").hidden = false;
+                document.getElementById("attachment_error_message").hidden = true;
+            //----------------
+            } else{//User input passed front-end check
+                const formData = new FormData(); //Creates a FormData object to pass to the backend
+                formData.append("newAttach", newAttach); //Adds the new PDF file as a value with key 'newAttach'
 
-            //--Remove the old attachment and add the new one--
-            currentAttach.remove(); //Remove old attachment
-            currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
-            currentAttach.id = "attachment_3";
-            document.body.appendChild(currentAttach);
-            currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
-            //-------------------------------------------------
+                const response = await fetch("/p/"+userID+"/change_attachment/3", { //Send response to backend
+                    method : "POST",
+                    body : formData
+                });
 
-            //--Style the new attachment--
-            //todo: this
-            //----------------------------
-            
-            document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
+                if (response.status === 400){ //Backend rejected input
+                    document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
+                    document.getElementById("attachment_too_large").hidden = true;
+                } else if(response.status == 413){ //Input is too large
+                    document.getElementById("attachment_too_large").hidden = false;
+                    document.getElementById("attachment_error_message").hidden = true;
+                } else{ //Backend sent back a file to render
+                    const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
+                    let currentAttach = document.getElementById("attachment_3");
+
+                    //--Remove the old attachment and add the new one--
+                    currentAttach.remove(); //Remove old attachment
+                    currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
+                    currentAttach.id = "attachment_3";
+                    document.body.appendChild(currentAttach);
+                    currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    //-------------------------------------------------
+
+                    //--Style the new attachment--
+                    //todo: this
+                    //----------------------------
+                    
+                    document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
+                    document.getElementById("attachment_too_large").hidden = true;
+                }
+            }
         }
     });
     //--------------------------
