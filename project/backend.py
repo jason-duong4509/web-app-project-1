@@ -27,6 +27,16 @@ Import current_user to allow flask login to keep track of the current user
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user
 
 """
+Import Limiter to add rate limiting when accessing end-points.
+"""
+from flask_limiter import Limiter
+
+"""
+Import the helper function get_remote_address to get the client's IP address. This is used to add rate limiting on a client-basis.
+"""
+from flask_limiter.util import get_remote_address
+
+"""
 Used to connect to the database.
 """
 import psycopg2
@@ -42,9 +52,14 @@ Used to detect the MIME type of a file by reading its contents
 import magic
 
 """
-Used in the context of Render. Allows this file to connect to the database via a URL and a secret key.
+Used in the context of Render. Allows this file to connect to the database via a URL and allows it to access a secret key.
 """
 import os
+
+"""
+Used for input checking.
+"""
+import string
 
 """
 Import the User class so that User objects can be made.
@@ -69,6 +84,17 @@ __name__ denotes the current file, value varies by whether this file is imported
 """
 webApp = Flask(__name__)
 webApp.secret_key = SECRET_KEY # Sets the secret key for flask to the one stored on Render
+webApp.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000 # Sets the maximum allowed size of data sent from the front-end until flask raises a 413 (Payload Too Large) error. Max size is 16MB
+
+"""
+Set-up flask limiter.
+Configure the limiter to apply to all routes.
+"""
+limiter = Limiter(
+    get_remote_address, # Rate limit based on the client's IP address
+    app=webApp, # Connect the limiter to this applcation
+    default_limits = ["600 per hour"] # The default number of requests is 600 per hour (10 per min)
+)
 
 """
 Creates a LoginManager instance and initializes it.
@@ -119,6 +145,20 @@ def invalidLink(error_code):
     return render_template("error.html", error_message="Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
 
 """
+Function that is called when the user uploads data larger than 16MB.
+"""
+@webApp.errorhandler(413)
+def uploadToolarge(error_code):
+    return jsonify({"success" : False}), 413 # Sends a 413 error to the front-end so it knows what went wrong
+
+"""
+Function that is called when flask throws a 429 HTTPS error (too many requests).
+"""
+@webApp.errorhandler(429)
+def tooManyRequests(error_code):
+    return render_template("error.html", error_message="Too many requests have been made. Please try again later") # returns an error page to the user
+
+"""
 Function that is called when a 400 error code (invalid input) is sent to the front end
 """
 @webApp.route("/400_Bad_Request", methods = ["GET"])
@@ -150,22 +190,64 @@ Function that runs when the user attempts to create an account
 """
 @webApp.route("/create_account", methods = ["POST"])
 def createAccount():
-    #--Gets the form inputs--
-    username = request.form["username"] # Takes the value from the "username" key
-    password = request.form["password"] # Takes the value from the "password" key
-    fname = request.form["fname"] # Takes the value from the "fname" key
-    lname = request.form["lname"] # Takes the value from the "lname" key
-    #------------------------
+    #--Input checks--
+    try:
+        #--Gets the form inputs--
+        username = request.form["username"] # Takes the value from the "username" key
+        password = request.form["password"] # Takes the value from the "password" key
+        fname = request.form["fname"] # Takes the value from the "fname" key
+        lname = request.form["lname"] # Takes the value from the "lname" key
+        #------------------------
+    
+        #--Validate the inputs--
+        #----Check password----
+        password_too_short = len(password) < 6
 
-    #--Validate the inputs--
-    # TODO: add validation checks (+ equals ignore case duplicates)
-    # return jsonify({"success" : False}) # Input failed validation checks
-    #-----------------------
+        if password_too_short:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #----------------------
+
+        #----Check Fname and Lname----
+        fname_too_short = len(fname) < 1
+        lname_too_short = len(lname) < 1
+        
+        allowed_symbols = set(string.ascii_letters)
+
+        fname_has_invalid_symbols = any(character not in allowed_symbols for character in fname)
+        lname_has_invalid_symbols = any(character not in allowed_symbols for character in lname)
+
+        if fname_too_short or lname_too_short or fname_has_invalid_symbols or lname_has_invalid_symbols:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #-----------------------------
+
+        #----Check the username----
+        allowed_symbols = set(string.ascii_letters + string.digits) # Constructs a set filled with alphanumeric symbols
+
+        username_contains_invalid_symbols = any(character not in allowed_symbols for character in username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
+        username_length_invalid = len(username) > 20 or len(username) < 5
+        
+        if username_contains_invalid_symbols or username_length_invalid:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        
+        connection_to_db = psycopg2.connect(DATABASE_URL)
+        db_cursor = connection_to_db.cursor() 
+        db_cursor.execute("SELECT Username FROM user_info")
+        username_table = db_cursor.fetchall()
+
+        for entry in username_table: # username_table = [(Username), ...]
+            username_in_table = entry[0]
+
+            if username_in_table.lower() == username.lower(): # Found duplicate username
+                db_cursor.close()
+                connection_to_db.close()
+                return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #--------------------------
+        #-----------------------
+    except:
+        return jsonify({"success": None}) # Let the front-end know that an error has occurred
+    #----------------
 
     #--Create an account--
-    connection_to_db = psycopg2.connect(DATABASE_URL)
-    db_cursor = connection_to_db.cursor()
-
     password = (bcrypt.hashpw(bytes(password, "utf-8"), bcrypt.gensalt())).decode("utf-8") # Hash the byte version of the user's password using a generic salt provided by bcrypt. Decode the result to store it as a string in the DB
     
     db_cursor.execute("SELECT PFP_File_Name, PFP_Byte_Data, PFP_MIME_Type FROM default_data")
@@ -223,6 +305,17 @@ def deleteAccount(user_id):
 
         if user_is_deleting_someone_else:
             raise Exception
+        
+        #--Is the username/password one that could exist?--
+        allowed_symbols = set(string.ascii_letters + string.digits) # Constructs a set filled with alphanumeric symbols
+
+        username_contains_invalid_symbols = any(character not in allowed_symbols for character in entered_username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
+        username_length_invalid = len(entered_username) > 20 or len(entered_username) < 5
+        password_length_invalid = len(entered_password) < 6
+
+        if username_contains_invalid_symbols or username_length_invalid:
+            return jsonify({"success" : False})
+        #--------------------------------------------------
     except:
         return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #----------------
@@ -285,6 +378,9 @@ def saveProfileChanges():
     try:
         user_is_editing_wrong_profile = int(current_user.id) != int(request.form["user_id"]) # Current user ID does not match the user ID of the profile being changed
 
+        if user_is_editing_wrong_profile:
+            raise Exception
+
         #--Get the user's submitted changes--
         new_username = request.form["username"]
         new_fname = request.form["fname"]
@@ -293,13 +389,44 @@ def saveProfileChanges():
         new_pass = request.form["password"]
         #------------------------------------
 
-        #TODO: do input checks on form elements
-        #TODO: ^ if length 0 is ok, if length is smaller than db requirements but not 0 not ok
+        #----Check password----
+        password_too_short = len(new_pass) < 6 and len(new_pass) != 0
 
-        if user_is_editing_wrong_profile:
-            raise Exception
+        if password_too_short:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #----------------------
+
+        #----Check Fname and Lname----
+        fname_too_short = len(new_fname) < 0
+        lname_too_short = len(new_lname) < 0
+        
+        allowed_symbols = set(string.ascii_letters)
+
+        fname_has_invalid_symbols = any(character not in allowed_symbols for character in new_fname)
+        lname_has_invalid_symbols = any(character not in allowed_symbols for character in new_lname)
+
+        if fname_too_short or lname_too_short or fname_has_invalid_symbols or lname_has_invalid_symbols:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #-----------------------------
+
+        #----Check the username----
+        allowed_symbols = set(string.ascii_letters + string.digits) # Constructs a set filled with alphanumeric symbols
+
+        username_contains_invalid_symbols = any(character not in allowed_symbols for character in new_username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
+        username_length_invalid = (len(new_username) > 20 or len(new_username) < 5) and len(new_username) != 0
+        
+        if username_contains_invalid_symbols or username_length_invalid:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #--------------------------
+
+        #----Check the bio----
+        bio_size_invalid = len(new_bio) < 0 or len(new_bio) > 300
+
+        if bio_size_invalid:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+        #---------------------
     except:
-        return jsonify({"success" : False}), 400 #Backend rejects input
+        return jsonify({"success" : None}), 400 #An error occurred
     #----------------
     
     connection_to_db = psycopg2.connect(DATABASE_URL)
@@ -318,6 +445,8 @@ def saveProfileChanges():
             ids_dont_match = int(id_in_table) != int(current_user.id)
 
             if usernames_match and ids_dont_match: # Username is already taken
+                db_cursor.close()
+                connection_to_db.close()
                 return jsonify({"success" : False}) # Reject input
 
         db_cursor.execute("UPDATE user_info SET Username = %s WHERE UserID = %s", (new_username, current_user.id)) # Change the username
@@ -356,14 +485,15 @@ Searches the database for a given username and returns either the profile URL of
 @webApp.route("/search/<username>", methods = ["GET"])
 @login_required
 def searchForUser(username):
-    #--Input checks--
-    try:
-        float(username) # Attempts to turn the given username into a float
-        return jsonify({"success" : False}) # Failed input check (given a number as input)
-    except:
-        if (len(username) > 100 or len(username) <= 0):
-            return jsonify({"success" : False}) # Failed input check (string length invalid)
-    #----------------
+    #--Input checks (check the given username)--
+    allowed_symbols = set(string.ascii_letters + string.digits) # Constructs a set filled with alphanumeric symbols
+
+    username_contains_invalid_symbols = any(character not in allowed_symbols for character in username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
+    username_length_invalid = (len(username) > 20 or len(username) < 5)
+    
+    if username_contains_invalid_symbols or username_length_invalid:
+        return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+    #-------------------------------------------
 
     #--Check the database for requested user--
     connection_to_db = psycopg2.connect(DATABASE_URL)
@@ -385,19 +515,28 @@ def searchForUser(username):
     return jsonify({"success" : False}) # Did not find specified username
 
 """
-Function runs when the user submits their log in form
+Function runs when the user submits their log in form.
 """
 @webApp.route("/loginSubmit", methods = ["POST"])
 def onLoginSubmit():
-    #--Gets the submitted form details--
-    username = request.form["username"] # Gets the sent input from the one named "username"
-    password = request.form["password"] # Gets the sent input from the one named "password"
-    #-----------------------------------
+    #--Input checks--
+    try:
+        #--Gets the submitted form details--
+        username = request.form["username"] # Gets the sent input from the one named "username"
+        password = request.form["password"] # Gets the sent input from the one named "password"
+        #-----------------------------------
 
-    #--Make some initial input checks to potentially save time reading the DB--
-    if len(username) > 30 or len(username) <= 0 or len(password) > 200 or len(password) <= 0:
-        return jsonify({"success" : False}) # Return a status message in JSON format
-    #--------------------------------------------------------------------------
+        allowed_symbols = set(string.ascii_letters + string.digits) # Constructs a set filled with alphanumeric symbols
+
+        username_contains_invalid_symbols = any(character not in allowed_symbols for character in username) # any() returns true if there exists a character in username that is not in allowed_symbols. Checks for every character until one is found or all chars are checked
+        username_length_invalid = (len(username) > 20 or len(username) < 5)
+        password_length_invalid = len(password) < 6
+
+        if username_contains_invalid_symbols or username_length_invalid or password_length_invalid:
+            return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
+    except:
+        return jsonify({"success" : None}) # Let the front-end know that an error occurred
+    #----------------
 
     #--Checks the database to see if any match the login form--
     connection_to_db = psycopg2.connect(DATABASE_URL)
@@ -421,7 +560,7 @@ def onLoginSubmit():
     #----------------------------------------------------------
 
     #--Return a status message in JSON format--
-    return jsonify({"success" : False})
+    return jsonify({"success" : False}) # No user with the entered username and password were found
     #------------------------------------------
 
 """
@@ -441,6 +580,9 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
     #--Check if user_id is a number--
     try:
         user_id = int(user_id) # Converts the user_id parameter into an integer to allow comparison with entries in the database
+
+        if user_id < 1: # Invalid userID given
+            raise Exception
     except:
         return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
     #--------------------------------
@@ -493,11 +635,11 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
         user_id = int(user_id)
         #----------------------------
 
-        #--Are the inputs valid integers?--
+        #--Are the inputs valid IDs?--
         user_id_is_invalid = user_id < 1
         if user_id_is_invalid:
             raise Exception
-        #----------------------------------
+        #-----------------------------
     except:
         return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #---------------
@@ -583,6 +725,7 @@ Function that attempts to change the user's profile picture
 @webApp.route("/p/<user_id>/submit_pfp", methods = ["POST"])
 @login_required
 def changePFP(user_id):
+    #--Input check--
     try:
         user_id = int(user_id)
         user_is_editing_someones_profile = user_id != int(current_user.id) # UserID the user is editing is not their own
@@ -592,8 +735,6 @@ def changePFP(user_id):
         mime_type_is_incorrect = not (file_mime_type == "image/png") # Checks if the file's MIME type is a PNG
         new_pfp.seek(0) # Move the pointer back to the beginning of the file
         new_pfp_bytes = new_pfp.read() # Read the file (in bytes) and store it
-
-        #TODO: add file size check (too big = reject)
 
         if user_is_editing_someones_profile or mime_type_is_incorrect:
             raise Exception
@@ -635,8 +776,6 @@ def changeAttachment(user_id, attachment_number):
         new_attachment.seek(0) # Move the pointer back to the beginning of the file
         file_bytes = new_attachment.read() # Read the file (in bytes) and store it
 
-        #TODO: add file size check (too big = reject)
-
         if user_is_editing_someones_profile or mime_type_is_incorrect or attachment_number_is_invalid:
             raise Exception
     except:
@@ -664,26 +803,3 @@ def changeAttachment(user_id, attachment_number):
     connection_to_db.close()
 
     return send_file(path_or_file=io.BytesIO(file_bytes), mimetype="application/pdf", as_attachment=False) # Send the new attachment back to the front end so it can display it to the user
-
-"""
-"""
-"""
-@webApp.route("/signup", methods = ["GET"])
-def onSignup():
-    # TODO: this
-
-"""
-# Function runs when the front-end JS sends a POST request to the database (to update the DB with information).
-"""
-@webApp.route("/create_user", methods = ["POST"])
-def createUser():
-    # TODO: add functionality for when the user wants to make an account. store it to the DB
-
-"""
-# Function runs when the front-end JS sends a POST request to the database (to update the DB with information).
-"""
-@webApp.route("/delete_user", methods = ["POST"])
-def deleteUser():
-    # TODO: add functionality for when the user wants to delete their account. delete it from the DB
-"""
-#---------------------------------------------------

@@ -38,9 +38,15 @@
 
         <p id="error_message" style="color:red;" hidden>Unable to save changes. Please check your information and try again.</p>
         
+        <p id="something_went_wrong_message" style="color:red;" hidden>An error occurred. Please try again.</p>
+        
         <p id="pfp_error_message" style="color:red;" hidden>Only PNG files are allowed.</p>
 
+        <p id="pfp_too_large" style="color:red;" hidden>Only PNGs up to 16MB are accepted.</p>
+
         <p id="attachment_error_message" style="color:red;" hidden>Only PDF files are allowed.</p>
+
+        <p id="attachment_too_large" style="color:red;" hidden>Only PDFs up to 16MB are accepted.</p>
 
         <!-- Link to JS file -->
         <script src="{{ url_for('static', filename='js/profile.js') }}"></script>
