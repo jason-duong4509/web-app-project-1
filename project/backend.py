@@ -92,7 +92,7 @@ Configure the limiter to apply to all routes.
 """
 limiter = Limiter(
     get_remote_address, # Rate limit based on the client's IP address
-    app=webApp # Connect the limiter to this applcation
+    app=webApp, # Connect the limiter to this applcation
     default_limits = ["600 per hour"] # The default number of requests is 600 per hour (10 per min)
 )
 
