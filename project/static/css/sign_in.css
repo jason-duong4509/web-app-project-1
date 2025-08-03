@@ -1,0 +1,31 @@
+*{
+    font-family: "Arial";
+    text-align: center;
+}
+
+body{
+    background-color: #0a0b1b;
+}
+
+h1 {
+    position: fixed;
+    color: #ffffff;
+    top: 10px;
+    left: 33vw;
+    right: 33vw;
+    font-size: 5vh;
+    background-color: powderblue;
+}
+
+h2{
+    position: absolute;
+    top: 17vh;
+    left: 28vw;
+    right: 28vw;
+    color: #ffffff;
+    font-size: max(2vh, 2vw);
+}
+
+#sign_up_form{
+    position: absolute;
+}
