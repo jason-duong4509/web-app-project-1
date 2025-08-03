@@ -1,3 +1,4 @@
+/*--Default styles--*/
 *{
     font-family: "Arial";
     text-align: center;
@@ -7,25 +8,158 @@ body{
     background-color: #0a0b1b;
 }
 
-h1 {
-    position: fixed;
-    color: #ffffff;
-    top: 10px;
-    left: 33vw;
-    right: 33vw;
-    font-size: 5vh;
-    background-color: powderblue;
-}
-
 h2{
     position: absolute;
-    top: 17vh;
-    left: 28vw;
-    right: 28vw;
+    top: 50px;
+    left: 1px;
+    right: 1px;
     color: #ffffff;
-    font-size: max(2vh, 2vw);
+    font-size: 24px;
 }
 
 #sign_up_form{
     position: absolute;
+    border: 1px solid white;
+    left: 50%;
+    width: 465px;
+    height: 355px;
+    top: 110px;
+    transform: translate(-50%, 0%);
+    background-color: #0a0b1b;
 }
+
+h1 {
+    position: absolute;
+    color: #ffffff;
+    top: 10px;
+    left: 1px;
+    right: 1px;
+}
+
+#fname{
+    border: 1px solid white;
+    border-radius: 10px;
+    position: absolute;
+    transform: translate(-50%, 0%);
+    width: 415px;
+    height: 38px;
+    top: 30px;
+    background-color: #0a0b1b;
+}
+
+#fname::placeholder{
+    color: white;
+}
+
+#fname_label{
+    position: absolute;
+    transform: translate(-270%, 0%);
+    top: 10px;
+    color: white;
+}
+
+#lname{
+    position: absolute;
+    transform: translate(-50%, 0%);
+    width: 415px;
+    height: 38px;
+    top: 100px;
+    background-color: #0a0b1b;
+    border: 1px solid white;
+    border-radius: 10px;
+}
+
+#lname::placeholder{
+    color: white;
+}
+
+#lname_label{
+    position: absolute;
+    transform: translate(-274%, 0%);
+    top: 80px;
+    color: white;
+}
+
+#username{
+    position: absolute;
+    transform: translate(-50%, 0%);
+    width: 415px;
+    height: 38px;
+    top: 170px;
+    background-color: #0a0b1b;
+    border: 1px solid white;
+    border-radius: 10px;
+}
+
+#username::placeholder{
+    color: white;
+}
+
+#username_label{
+    position: absolute;
+    transform: translate(-285%, 0%);
+    top: 150px;
+    color: white;
+}
+
+#password{
+    position: absolute;
+    transform: translate(-50%, 0%);
+    width: 415px;
+    height: 38px;
+    top: 240px;
+    border: 1px solid white;
+    border-radius: 10px;
+    background-color: #0a0b1b;
+}
+
+#password::placeholder{
+    color:white;
+}
+
+#password_label{
+    position: absolute;
+    transform: translate(-300%, 0%);
+    top: 220px;
+    color: white;
+}
+
+#create_account{
+    position: absolute;
+    transform: translate(-105.6%, 0%);
+    width: 200px;
+    height: 38px;
+    top: 300px;
+    border-radius: 10px;
+}
+
+#login_button{
+    position: absolute;
+    transform: translate(5%, 0%);
+    width: 200px;
+    height: 38px;
+    top: 300px;
+    border-radius: 10px;
+}
+
+#improper_details_text{
+    position: absolute;
+    top: 460px;
+    left: 50%;
+    width: 500px;
+    transform: translate(-50%, 0%);
+}
+/*------------------*/
+
+/*--Dynamic styles--*/
+@media (max-width: 516px){
+    #sign_up_form{
+        top: 130px;
+    }
+
+    #improper_details_text{
+        width: 465px;
+        top: 480px;
+    }
+}
+/*------------------*/
