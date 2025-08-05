@@ -1,1 +1,86 @@
 
+/*--Default styles--*/
+*{
+    font-family: "Arial";
+    text-align: center;
+}
+
+body{
+    background-color: #0a0b1b;
+}
+
+h1{
+    position: absolute;
+    color: white;
+    left: 1px;
+    right: 1px;
+    top: 10px;
+}
+
+#login_form{
+    position: absolute;
+    border: 1px solid white;
+    left: 50%;
+    width: 465px;
+    height: 190px;
+    top: 110px;
+    transform: translate(-50%, 0%);
+    background-color: #0a0b1b;
+}
+
+#username{
+    background-color: #0a0b1b;
+    border: 1px solid white;
+    border-radius: 10px;
+    position: absolute;
+    transform: translate(-50%, 0%);
+    width: 415px;
+    height: 38px;
+    top: 15px;
+}
+
+#username::placeholder{
+    color: white;
+}
+
+#username[type="text"]{
+    color: white;
+}
+
+#password{
+    background-color: #0a0b1b;
+    border: 1px solid white;
+    border-radius: 10px;
+    position: absolute;
+    transform: translate(-50%, 0%);
+    width: 415px;
+    height: 38px;
+    top: 75px;
+}
+
+#password::placeholder{
+    color: white;
+}
+
+#password[type="password"]{
+    color: white;
+}
+
+#login_button{
+    position: absolute;
+    transform: translate(5%, 0%);
+    width: 200px;
+    height: 38px;
+    top: 135px;
+    border-radius: 10px;
+}
+
+#sign_up_button{
+    position: absolute;
+    transform: translate(-105.5%, 0%);
+    width: 200px;
+    height: 38px;
+    top: 246px;
+    border-radius: 10px;
+}
+/*------------------*/

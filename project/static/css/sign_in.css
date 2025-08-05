@@ -138,7 +138,7 @@ h1 {
     transform: translate(5%, 0%);
     width: 200px;
     height: 38px;
-    top: 300px;
+    top: 410px;
     border-radius: 10px;
 }
 
@@ -160,6 +160,10 @@ h1 {
     #improper_details_text{
         width: 465px;
         top: 480px;
+    }
+
+    #login_button{
+        top: 430px;
     }
 }
 /*------------------*/
