@@ -51,6 +51,10 @@ h1 {
     color: white;
 }
 
+#fname[type="text"]{
+    color: white;
+}
+
 #fname_label{
     position: absolute;
     transform: translate(-270%, 0%);
@@ -70,6 +74,10 @@ h1 {
 }
 
 #lname::placeholder{
+    color: white;
+}
+
+#lname[type="text"]{
     color: white;
 }
 
@@ -95,6 +103,10 @@ h1 {
     color: white;
 }
 
+#username[type="text"]{
+    color: white;
+}
+
 #username_label{
     position: absolute;
     transform: translate(-285%, 0%);
@@ -114,6 +126,10 @@ h1 {
 }
 
 #password::placeholder{
+    color:white;
+}
+
+#password[type="password"]{
     color:white;
 }
 
