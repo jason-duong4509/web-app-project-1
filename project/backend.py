@@ -171,7 +171,20 @@ Function that runs when the base webpage is accessed (the sign in page)
 @webApp.route("/", methods = ["GET"])
 def signup():
     if current_user.is_authenticated: # If the user has already logged in
-        return render_template("homepage.html")
+        connection_to_db = psycopg2.connect(DATABASE_URL)
+        db_cursor = connection_to_db.cursor()
+        db_cursor.execute("SELECT UserID, FirstName FROM user_info")
+        user_id_table = db_cursor.fetchall()
+        db_cursor.close()
+        connection_to_db.close()
+
+        for entry in user_id_table: # user_id_table = [(UserID, FirstName), ...]
+            UserID = entry[0]
+            FirstName = entry[1]
+            if int(UserID) == int(current_user.id): # Found the desired user
+                if len(FirstName) > 17: # First name is really long
+                    FirstName =  FirstName[0:17] + "..." # Grab the first 17 characters 
+                return render_template("homepage.html", fname=FirstName)
 
     return render_template("sign_in.html")
 
@@ -181,7 +194,20 @@ Function runs if the user clicks on the login page (webpage whose URL ends with 
 @webApp.route("/login", methods = ["GET"])
 def onLogin():
     if current_user.is_authenticated: # If the user has already logged in
-        return render_template("homepage.html")
+        connection_to_db = psycopg2.connect(DATABASE_URL)
+        db_cursor = connection_to_db.cursor()
+        db_cursor.execute("SELECT UserID, FirstName FROM user_info")
+        user_id_table = db_cursor.fetchall()
+        db_cursor.close()
+        connection_to_db.close()
+
+        for entry in user_id_table: # user_id_table = [(UserID, FirstName), ...]
+            UserID = entry[0]
+            FirstName = entry[1]
+            if int(UserID) == int(current_user.id): # Found the desired user
+                if len(FirstName) > 17: # First name is really long
+                    FirstName =  FirstName[0:17] + "..." # Grab the first 17 characters 
+                return render_template("homepage.html", fname=FirstName)
         
     return render_template("login.html")
 
@@ -358,7 +384,20 @@ The default webpage after logging in
 @webApp.route("/home", methods = ["GET"])
 @login_required
 def displayHomepage():
-    return render_template("homepage.html")
+    connection_to_db = psycopg2.connect(DATABASE_URL)
+    db_cursor = connection_to_db.cursor()
+    db_cursor.execute("SELECT UserID, FirstName FROM user_info")
+    user_id_table = db_cursor.fetchall()
+    db_cursor.close()
+    connection_to_db.close()
+
+    for entry in user_id_table: # user_id_table = [(UserID, FirstName), ...]
+        UserID = entry[0]
+        FirstName = entry[1]
+        if int(UserID) == int(current_user.id): # Found the desired user
+            if len(FirstName) > 17: # First name is really long
+                FirstName =  FirstName[0:17] + "..." # Grab the first 17 characters 
+            return render_template("homepage.html", fname=FirstName)
 
 """
 """
