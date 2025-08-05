@@ -91,3 +91,11 @@ h1{
     right: 1px;
 }
 /*------------------*/
+
+/*--Dynamic styles--*/
+@media (max-height: 360px){
+    body{
+        height: 350px;
+    }
+}
+/*------------------*/

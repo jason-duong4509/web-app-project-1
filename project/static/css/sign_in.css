@@ -182,4 +182,10 @@ h1 {
         top: 430px;
     }
 }
+
+@media (max-height: 550px){
+    body{
+        height: 530px;
+    }
+}
 /*------------------*/

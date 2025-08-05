@@ -56,6 +56,14 @@ h2{
 #profile_button{
     color: white;
 }
+
+#error_message{
+    position: absolute;
+    top: 50vh;
+    left: 50%;
+    width: 400px;
+    transform: translate(-50%, 110%);
+}
 /*------------------*/
 
 /*--Dynamic styles--*/
@@ -65,12 +73,19 @@ h2{
     }
 
     h2{
-        top: 300px;
-        height: 120px;
+        top: 90px;
     }
 
     #search_bar{
         top: 90px;
+    }
+
+    #error_message{
+        top: 90px;
+    }
+
+    body{
+        height: 170px;
     }
 }
 /*------------------*/
