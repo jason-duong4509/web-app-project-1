@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Name Of Website</title>
+        <title>Peeps Finder</title>
         <!-- Links to the CSS file -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
     </head>
     
     <body>
-        <h1>Name Of Website</h1>
-        <h2>Login</h2>
+        <h1>Login to Peeps Finder</h1>
         <!-- Login text box -->
         <form id="login_form">
             <input type="text" id="username" name="username" placeholder="Username"><br>
             <input type="password" id="password" name="password" placeholder="Password"><br>
-            <input type="submit" value="Login">
+            <input type="submit" id="login_button" value="Login">
         </form>
 
         <p id="incorrect_login_details_text" style="color:red;" hidden>Incorrect login details. Please check your login information and try again.</p>
@@ -21,7 +20,7 @@
 
         <!-- Back button that goes to the create account page -->
         <form action="/" method="GET">
-            <input type="submit" value="Sign Up">
+            <input type="submit" id="sign_up_button" value="Sign Up">
         </form>
 
         <!-- Link to the JS file -->

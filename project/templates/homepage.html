@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Name Of Website</title>
+        <title>Peeps Finder</title>
         <!-- Links to the CSS file -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/homepage.css') }}">
     </head>
     
     <body>
-        <h1>Name Of Website</h1>
-        <h2>homepage</h2>
+        <h2>Welcome {{fname}}!</h2>
 
         <select id="options" name="chosen_option" form="options_form">
             <option selected disabled hidden>Options</option>
-            <option value="log_out">Log Out</option>
-            <option value="profile">Profile</option>
+            <option id="logout_button" value="log_out">Log Out</option>
+            <option id="profile_button" value="profile">Profile</option>
         </select>
         
         <input type="text" id="search_bar" placeholder="Search for Users">
