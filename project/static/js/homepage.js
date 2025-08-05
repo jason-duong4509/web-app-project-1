@@ -21,8 +21,9 @@ document.getElementById("search_bar").addEventListener("keypress", async event =
         event.preventDefault();
         //--Input checking--
         let regex = /^[a-zA-Z0-9]+$/; //Define an alphanumeric regex
-        const invalidSearchLength = document.getElementById("search_bar").value.length > 20 || document.getElementById("search_bar").value.length < 5;
-        const invalidSearchFormat = !(regex.test(document.getElementById("search_bar").value)); //Returns true if the username matches the regular expression, then negated and stored in the variable
+        const userInput = document.getElementById("search_bar").value;
+        const invalidSearchLength = userInput.length > 20 || userInput.length < 5;
+        const invalidSearchFormat = !(regex.test(userInput)); //Returns true if the username matches the regular expression, then negated and stored in the variable
 
         if (invalidSearchLength || invalidSearchFormat){ //Form failed front-end checks
             document.getElementById("error_message").hidden = false; //Display message to user
