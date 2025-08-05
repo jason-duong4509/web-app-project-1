@@ -1,0 +1,38 @@
+/*--Default styles--*/
+*{
+    font-family: "Arial";
+    text-align: center;
+}
+
+body{
+    background-color: #0a0b1b;
+}
+
+h1{
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    color: white;
+}
+
+p{
+    position: absolute;
+    color: white;
+}
+
+#user_details_form{
+    position: absolute;
+    background-color: #0a0b1b;
+    border: 1px solid white;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    border-radius: 10px;
+    height: 355px;
+    width: 465px;
+    top: 100px;
+}
+/*------------------*/
+
+/*--Dynamic styles--*/
+
+/*------------------*/
