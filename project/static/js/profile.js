@@ -460,9 +460,9 @@ document.getElementById("profile_info").addEventListener("submit", async event =
     const invalidFnameFormat = !(regex.test(document.getElementById("fname").value));
     const invalidLnameFormat = !(regex.test(document.getElementById("lname").value));
 
-    const passwordTooShort = document.getElementById("password").value < 6 && document.getElementById("password").value != 0;
+    const passwordTooShort = document.getElementById("password").value.length < 6 && document.getElementById("password").value.length != 0;
 
-    const bioTooLong = document.getElementById("bio").value > 300
+    const bioTooLong = document.getElementById("bio").value.length > 300
 
     if (invalidUsernameLength || invalidUsernameFormat || invalidFnameFormat || invalidFnameLength || invalidLnameLength || invalidLnameFormat || passwordTooShort || bioTooLong){ //Form failed front-end checks
         document.getElementById("error_message").hidden = false; //Display message to user

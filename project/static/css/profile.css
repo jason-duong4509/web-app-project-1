@@ -38,11 +38,51 @@ body{
 }
 
 #fname{
-    
+    background-color: blanchedalmond;
+    border: none;
+    font-size: 30px;
+    text-align: right;
+    width: 300px;
+    transform: translate(-20%,75%);
+}
+
+#fname:disabled{
+    color: black;
 }
 
 #lname{
-    
+    background-color: blanchedalmond;
+    border: none;
+    font-size: 30px;
+    text-align: left;
+    width: 300px;
+    transform: translate(85%, -75%);
+}
+
+#lname:disabled{
+    color: black;
+}
+
+#bio_label{
+    font-size: 25px;
+    position: absolute;
+    transform: translate(-570%, 200%);
+}
+
+#bio{
+    background-color: blanchedalmond;
+    border: none;
+    font-size: 20px;
+    position:absolute;
+    transform: translate(-47.2%, 100%);
+    width: 790px;
+    height: 100px;
+    text-align: left;
+    resize: none;
+}
+
+#bio:disabled{
+    color: black;
 }
 /*------------------*/
 
