@@ -15,13 +15,13 @@
         <p id="error_message" style="color:red" hidden>Account credentials are invalid.</p>
 
         <form id="user_details_form">
-            <input name="username" placeholder="Username">
-            <input type="password" name="password" placeholder="Password">
-            <button type="submit">Delete Account</button>
+            <input id="username" type="text" name="username" placeholder="Username">
+            <input id="password" type="password" name="password" placeholder="Password">
+            <button id="delete_account_button" type="submit">Delete Account</button>
         </form>
 
         <form action="/p/{{user_id}}" method="GET">
-            <button type="submit">Cancel</button>
+            <button id="cancel_button" type="submit">Cancel</button>
         </form>
 
         <!-- Link to JS file -->
