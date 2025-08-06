@@ -7,6 +7,7 @@
 body{
     /*background-color: #0a0b1b;*/
     background-color: blanchedalmond;
+    height: 1000px;
 }
 
 #profile_picture{
@@ -21,11 +22,12 @@ body{
 
 #edit_profile_button{
     position: absolute;
-    transform: translate(5%, 0%);
+    transform: translate(0%, -690%);
     width: 200px;
     height: 38px;
     top: 410px;
     border-radius: 10px;
+    font-size: 17px;
 }
 
 #back_button{
@@ -35,6 +37,7 @@ body{
     top: 20px;
     transform: translate(-550%, 0%);
     border-radius: 10px;
+    font-size: 17px;
 }
 
 #fname{
@@ -43,7 +46,7 @@ body{
     font-size: 30px;
     text-align: right;
     width: 300px;
-    transform: translate(-20%,75%);
+    transform: translate(-20%, 145%);
 }
 
 #fname:disabled{
@@ -56,7 +59,7 @@ body{
     font-size: 30px;
     text-align: left;
     width: 300px;
-    transform: translate(85%, -75%);
+    transform: translate(85%, -5%);
 }
 
 #lname:disabled{
@@ -83,6 +86,32 @@ body{
 
 #bio:disabled{
     color: black;
+}
+
+#attachments_label{
+    font-size: 25px;
+    position: absolute;
+    transform: translate(-268%, 700%);
+}
+
+#username{
+    border: none;
+    background: blanchedalmond;
+    text-align: left;
+    font-size: 17px;
+    position: absolute;
+    transform: translate(125%, 0%);
+    width: 185px;
+}
+
+#username:disabled{
+    color: black;
+}
+
+#username_label{
+    position: absolute;
+    font-size: 17px;
+    transform: translate(175%, 6%);
 }
 /*------------------*/
 

@@ -17,7 +17,7 @@
         </form>
 
         <form id="profile_info">
-            <label for="username">Username:</label>
+            <label id="username_label" for="username">Username:</label>
             <input type="text" name="username" id="username" value="{{username}}" placeholder="{{username}}" disabled><br><br>
             <input type="text" name="fname" id="fname" value="{{fname}}" placeholder="{{fname}}" disabled><br><br>
             <input type="text" name="lname" id="lname" value="{{lname}}" placeholder="{{lname}}" disabled><br><br>
@@ -25,10 +25,11 @@
             <textarea name="bio" id="bio" placeholder="{{bio}}" disabled>{{bio}}</textarea>
             <label for="password" id="password_label" hidden>Password:</label>
             <input type="password" name="password" id="password" disabled hidden placeholder="********"><br><br>
+            <label id="attachments_label">Attachments</label>
             <input type="submit" id="save_changes" value="Save Changes" hidden disabled><br><br>
         </form>
 
-        <button type="button" id="edit_profile_button">Edit</button>
+        <button type="button" id="edit_profile_button">Edit Profile</button>
 
         <form action="{{url_for('onDeleteAccount', user_id=user_id)}}">
             <button id="delete_button" type="submit" disabled hidden>Delete Account</button>
