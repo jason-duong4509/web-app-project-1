@@ -654,9 +654,17 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
     for entry in profile_info_table: # profile_info_table = [(UserID, Bio, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType, Attachment1FileName, Attachment1ByteData, Attachment1MIMEType, Attachment2FileName, Attachment2ByteData, Attachment2MIMEType, Attachment3FileName, Attachment3ByteData, Attachment3MIMEType), ...]
         if entry[0] == user_id: # Found the desired user
             bio = entry[1] # Grab the bio from the DB
-            attach_1_name = secure_filename(entry[5])
-            attach_2_name = secure_filename(entry[8])
-            attach_3_name = secure_filename(entry[11])
+            attach_1_name = entry[5]
+            attach_2_name = entry[8]
+            attach_3_name = entry[11]
+
+            if attach_1_name != None: # Attachment exists
+                attach_1_name = secure_filename(entry[5])
+            if attach_2_name != None:
+                attach_2_name = secure_filename(entry[8])
+            if attach_3_name != None:
+                attach_3_name = secure_filename(entry[11])
+            
             break
     #------------------------------------------------------
 
