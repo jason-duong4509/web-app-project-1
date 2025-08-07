@@ -658,11 +658,11 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
             attach_2_name = entry[8]
             attach_3_name = entry[11]
 
-            if attach_1_name != "None": # Attachment exists
+            if attach_1_name != None: # Attachment exists
                 attach_1_name = secure_filename(entry[5])
-            if attach_2_name != "None":
+            if attach_2_name != None:
                 attach_2_name = secure_filename(entry[8])
-            if attach_3_name != "None":
+            if attach_3_name != None:
                 attach_3_name = secure_filename(entry[11])
             
             break
