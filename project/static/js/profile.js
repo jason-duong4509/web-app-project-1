@@ -1,11 +1,17 @@
 //--Retreive temporary values passed through HTML--
-userID = document.getElementById("userID").textContent; //Retreive the user_id for later
-currentUserID = document.getElementById("currentUserID").textContent; //Retreive for later
+const userID = document.getElementById("userID").textContent; //Retreive the user_id for later
+const currentUserID = document.getElementById("currentUserID").textContent; //Retreive for later
+const attachment1Filename = document.getElementById("attachment1Filename").textContent; //Retreive for later
+const attachment2Filename = document.getElementById("attachment2Filename").textContent; //Retreive for later
+const attachment3Filename = document.getElementById("attachment3Filename").textContent; //Retreive for later
 //-------------------------------------------------
 
 //--Remove the temporary HTML elements--
 document.getElementById("userID").remove();
 document.getElementById("currentUserID").remove();
+document.getElementById("attachment1Filename").remove();
+document.getElementById("attachment2Filename").remove();
+document.getElementById("attachment3Filename").remove();
 //--------------------------------------
 
 //--Check if the user is looking at their own profile--
@@ -30,14 +36,10 @@ fetch("/p/"+userID+"/get_pfp", {method : "GET"}) //Call fetch send a request to 
             newFileElement.id = "profile_picture";
             document.body.appendChild(newFileElement); //Add a new child to form (add the element to the HTML file)
             //----------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         }
 });
 
-fetch("/p/"+userID+"/get_attachment/1", {method : "GET"}) //Call fetch send a request to the backend
+fetch("/p/"+userID+"/get_attachment/1/0", {method : "GET"}) //Call fetch send a request to the backend
     .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
         if (responseFromFetch.status === 400){ //Input was rejected by backend
             return responseFromFetch.json(); //Extract the JSON data sent and send it to the next then()
@@ -48,10 +50,6 @@ fetch("/p/"+userID+"/get_attachment/1", {method : "GET"}) //Call fetch send a re
             newElement.id = "attachment_1";
             document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
             //----------------------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         } else{ //Backend sent the attachment
             return responseFromFetch.blob(); //Extract the binary data of the file that was sent and send it to the next then()
         }
@@ -59,19 +57,17 @@ fetch("/p/"+userID+"/get_attachment/1", {method : "GET"}) //Call fetch send a re
         if (dataExtractedFromResponse != null && dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
-            const newFileElement = document.createElement("iframe");
-            newFileElement.src = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            const newFileElement = document.createElement("a");
+            newFileElement.href = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
             newFileElement.id = "attachment_1";
+            newFileElement.target = "_blank"; //Opens a new window on click
+            newFileElement.textContent = attachment1Filename;
             document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
             //----------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         }
 });
 
-fetch("/p/"+userID+"/get_attachment/2", {method : "GET"}) //Call fetch send a request to the backend
+fetch("/p/"+userID+"/get_attachment/2/0", {method : "GET"}) //Call fetch send a request to the backend
     .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
         if (responseFromFetch.status === 400){ //Input was rejected by backend
             return responseFromFetch.json(); //Extract the JSON data sent and send it to the next then()
@@ -82,10 +78,6 @@ fetch("/p/"+userID+"/get_attachment/2", {method : "GET"}) //Call fetch send a re
             newElement.id = "attachment_2";
             document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
             //----------------------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         } else{ //Backend sent the attachment
             return responseFromFetch.blob(); //Extract the binary data of the file that was sent and send it to the next then()
         }
@@ -93,19 +85,17 @@ fetch("/p/"+userID+"/get_attachment/2", {method : "GET"}) //Call fetch send a re
         if (dataExtractedFromResponse != null && dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
-            const newFileElement = document.createElement("iframe");
-            newFileElement.src = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            const newFileElement = document.createElement("a");
+            newFileElement.href = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
             newFileElement.id = "attachment_2";
+            newFileElement.target = "_blank";
+            newFileElement.textContent = attachment2Filename;
             document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
             //----------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         }
 });
 
-fetch("/p/"+userID+"/get_attachment/3", {method : "GET"}) //Call fetch send a request to the backend
+fetch("/p/"+userID+"/get_attachment/3/0", {method : "GET"}) //Call fetch send a request to the backend
     .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
         if (responseFromFetch.status === 400){ //Input was rejected by backend
             return responseFromFetch.json(); //Extract the JSON data sent and send it to the next then()
@@ -116,10 +106,6 @@ fetch("/p/"+userID+"/get_attachment/3", {method : "GET"}) //Call fetch send a re
             newElement.id = "attachment_3";
             document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
             //----------------------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         } else{ //Backend sent the attachment
             return responseFromFetch.blob(); //Extract the binary data of the file that was sent and send it to the next then()
         }
@@ -127,15 +113,13 @@ fetch("/p/"+userID+"/get_attachment/3", {method : "GET"}) //Call fetch send a re
         if (dataExtractedFromResponse != null && dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
-            const newFileElement = document.createElement("iframe");
-            newFileElement.src = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            const newFileElement = document.createElement("a");
+            newFileElement.href = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
             newFileElement.id = "attachment_3";
+            newFileElement.target = "_blank";
+            newFileElement.textContent = attachment3Filename;
             document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
             //----------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         }
 });
 
@@ -261,17 +245,24 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
                     let currentAttach = document.getElementById("attachment_1");
 
+                    //--Call the backend to get the file name--
+                    const fileNameRequest = await fetch("/p/"+userID+"/get_attachment/1/1", {method: "GET"});
+                    const fileNameResponse = await fileNameRequest.json();
+
+                    if (!fileNameResponse.fileName){ //Does not exist -> URL was tampered by front-end and error was thrown
+                        window.location.replace(fileNameResponse.url); //Redirect to error page
+                    }
+                    //-----------------------------------------
+
                     //--Remove the old attachment and add the new one--
                     currentAttach.remove(); //Remove old attachment
-                    currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
+                    currentAttach = document.createElement("a"); //Remake the element to hold the new attachment
                     currentAttach.id = "attachment_1";
                     document.body.appendChild(currentAttach);
-                    currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    currentAttach.href = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    currentAttach.target = "_blank";
+                    currentAttach.textContent = fileNameResponse.fileName;
                     //-------------------------------------------------
-
-                    //--Style the new attachment--
-                    //todo: this
-                    //----------------------------
                     
                     document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
                     document.getElementById("attachment_too_large").hidden = true;
@@ -333,17 +324,24 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
                     let currentAttach = document.getElementById("attachment_2");
 
+                    //--Call the backend to get the file name--
+                    const fileNameRequest = await fetch("/p/"+userID+"/get_attachment/2/1", {method: "GET"});
+                    const fileNameResponse = await fileNameRequest.json();
+
+                    if (!fileNameResponse.fileName){ //Does not exist -> URL was tampered by front-end and error was thrown
+                        window.location.replace(fileNameResponse.url); //Redirect to error page
+                    }
+                    //-----------------------------------------
+
                     //--Remove the old attachment and add the new one--
                     currentAttach.remove(); //Remove old attachment
-                    currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
+                    currentAttach = document.createElement("a"); //Remake the element to hold the new attachment
                     currentAttach.id = "attachment_2";
                     document.body.appendChild(currentAttach);
-                    currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    currentAttach.href = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    currentAttach.target="_blank";
+                    currentAttach.textContent = fileNameResponse.fileName;
                     //-------------------------------------------------
-
-                    //--Style the new attachment--
-                    //todo: this
-                    //----------------------------
                     
                     document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
                     document.getElementById("attachment_too_large").hidden = true;
@@ -405,17 +403,24 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
                     let currentAttach = document.getElementById("attachment_3");
 
+                    //--Call the backend to get the file name--
+                    const fileNameRequest = await fetch("/p/"+userID+"/get_attachment/3/1", {method: "GET"});
+                    const fileNameResponse = await fileNameRequest.json();
+
+                    if (!fileNameResponse.fileName){ //Does not exist -> URL was tampered by front-end and error was thrown
+                        window.location.replace(fileNameResponse.url); //Redirect to error page
+                    }
+                    //-----------------------------------------
+
                     //--Remove the old attachment and add the new one--
                     currentAttach.remove(); //Remove old attachment
-                    currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
+                    currentAttach = document.createElement("a"); //Remake the element to hold the new attachment
                     currentAttach.id = "attachment_3";
                     document.body.appendChild(currentAttach);
-                    currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    currentAttach.href = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    currentAttach.target = "_blank";
+                    currentAttach.textContent = fileNameResponse.fileName;
                     //-------------------------------------------------
-
-                    //--Style the new attachment--
-                    //todo: this
-                    //----------------------------
                     
                     document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
                     document.getElementById("attachment_too_large").hidden = true;

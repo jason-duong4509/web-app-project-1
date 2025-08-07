@@ -91,7 +91,7 @@ body{
 #attachments_label{
     font-size: 25px;
     position: absolute;
-    transform: translate(-268%, 700%);
+    transform: translate(-269.5%, 700%);
 }
 
 #username{
@@ -112,6 +112,30 @@ body{
     position: absolute;
     font-size: 17px;
     transform: translate(175%, 6%);
+}
+
+#attachment_1{
+    position: absolute;
+    font-size: 20px;
+    transform: translate(100%, 850%);
+    width: 250px;
+    text-align: left;
+}
+
+#attachment_2{
+    position: absolute;
+    font-size: 20px;
+    transform: translate(208.5%, 850%);
+    width: 250px;
+    text-align: center;
+}
+
+#attachment_3{
+    position: absolute;
+    font-size: 20px;
+    transform: translate(317%, 850%);
+    width: 250px;
+    text-align: right;
 }
 /*------------------*/
 
