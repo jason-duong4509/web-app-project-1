@@ -163,6 +163,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                 document.getElementById("pfp_error_message").hidden = true;
             //----------------
             } else{//User input passed front-end check
+                console.log("PASSED FRONT END");
                 const formData = new FormData(); //Creates a FormData object to pass to the backend
                 formData.append("newPFP", newPFP); //Adds the new pfp file as a value with key 'newpfp'
 
