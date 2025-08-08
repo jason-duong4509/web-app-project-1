@@ -141,7 +141,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     pfp_input_btn.accept = "image/png"; //Window shown to user defaults to pngs only
     pfp_input_btn.id = "pfp_input_btn";
     pfp_input_btn.name = "pfp_input_btn";
-    document.getElementById("profile_picture").appendChild(pfp_input_btn);
+    document.body.appendChild(pfp_input_btn);
 
     //----Style pfp input button----
     //TODO: THIS
@@ -201,7 +201,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     attach_input_1.accept = "application/pdf"; //Window shown to user defaults to PDFs only
     attach_input_1.id = "attach_input_1";
     attach_input_1.name = "attach_input_1";
-    document.getElementById("attachment_1").appendChild(attach_input_1);
+    document.body.appendChild(attach_input_1);
 
     //----Style app input button----
     //TODO: THIS
@@ -280,7 +280,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     attach_input_2.accept = "application/pdf"; //Window shown to user defaults to PDFs only
     attach_input_2.id = "attach_input_2";
     attach_input_2.name = "attach_input_2";
-    document.getElementById("attachment_2").appendChild(attach_input_2);
+    document.body.appendChild(attach_input_2);
 
     //----Style app input button----
     //TODO: THIS
@@ -359,7 +359,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     attach_input_3.accept = "application/pdf"; //Window shown to user defaults to PDFs only
     attach_input_3.id = "attach_input_3";
     attach_input_3.name = "attach_input_3";
-    document.getElementById("attachment_3").appendChild(attach_input_3);
+    document.body.appendChild(attach_input_3);
 
     //----Style app input button----
     //TODO: THIS
