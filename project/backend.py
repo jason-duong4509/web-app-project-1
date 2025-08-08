@@ -816,8 +816,10 @@ def changePFP(user_id):
         new_pfp_bytes = new_pfp.read() # Read the file (in bytes) and store it
 
         if user_is_editing_someones_profile or mime_type_is_incorrect:
+            print(f"YOURE EDITING SOMEONE ELSE? {user_is_editing_someones_profile} YOUR MIME TYPE IS {file_mime_type}")
             raise Exception
     except:
+        print("SOMETHING BROKE")
         return jsonify({"success" : False}), 400 # Return 400 error code
     #---------------
 
