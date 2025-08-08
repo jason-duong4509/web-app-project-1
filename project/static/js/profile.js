@@ -156,9 +156,11 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
             const fileTooLarge = fileSize > 16000000; // checks if the file size is greater than 16MB
 
             if (wrongFileType){//User input failed front-end check
+                console.log("WRONG FILE");
                 document.getElementById("pfp_error_message").hidden = false;
                 document.getElementById("pfp_too_large").hidden = true;
             } else if (fileTooLarge){ //User input failed front-end check
+                console.log("TOO LARGE");
                 document.getElementById("pfp_too_large").hidden = false;
                 document.getElementById("pfp_error_message").hidden = true;
             //----------------
