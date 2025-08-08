@@ -427,6 +427,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     document.getElementById("password").disabled = false;
     document.getElementById("password").hidden = false;
     document.getElementById("password_label").hidden = false;
+    document.getElementById("username_label").hidden = false;
     //-------------------------------------------------------------
 
     //--Enable delete account button--
@@ -491,6 +492,7 @@ document.getElementById("profile_info").addEventListener("submit", async event =
             document.getElementById("password").disabled = true;
             document.getElementById("password").hidden = true;
             document.getElementById("password_label").hidden = true;
+            document.getElementById("username_label").hidden = true;
             //-----------------------------------------------------------------
 
             //--Updates each profile attribute to reflect the changes the user made--

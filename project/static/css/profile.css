@@ -108,6 +108,13 @@ body{
     color: black;
 }
 
+#username_label{
+    position: absolute;
+    font-size: 17px;
+    top: 10px;
+    transform: translate(177%, -4%);
+}
+
 #attachment_1{
     position: absolute;
     font-size: 20px;
