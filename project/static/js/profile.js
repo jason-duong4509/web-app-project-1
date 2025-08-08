@@ -157,6 +157,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
 
             if (wrongFileType){//User input failed front-end check
                 console.log("WRONG FILE");
+                console.log(fileMIMEType);
                 document.getElementById("pfp_error_message").hidden = false;
                 document.getElementById("pfp_too_large").hidden = true;
             } else if (fileTooLarge){ //User input failed front-end check
