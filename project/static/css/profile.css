@@ -22,7 +22,7 @@ body{
 
 #edit_profile_button{
     position: absolute;
-    transform: translate(0%, -690%);
+    transform: translate(-5%, -690%);
     width: 200px;
     height: 38px;
     top: 410px;
@@ -46,7 +46,7 @@ body{
     font-size: 30px;
     text-align: right;
     width: 300px;
-    transform: translate(-20%, 145%);
+    transform: translate(-23%, 145%);
 }
 
 #fname:disabled{
@@ -59,7 +59,7 @@ body{
     font-size: 30px;
     text-align: left;
     width: 300px;
-    transform: translate(85%, -5%);
+    transform: translate(82%, -5%);
 }
 
 #lname:disabled{
@@ -97,7 +97,7 @@ body{
 #username{
     border: none;
     background: blanchedalmond;
-    text-align: left;
+    text-align: right;
     font-size: 17px;
     position: absolute;
     transform: translate(125%, 0%);
@@ -106,12 +106,6 @@ body{
 
 #username:disabled{
     color: black;
-}
-
-#username_label{
-    position: absolute;
-    font-size: 17px;
-    transform: translate(175%, 6%);
 }
 
 #attachment_1{
@@ -136,6 +130,60 @@ body{
     transform: translate(317%, 850%);
     width: 250px;
     text-align: right;
+}
+
+#password{
+    position: absolute;
+    top: 10px;
+    background-color: blanchedalmond;
+    border: none;
+    transform: translate(125%, 150%);
+    font-size: 17px;
+    width: 185px;
+    text-align: right;
+}
+
+#password_label{
+    position: absolute;
+    font-size: 17px;
+    top: 10px;
+    transform: translate(190%, 170%);
+}
+
+#save_changes{
+    position: absolute;
+    transform: translate(-85%, -690%);
+    width: 200px;
+    height: 38px;
+    top: 410px;
+    border-radius: 10px;
+    font-size: 17px;
+}
+
+#delete_button{
+    position: absolute;
+    transform: translate(75%, -690%);
+    width: 200px;
+    height: 38px;
+    top: 410px;
+    border-radius: 10px;
+    font-size: 17px;
+}
+
+#pfp_input_btn{
+    all: inherit;
+}
+
+#attach_input_1{
+    all: inherit;
+}
+
+#attach_input_2{
+    all: inherit;
+}
+
+#attach_input_3{
+    all: inherit;
 }
 /*------------------*/
 
