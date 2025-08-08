@@ -237,6 +237,36 @@ body{
 #attach_input_3[type="file"]::file-selector-button{
     cursor: pointer;
 }
+
+#error_message{
+    position: absolute;
+    transform: translate(94%, -200%);
+}
+
+#something_went_wrong_message{
+    position: absolute;
+    transform: translate(235%, -200%);
+}
+
+#pfp_error_message{
+    position: absolute;
+    transform: translate(109%, -310%);
+}
+
+#pfp_too_large{
+    position: absolute;
+    transform: translate(65%, -310%);
+}
+
+#attachment_error_message{
+    position: absolute;
+    transform: translate(285%, 820%);
+}
+
+#attachment_too_large{
+    position: absolute;
+    transform: translate(193%, 820%);
+}
 /*------------------*/
 
 /*--Dynamic styles--*/
