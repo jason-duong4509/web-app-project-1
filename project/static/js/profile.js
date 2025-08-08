@@ -135,17 +135,13 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     //-------------------------------
 
     //--Set up elements that allow for change in profile picture--
-    document.getElementById("profile_picture").style.cursor = "pointer"; //Changes the pointer so it looks clickable
+    document.getElementById("profile_picture").style.opacity= 0.5; //Changes the pointer so it looks changable
     const pfp_input_btn = document.createElement("input");
     pfp_input_btn.type = "file";
     pfp_input_btn.accept = "image/png"; //Window shown to user defaults to pngs only
     pfp_input_btn.id = "pfp_input_btn";
     pfp_input_btn.name = "pfp_input_btn";
     document.body.appendChild(pfp_input_btn);
-
-    //----Style pfp input button----
-    //TODO: THIS
-    //------------------------------
 
     //----Add event listener----
     pfp_input_btn.addEventListener("change", async event => {
@@ -195,17 +191,13 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     //------------------------------------------------------------
 
     //--Set up elements that allow for change in attachment--
-    document.getElementById("attachment_1").style.cursor = "pointer"; //Changes the pointer so it looks clickable
+    document.getElementById("attachment_1").style.opacity = 0.5; //Changes the pointer so it looks changable
     const attach_input_1 = document.createElement("input");
     attach_input_1.type = "file";
     attach_input_1.accept = "application/pdf"; //Window shown to user defaults to PDFs only
     attach_input_1.id = "attach_input_1";
     attach_input_1.name = "attach_input_1";
     document.body.appendChild(attach_input_1);
-
-    //----Style app input button----
-    //TODO: THIS
-    //------------------------------
 
     //----Add event listener----
     attach_input_1.addEventListener("change", async event => {
@@ -274,17 +266,13 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     //-------------------------------------------------------
 
     //--Set up elements that allow for change in attachment--
-    document.getElementById("attachment_2").style.cursor = "pointer"; //Changes the pointer so it looks clickable
+    document.getElementById("attachment_2").style.opacity = 0.5; //Changes the pointer so it looks changable
     const attach_input_2 = document.createElement("input");
     attach_input_2.type = "file";
     attach_input_2.accept = "application/pdf"; //Window shown to user defaults to PDFs only
     attach_input_2.id = "attach_input_2";
     attach_input_2.name = "attach_input_2";
     document.body.appendChild(attach_input_2);
-
-    //----Style app input button----
-    //TODO: THIS
-    //------------------------------
 
     //----Add event listener----
     attach_input_2.addEventListener("change", async event => {
@@ -353,17 +341,13 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     //-------------------------------------------------------
 
     //--Set up elements that allow for change in attachment--
-    document.getElementById("attachment_3").style.cursor = "pointer"; //Changes the pointer so it looks clickable
+    document.getElementById("attachment_3").style.opacity = 0.5; //Changes the pointer so it looks changable
     const attach_input_3 = document.createElement("input");
     attach_input_3.type = "file";
     attach_input_3.accept = "application/pdf"; //Window shown to user defaults to PDFs only
     attach_input_3.id = "attach_input_3";
     attach_input_3.name = "attach_input_3";
     document.body.appendChild(attach_input_3);
-
-    //----Style app input button----
-    //TODO: THIS
-    //------------------------------
 
     //----Add event listener----
     attach_input_3.addEventListener("change", async event => {
@@ -544,12 +528,12 @@ document.getElementById("profile_info").addEventListener("submit", async event =
             document.getElementById("attach_input_3").remove();
             //---------------------------------------------------------------
             
-            //--Change the pointers back to normal--
-            document.getElementById("profile_picture").style.cursor = "default";
-            document.getElementById("attachment_1").style.cursor = "default";
-            document.getElementById("attachment_2").style.cursor = "default";
-            document.getElementById("attachment_3").style.cursor = "default";
-            //--------------------------------------
+            //--Change the attachments/profile picture back to normal--
+            document.getElementById("profile_picture").style.opacity = 1;
+            document.getElementById("attachment_1").style.opacity = 1;
+            document.getElementById("attachment_2").style.opacity = 1;
+            document.getElementById("attachment_3").style.opacity = 1;
+            //---------------------------------------------------------
 
             //--Hide the error messages--
             document.getElementById("error_message").hidden = true;

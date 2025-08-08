@@ -171,19 +171,64 @@ body{
 }
 
 #pfp_input_btn{
-    all: inherit;
+    width: 125px;
+    height: 125px;
+    border: 1px solid white;
+    border-radius: 100px;
+    position: absolute;
+    top: 50px;
+    transform: translate(-300%, 0%);
+    cursor: pointer;
+    opacity: 0;
+}
+
+#pfp_input_btn[type="file"]::file-selector-button{
+    cursor: pointer;
 }
 
 #attach_input_1{
-    all: inherit;
+    position: absolute;
+    font-size: 20px;
+    transform: translate(-150%, 940%);
+    width: 250px;
+    height: 22.67px;
+    text-align: left;
+    opacity: 0;
+    cursor: pointer;
+}
+
+#attach_input_1[type="file"]::file-selector-button{
+    cursor: pointer;
 }
 
 #attach_input_2{
-    all: inherit;
+    position: absolute;
+    font-size: 20px;
+    transform: translate(-41.3%, 940%);
+    width: 250px;
+    height: 22.67px;
+    text-align: left;
+    opacity: 0;
+    cursor: pointer;
+}
+
+#attach_input_2[type="file"]::file-selector-button{
+    cursor: pointer;
 }
 
 #attach_input_3{
-    all: inherit;
+    position: absolute;
+    font-size: 20px;
+    transform: translate(67.2%, 940%);
+    width: 250px;
+    height: 22.67px;
+    text-align: left;
+    opacity: 0;
+    cursor: pointer;
+}
+
+#attach_input_3[type="file"]::file-selector-button{
+    cursor: pointer;
 }
 /*------------------*/
 
