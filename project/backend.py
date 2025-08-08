@@ -764,6 +764,8 @@ def getAttachment(user_id, attachment_number, get_name):
                 
                 if attachment_1_mime_type == None: # No attachment exists
                     return jsonify({"exists" : False}), 404 # Sends 404 error code (does not currently exist)
+
+                print(f"AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH {attachment_1_mime_type}")
                 
                 attachment_1_byte_data = bytes(entry[6])
 
