@@ -7,7 +7,9 @@
 body{
     /*background-color: #0a0b1b;*/
     background-color: blanchedalmond;
-    height: 1000px;
+    width: 1050px;
+    height: 500px;
+    margin: auto;
 }
 
 #profile_picture{
