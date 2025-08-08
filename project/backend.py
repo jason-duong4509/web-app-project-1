@@ -760,10 +760,10 @@ def getAttachment(user_id, attachment_number, get_name):
         if UserID == user_id: # Found the desired user
             if attachment_number == 1: # Front-end requested attachment 1
                 attachment_1_mime_type = entry[7]
-                attachment_1_file_name = secure_filename(entry[5]) # Sanitize file name input
-                
                 if attachment_1_mime_type == None: # No attachment exists
                     return jsonify({"exists" : False}), 404 # Sends 404 error code (does not currently exist)
+
+                attachment_1_file_name = secure_filename(entry[5]) # Sanitize file name input
 
                 print(f"AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH {attachment_1_mime_type}")
                 
@@ -775,10 +775,10 @@ def getAttachment(user_id, attachment_number, get_name):
                 return send_file(path_or_file=io.BytesIO(bytes(attachment_1_byte_data)), download_name = attachment_1_file_name, mimetype=attachment_1_mime_type, as_attachment=False)
             elif attachment_number == 2: # Front-end requested attachment 2
                 attachment_2_mime_type = entry[10]
-                attachment_2_file_name = secure_filename(entry[8]) # Sanitize file name input
-
                 if attachment_2_mime_type == None: # No attachment exists
                     return jsonify({"exists" : False}), 404 # Sends 404 error code (does not currently exist)
+
+                attachment_2_file_name = secure_filename(entry[8]) # Sanitize file name input
 
                 print(f"AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH {attachment_2_mime_type}")
                 
@@ -790,10 +790,10 @@ def getAttachment(user_id, attachment_number, get_name):
                 return send_file(path_or_file=io.BytesIO(bytes(attachment_2_byte_data)), download_name = attachment_2_file_name, mimetype=attachment_2_mime_type, as_attachment=False)
             elif attachment_number == 3: # Front-end requested attachment 3
                 attachment_3_mime_type = entry[13]
-                attachment_3_file_name = secure_filename(entry[11]) # Sanitize file name input
-                
                 if attachment_3_mime_type == None: # No attachment exists
                     return jsonify({"exists" : False}), 404 # Sends 404 error code (does not currently exist)
+                    
+                attachment_3_file_name = secure_filename(entry[11]) # Sanitize file name input
                 
                 print(f"AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH {attachment_3_mime_type}")
 
