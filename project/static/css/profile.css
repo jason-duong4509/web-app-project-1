@@ -10,6 +10,7 @@ body{
     width: 1050px;
     height: 500px;
     margin: auto;
+    position: relative;
 }
 
 #profile_picture{
