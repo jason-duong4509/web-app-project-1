@@ -152,21 +152,17 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
             const fileMIMEType = newPFP.type; //Get the MIME type of the file
             const fileSize = newPFP.size; // Get the size of the file in bytes
 
-            const wrongFileType = fileMIMEType === "image/png";
+            const wrongFileType = !(fileMIMEType === "image/png");
             const fileTooLarge = fileSize > 16000000; // checks if the file size is greater than 16MB
 
             if (wrongFileType){//User input failed front-end check
-                console.log("WRONG FILE");
-                console.log(fileMIMEType);
                 document.getElementById("pfp_error_message").hidden = false;
                 document.getElementById("pfp_too_large").hidden = true;
             } else if (fileTooLarge){ //User input failed front-end check
-                console.log("TOO LARGE");
                 document.getElementById("pfp_too_large").hidden = false;
                 document.getElementById("pfp_error_message").hidden = true;
             //----------------
             } else{//User input passed front-end check
-                console.log("PASSED FRONT END");
                 const formData = new FormData(); //Creates a FormData object to pass to the backend
                 formData.append("newPFP", newPFP); //Adds the new pfp file as a value with key 'newpfp'
 
@@ -212,7 +208,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
             const fileMIMEType = newAttach.type; //Get the MIME type of the file
             const fileSize = newAttach.size; // Get the size of the file in bytes
 
-            const wrongFileType = fileMIMEType === "application/pdf";
+            const wrongFileType = !(fileMIMEType === "application/pdf");
             const fileTooLarge = fileSize > 16000000; // checks if the file size is greater than 16MB
 
             if (wrongFileType){//User input failed front-end check
@@ -287,7 +283,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
             const fileMIMEType = newAttach.type; //Get the MIME type of the file
             const fileSize = newAttach.size; // Get the size of the file in bytes
 
-            const wrongFileType = fileMIMEType === "application/pdf";
+            const wrongFileType = !(fileMIMEType === "application/pdf");
             const fileTooLarge = fileSize > 16000000; // checks if the file size is greater than 16MB
 
             if (wrongFileType){//User input failed front-end check
@@ -362,7 +358,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
             const fileMIMEType = newAttach.type; //Get the MIME type of the file
             const fileSize = newAttach.size; // Get the size of the file in bytes
 
-            const wrongFileType = fileMIMEType === "application/pdf";
+            const wrongFileType = !(fileMIMEType === "application/pdf");
             const fileTooLarge = fileSize > 16000000; // checks if the file size is greater than 16MB
 
             if (wrongFileType){//User input failed front-end check
