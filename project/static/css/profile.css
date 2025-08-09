@@ -8,7 +8,7 @@ body{
     /*background-color: #0a0b1b;*/
     background-color: blanchedalmond;
     width: 1050px;
-    height: 500px;
+    height: 1500px;
     margin: auto;
     position: relative;
 }
@@ -103,7 +103,7 @@ body{
     text-align: right;
     font-size: 17px;
     position: absolute;
-    transform: translate(125%, 0%);
+    transform: translate(125%, 35%);
     width: 185px;
 }
 
@@ -120,26 +120,35 @@ body{
 
 #attachment_1{
     position: absolute;
+    left: 0px;
+    top: 0px;
     font-size: 20px;
-    transform: translate(100%, 850%);
+    transform: translate(60%, 1834%);
     width: 250px;
     text-align: left;
+    overflow: none;
 }
 
 #attachment_2{
     position: absolute;
+    left: 0px;
+    top: 0px;
     font-size: 20px;
-    transform: translate(208.5%, 850%);
+    transform: translate(168.8%, 1834%);
     width: 250px;
     text-align: center;
+    overflow: none;
 }
 
 #attachment_3{
     position: absolute;
+    left: 0px;
+    top: 0px;
     font-size: 20px;
-    transform: translate(317%, 850%);
+    transform: translate(277.4%, 1834%);
     width: 250px;
     text-align: right;
+    overflow: none;
 }
 
 #password{
