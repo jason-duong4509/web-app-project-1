@@ -169,6 +169,14 @@ h1 {
     width: 500px;
     transform: translate(-50%, 0%);
 }
+
+#error_text{
+    position: absolute;
+    top: 460px;
+    left: 50%;
+    width: 500px;
+    transform: translate(-50%, 0%);
+}
 /*------------------*/
 
 /*--Dynamic styles--*/
