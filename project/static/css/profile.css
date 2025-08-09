@@ -78,7 +78,7 @@ body{
 #bio{
     background-color: blanchedalmond;
     border: none;
-    font-size: 20px;
+    font-size: 20px !important; /*Aims to disable auto font sizing on mobile devices*/
     position:absolute;
     transform: translate(-47.2%, 100%);
     width: 790px;
