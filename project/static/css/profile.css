@@ -255,32 +255,32 @@ body{
 
 #error_message{
     position: absolute;
-    transform: translate(94%, -200%);
+    transform: translate(74%, -151%);
 }
 
 #something_went_wrong_message{
     position: absolute;
-    transform: translate(235%, -200%);
+    transform: translate(193%, -151%);
 }
 
 #pfp_error_message{
     position: absolute;
-    transform: translate(109%, -310%);
+    transform: translate(57%, -300%);
 }
 
 #pfp_too_large{
     position: absolute;
-    transform: translate(65%, -310%);
+    transform: translate(30%, -300%);
 }
 
 #attachment_error_message{
     position: absolute;
-    transform: translate(285%, 820%);
+    transform: translate(235%, 815%);
 }
 
 #attachment_too_large{
     position: absolute;
-    transform: translate(193%, 820%);
+    transform: translate(156%, 815%);
 }
 /*------------------*/
 
