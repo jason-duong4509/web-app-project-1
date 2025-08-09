@@ -7,6 +7,10 @@
 
 body{
     background-color: #0a0b1b;
+    position: relative;
+    height: 170px;
+    width: 420px;
+    margin: auto;
 }
 
 h2{
@@ -82,10 +86,6 @@ h2{
 
     #error_message{
         top: 90px;
-    }
-
-    body{
-        height: 170px;
     }
 }
 /*------------------*/
