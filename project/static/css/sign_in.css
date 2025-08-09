@@ -181,6 +181,10 @@ h1 {
     #login_button{
         top: 430px;
     }
+
+    body{
+        width: 420px;
+    }
 }
 
 @media (max-height: 550px){
