@@ -400,7 +400,7 @@ def displayHomepage():
         UserID = entry[0]
         FirstName = entry[1]
         if int(UserID) == int(current_user.id): # Found the desired user
-            if len(FirstName) > 17: # First name is really long
+            if len(FirstName) > 20: # First name is really long
                 FirstName =  FirstName[0:17] + "..." # Grab the first 17 characters 
             return render_template("homepage.html", fname=FirstName)
 
@@ -645,6 +645,12 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
             fname = entry[1] # Grab the first name from the DB
             lname = entry[2] # Grab the last name from the DB
             username = entry[3] # Grab the username from the DB
+
+            if len(fname) > 20:
+                fname = fname[0:17] + "..."
+            
+            if len(lname) > 20:
+                lname = lname[0:17] + "..."
             break
     #---------------------------------------------------
 

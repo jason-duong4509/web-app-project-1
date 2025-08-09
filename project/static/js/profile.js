@@ -508,12 +508,27 @@ document.getElementById("profile_info").addEventListener("submit", async event =
                 document.getElementById("fname").value = document.getElementById("fname").placeholder; //Restore the attribute 
             } else{ //User did change attribute
                 document.getElementById("fname").placeholder = document.getElementById("fname").value; //Replace the attribute
+
+                
+                if (document.getElementById("fname").value.length > 20){ //the new fname is more than 20 characters long
+                    const shortenedFname = document.getElementById("fname").value.substring(0, 17) + "...";
+
+                    document.getElementById("fname").value = shortenedFname; //Replace the fname visible on the website with the shortend version
+                    document.getElementById("fname").placeholder = shortenedFname; //Replace the fname visible on the website with the shortend version
+                }
             }
 
             if (document.getElementById("lname").value.length == 0){//User did not change the attribute
                 document.getElementById("lname").value = document.getElementById("lname").placeholder; //Restore the attribute 
             } else{ //User did change attribute
                 document.getElementById("lname").placeholder = document.getElementById("lname").value; //Replace the attribute
+
+                if (document.getElementById("lname").value.length > 20){ //the new lname is more than 20 characters long
+                    const shortenedLname = document.getElementById("lname").value.substring(0, 17) + "...";
+
+                    document.getElementById("lname").value = shortenedLname; //Replace the lname visible on the website with the shortend version
+                    document.getElementById("lname").placeholder = shortenedLname; //Replace the lname visible on the website with the shortend version
+                }
             }
 
             if (document.getElementById("bio").value.length == 0){//User did not change the attribute
