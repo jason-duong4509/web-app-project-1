@@ -7,6 +7,9 @@
 body{
     background-color: #0a0b1b;
     position: relative;
+    width: 510px;
+    height: 530px;
+    margin: auto;
 }
 
 h2{
@@ -184,13 +187,7 @@ h1 {
     }
 
     body{
-        width: 430px;
-    }
-}
-
-@media (max-height: 550px){
-    body{
-        height: 530px;
+        width: 500px;
     }
 }
 /*------------------*/
