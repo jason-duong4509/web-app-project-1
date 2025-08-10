@@ -30,8 +30,8 @@ p{
     position: absolute;
     color: black;
     font-size: 20px;
-    transform: translate(-50%, -90%);
-    width: 400px;
+    transform: translate(-50%, -110%);
+    width: 420px;
     top: 50%;
     left: 50%;
 }

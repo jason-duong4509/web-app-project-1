@@ -161,7 +161,7 @@ Function that is called when flask throws a 429 HTTPS error (too many requests).
 """
 @webApp.errorhandler(429)
 def tooManyRequests(error_code):
-    return render_template("error.html", error_message="Too many requests have been made. Please try again later") # returns an error page to the user
+    return render_template("error.html", error_message="Too many requests have been made. Please try again later.") # returns an error page to the user
 
 """
 Function that is called when a 400 error code (invalid input) is sent to the front end
