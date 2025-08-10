@@ -5,7 +5,7 @@
 }
 
 body{
-    background-color: #0a0b1b;
+    background-color: blanchedalmond;
     height: 340px;
     position: relative;
     margin: auto;
@@ -16,12 +16,12 @@ h1{
     position: absolute;
     left: 1px;
     right: 1px;
-    color: white;
+    color: black;
 }
 
 p{
     position: absolute;
-    color: white;
+    color: black;
     left: 1px;
     right: 1px;
     top: 60px;
@@ -29,8 +29,8 @@ p{
 
 #user_details_form{
     position: absolute;
-    background-color: #0a0b1b;
-    border: 1px solid white;
+    background-color: blanchedalmond;
+    border: 1px solid black;
     left: 50%;
     transform: translate(-50%, 0%);
     border-radius: 10px;
@@ -43,38 +43,38 @@ p{
     width: 415px;
     height: 38px;
     position: absolute;
-    border: 1px solid white;
+    border: 1px solid black;
     border-radius: 10px;
-    background-color: #0a0b1b;
+    background-color: #f0f0f0;
     left: 50%;
     transform: translate(-50%, 30%);
 }
 
 #username::placeholder{
-    color: white;
+    color: black;
 }
 
 #username[type="text"]{
-    color: white;
+    color: black;
 }
 
 #password{
     width: 415px;
     height: 38px;
     position: absolute;
-    border: 1px solid white;
+    border: 1px solid black;
     border-radius: 10px;
-    background-color: #0a0b1b;
+    background-color: #f0f0f0;
     left: 50%;
     transform: translate(-50%, 170%);
 }
 
 #password::placeholder{
-    color: white;
+    color: black;
 }
 
 #password[type="password"]{
-    color: white;
+    color: black;
 }
 
 #delete_account_button{
@@ -83,6 +83,7 @@ p{
     width: 200px;
     height: 38px;
     border-radius: 10px;
+    background-color: #f0f0f0;
 }
 
 #cancel_button{
@@ -91,6 +92,7 @@ p{
     width: 200px;
     height: 38px;
     border-radius: 10px;
+    background-color: #f0f0f0;
 }
 
 #error_message{

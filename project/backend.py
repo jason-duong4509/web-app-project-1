@@ -147,7 +147,7 @@ Function that is called when the user accesses an invalid (does not exist) link.
 """
 @webApp.errorhandler(404) # Accessing invalid links returns a HTTPS 404 error (page not found error)
 def invalidLink(error_code):
-    return render_template("error.html", error_message="Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
+    return render_template("error.html", error_message="Uh oh! The linked you visited is not valid. Double check that you're using the right link.") # returns an error page to the user
 
 """
 Function that is called when the user uploads data larger than 16MB.
@@ -628,7 +628,7 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
         if user_id < 1: # Invalid userID given
             raise Exception
     except:
-        return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
+        return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid. Double check that you're using the right link.") # returns an error page to the user
     #--------------------------------
 
     #--Setup--
@@ -679,7 +679,7 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
 
     #--Check if user_id is valid input--
     if username == None: # user_id is not valid (user_id was not found in the DB)
-        return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
+        return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid. Double check that you're using the right link.") # returns an error page to the user
     #-----------------------------------
     
     return render_template("profile.html", attach_1_name = attach_1_name, attach_2_name = attach_2_name, attach_3_name = attach_3_name, user_id = user_id, current_user_id = current_user.id, username = username, fname = fname, lname = lname, bio = bio) # Return profile.html to the front end with all of the text placeholder values inserted into the file
