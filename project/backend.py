@@ -470,7 +470,7 @@ def saveProfileChanges():
             return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
         #---------------------
     except:
-        return jsonify({"success" : None}), 400 #An error occurred
+        return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #----------------
     
     connection_to_db = psycopg2.connect(DATABASE_URL)
@@ -821,12 +821,13 @@ def changePFP(user_id):
         new_pfp.seek(0) # Move the pointer back to the beginning of the file
         new_pfp_bytes = new_pfp.read() # Read the file (in bytes) and store it
 
-        if user_is_editing_someones_profile or mime_type_is_incorrect:
-            print(f"YOURE EDITING SOMEONE ELSE? {user_is_editing_someones_profile} YOUR MIME TYPE IS {file_mime_type}")
+        if user_is_editing_someones_profile:
             raise Exception
+        
+        if mime_type_is_incorrect:
+            return jsonify({"success" : False})
     except:
-        print("SOMETHING BROKE")
-        return jsonify({"success" : False}), 400 # Return 400 error code
+        return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #---------------
 
     connection_to_db = psycopg2.connect(DATABASE_URL)
@@ -866,10 +867,13 @@ def changeAttachment(user_id, attachment_number):
         new_attach_file_name = new_attachment.filename
         file_extension_incorrect = ".pdf" != new_attach_file_name[len(new_attach_file_name)-4:].lower()
 
-        if user_is_editing_someones_profile or mime_type_is_incorrect or attachment_number_is_invalid or file_extension_incorrect:
+        if user_is_editing_someones_profile or attachment_number_is_invalid:
             raise Exception
+        
+        if mime_type_is_incorrect or file_extension_incorrect:
+            return jsonify({"success" : False})
     except:
-        return jsonify({"success" : False}), 400 # Return 400 error code
+        return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #---------------
 
     connection_to_db = psycopg2.connect(DATABASE_URL)

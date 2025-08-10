@@ -171,9 +171,11 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     body : formData
                 });
 
-                if (response.status === 400){ //Backend rejected input
+                if (response.success === false){ //Backend rejected input
                     document.getElementById("pfp_error_message").hidden = false;//Display the error message to the user
                     document.getElementById("pfp_too_large").hidden = true;//Display to user
+                } else if (response.status === 400){//Backend rejected input due to front end tampering
+                    window.location.replace(results.url); //Send the user to the 400 error page
                 } else if (response.status === 413){ //Input is too large
                     document.getElementById("pfp_too_large").hidden = false;//Display to user
                     document.getElementById("pfp_error_message").hidden = true;//Display to user
@@ -227,9 +229,11 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     body : formData
                 });
 
-                if (response.status === 400){ //Backend rejected input
+                if (response.success === false){ //Backend rejected input
                     document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
                     document.getElementById("attachment_too_large").hidden = true;
+                } else if (response.status === 400){//Backend rejected input due to front end tampering
+                    window.location.replace(results.url); //Send the user to the 400 error page
                 } else if (response.status === 413){ //Input is too large
                     document.getElementById("attachment_too_large").hidden = false;
                     document.getElementById("attachment_error_message").hidden = true;
@@ -302,9 +306,11 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     body : formData
                 });
 
-                if (response.status === 400){ //Backend rejected input
+                if (response.success === false){ //Backend rejected input
                     document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
                     document.getElementById("attachment_too_large").hidden = true;
+                } else if(response.status === 400){//Backend rejected input due to front end tampering
+                    window.location.replace(results.url); //Send the user to the 400 error page
                 } else if(response.status === 413){ //Input is too large
                     document.getElementById("attachment_too_large").hidden = false;
                     document.getElementById("attachment_error_message").hidden = true;
@@ -377,10 +383,12 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     body : formData
                 });
 
-                if (response.status === 400){ //Backend rejected input
+                if (response.success === false){ //Backend rejected input
                     document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
                     document.getElementById("attachment_too_large").hidden = true;
-                } else if(response.status == 413){ //Input is too large
+                } else if (response.status === 400){ //Backend rejected input due to front end tampering
+                    window.location.replace(results.url); //Send the user to the 400 error page
+                } else if(response.status === 413){ //Input is too large
                     document.getElementById("attachment_too_large").hidden = false;
                     document.getElementById("attachment_error_message").hidden = true;
                 } else{ //Backend sent back a file to render
@@ -563,9 +571,8 @@ document.getElementById("profile_info").addEventListener("submit", async event =
             document.getElementById("delete_button").disabled = true;
             document.getElementById("delete_button").hidden = true;
             //---------------------------------
-        } else{ //An error occurred in the backend
-            document.getElementById("something_went_wrong_message").hidden = false; //Reveals the error message to the user
-            document.getElementById("error_message").hidden = true; //Hides the error message from the user if shown
+        } else{ //An error occurred in the backend as a result of malformed user input
+            window.location.replace(results.url); //Send the user to the 400 error page
         }
         //-------------------------
     }
