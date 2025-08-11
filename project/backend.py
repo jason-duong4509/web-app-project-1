@@ -37,6 +37,11 @@ Import the helper function get_remote_address to get the client's IP address. Th
 from flask_limiter.util import get_remote_address
 
 """
+Import werkzeug.secure_filename() to easily sanitize file name inputs.
+"""
+from werkzeug.utils import secure_filename
+
+"""
 Used to connect to the database.
 """
 import psycopg2
@@ -142,7 +147,7 @@ Function that is called when the user accesses an invalid (does not exist) link.
 """
 @webApp.errorhandler(404) # Accessing invalid links returns a HTTPS 404 error (page not found error)
 def invalidLink(error_code):
-    return render_template("error.html", error_message="Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
+    return render_template("error.html", error_message="Uh oh! The linked you visited is not valid. Double check that you're using the right link.") # returns an error page to the user
 
 """
 Function that is called when the user uploads data larger than 16MB.
@@ -156,7 +161,7 @@ Function that is called when flask throws a 429 HTTPS error (too many requests).
 """
 @webApp.errorhandler(429)
 def tooManyRequests(error_code):
-    return render_template("error.html", error_message="Too many requests have been made. Please try again later") # returns an error page to the user
+    return render_template("error.html", error_message="Too many requests have been made. Please try again later.") # returns an error page to the user
 
 """
 Function that is called when a 400 error code (invalid input) is sent to the front end
@@ -395,7 +400,7 @@ def displayHomepage():
         UserID = entry[0]
         FirstName = entry[1]
         if int(UserID) == int(current_user.id): # Found the desired user
-            if len(FirstName) > 17: # First name is really long
+            if len(FirstName) > 20: # First name is really long
                 FirstName =  FirstName[0:17] + "..." # Grab the first 17 characters 
             return render_template("homepage.html", fname=FirstName)
 
@@ -465,7 +470,7 @@ def saveProfileChanges():
             return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
         #---------------------
     except:
-        return jsonify({"success" : None}), 400 #An error occurred
+        return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #----------------
     
     connection_to_db = psycopg2.connect(DATABASE_URL)
@@ -623,13 +628,13 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
         if user_id < 1: # Invalid userID given
             raise Exception
     except:
-        return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
+        return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid. Double check that you're using the right link.") # returns an error page to the user
     #--------------------------------
 
     #--Setup--
     connection_to_db = psycopg2.connect(DATABASE_URL) # Connect to the DB
     db_cursor = connection_to_db.cursor() # Gets the cursor of the DB so that we can pass commands to the DB
-    username = fname = lname = bio = None
+    username = fname = lname = bio = attach_1_name = attach_2_name = attach_3_name = None
     #---------
 
     #--Gets relevant info about user_id from user_info--
@@ -640,6 +645,12 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
             fname = entry[1] # Grab the first name from the DB
             lname = entry[2] # Grab the last name from the DB
             username = entry[3] # Grab the username from the DB
+
+            if len(fname) > 20:
+                fname = fname[0:17] + "..."
+            
+            if len(lname) > 20:
+                lname = lname[0:17] + "..."
             break
     #---------------------------------------------------
 
@@ -649,6 +660,17 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
     for entry in profile_info_table: # profile_info_table = [(UserID, Bio, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType, Attachment1FileName, Attachment1ByteData, Attachment1MIMEType, Attachment2FileName, Attachment2ByteData, Attachment2MIMEType, Attachment3FileName, Attachment3ByteData, Attachment3MIMEType), ...]
         if entry[0] == user_id: # Found the desired user
             bio = entry[1] # Grab the bio from the DB
+            attach_1_name = entry[5]
+            attach_2_name = entry[8]
+            attach_3_name = entry[11]
+
+            if attach_1_name != None: # Attachment exists
+                attach_1_name = secure_filename(entry[5])
+            if attach_2_name != None:
+                attach_2_name = secure_filename(entry[8])
+            if attach_3_name != None:
+                attach_3_name = secure_filename(entry[11])
+            
             break
     #------------------------------------------------------
 
@@ -657,10 +679,10 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
 
     #--Check if user_id is valid input--
     if username == None: # user_id is not valid (user_id was not found in the DB)
-        return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid.\nDouble check that you're using the right link.") # returns an error page to the user
+        return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid. Double check that you're using the right link.") # returns an error page to the user
     #-----------------------------------
     
-    return render_template("profile.html", user_id = user_id, current_user_id = current_user.id, username = username, fname = fname, lname = lname, bio = bio) # Return profile.html to the front end with all of the text placeholder values inserted into the file
+    return render_template("profile.html", attach_1_name = attach_1_name, attach_2_name = attach_2_name, attach_3_name = attach_3_name, user_id = user_id, current_user_id = current_user.id, username = username, fname = fname, lname = lname, bio = bio) # Return profile.html to the front end with all of the text placeholder values inserted into the file
 
 """
 Function that returns the profile picture of a given user ID.
@@ -695,31 +717,37 @@ def getProfilePicture(user_id): # user_id = the user id in the URL when the requ
     connection_to_db.close()
     for entry in results_table: # entry = (UserID, ProfilePictureFileName, ProfilePictureByteData, ProfilePictureMIMEType)
         if entry[0] == user_id: # Found the desired user
-            return send_file(path_or_file=io.BytesIO(bytes(entry[2])), mimetype=entry[3], as_attachment=False)
+            return send_file(path_or_file=io.BytesIO(bytes(entry[2])), mimetype=entry[3], as_attachment=False, download_name = entry[1])
     #------------------------------------------------------
 
     return jsonify({"url" : url_for("get400WebPage")}), 400 # Reaches here if user_id is not found in the DB. Returns error code 400 (invalid input)
 
 """
-Function that returns the desired attachment of a given user ID.
+Function that returns the desired attachment or attachment name of a given user ID.
 Intended to be used alongisde /p/<userid>.
 """
-@webApp.route("/p/<user_id>/get_attachment/<attachment_number>", methods = ["GET"])
+@webApp.route("/p/<user_id>/get_attachment/<attachment_number>/<get_name>", methods = ["GET"])
 @login_required
-def getAttachment(user_id, attachment_number):
+def getAttachment(user_id, attachment_number, get_name):
     #--Input check--
     try:
         #--Are the inputs integers?--
         user_id = int(user_id)
         attachment_number = int(attachment_number)
+        get_name = int(get_name)
         #----------------------------
 
         #--Are the inputs valid integers?--
         attachment_number_is_invalid = attachment_number < 1 or attachment_number > 3
         user_id_is_invalid = user_id < 1
-        if attachment_number_is_invalid or user_id_is_invalid:
-            raise Exception
         #----------------------------------
+
+        #--Is get_name valid?--
+        get_name_invalid = get_name != 0 and get_name != 1
+        #----------------------
+
+        if attachment_number_is_invalid or user_id_is_invalid or get_name_invalid:
+            raise Exception
     except:
         return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #---------------
@@ -740,20 +768,38 @@ def getAttachment(user_id, attachment_number):
                 attachment_1_mime_type = entry[7]
                 if attachment_1_mime_type == None: # No attachment exists
                     return jsonify({"exists" : False}), 404 # Sends 404 error code (does not currently exist)
+
+                attachment_1_file_name = secure_filename(entry[5]) # Sanitize file name input
                 attachment_1_byte_data = bytes(entry[6])
-                return send_file(path_or_file=io.BytesIO(bytes(attachment_1_byte_data)), mimetype=attachment_1_mime_type, as_attachment=False)
+
+                if get_name == 1: # Front-end wants the file name
+                    return jsonify({"fileName" : attachment_1_file_name})
+
+                return send_file(path_or_file=io.BytesIO(bytes(attachment_1_byte_data)), download_name = attachment_1_file_name, mimetype=attachment_1_mime_type, as_attachment=False)
             elif attachment_number == 2: # Front-end requested attachment 2
                 attachment_2_mime_type = entry[10]
                 if attachment_2_mime_type == None: # No attachment exists
                     return jsonify({"exists" : False}), 404 # Sends 404 error code (does not currently exist)
+
+                attachment_2_file_name = secure_filename(entry[8]) # Sanitize file name input
                 attachment_2_byte_data = bytes(entry[9])
-                return send_file(path_or_file=io.BytesIO(bytes(attachment_2_byte_data)), mimetype=attachment_2_mime_type, as_attachment=False)
+                
+                if get_name == 1: # Front-end wants the file name
+                    return jsonify({"fileName" : attachment_2_file_name})
+
+                return send_file(path_or_file=io.BytesIO(bytes(attachment_2_byte_data)), download_name = attachment_2_file_name, mimetype=attachment_2_mime_type, as_attachment=False)
             elif attachment_number == 3: # Front-end requested attachment 3
                 attachment_3_mime_type = entry[13]
                 if attachment_3_mime_type == None: # No attachment exists
                     return jsonify({"exists" : False}), 404 # Sends 404 error code (does not currently exist)
+
+                attachment_3_file_name = secure_filename(entry[11]) # Sanitize file name input
                 attachment_3_byte_data = bytes(entry[12])
-                return send_file(path_or_file=io.BytesIO(bytes(attachment_3_byte_data)), mimetype=attachment_3_mime_type, as_attachment=False)
+                
+                if get_name == 1: # Front-end wants the file name
+                    return jsonify({"fileName" : attachment_3_file_name})
+
+                return send_file(path_or_file=io.BytesIO(bytes(attachment_3_byte_data)), download_name = attachment_3_file_name, mimetype=attachment_3_mime_type, as_attachment=False)
     #-----------------------------------------------------------
 
     return jsonify({"url" : url_for("get400WebPage")}), 400 # Only reaches here if user_id did not match any in the DB. Returns error code 400 (invalid input)
@@ -775,10 +821,13 @@ def changePFP(user_id):
         new_pfp.seek(0) # Move the pointer back to the beginning of the file
         new_pfp_bytes = new_pfp.read() # Read the file (in bytes) and store it
 
-        if user_is_editing_someones_profile or mime_type_is_incorrect:
+        if user_is_editing_someones_profile:
             raise Exception
+        
+        if mime_type_is_incorrect:
+            return jsonify({"success" : False})
     except:
-        return jsonify({"success" : False}), 400 # Return 400 error code
+        return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #---------------
 
     connection_to_db = psycopg2.connect(DATABASE_URL)
@@ -815,10 +864,16 @@ def changeAttachment(user_id, attachment_number):
         new_attachment.seek(0) # Move the pointer back to the beginning of the file
         file_bytes = new_attachment.read() # Read the file (in bytes) and store it
 
-        if user_is_editing_someones_profile or mime_type_is_incorrect or attachment_number_is_invalid:
+        new_attach_file_name = new_attachment.filename
+        file_extension_incorrect = ".pdf" != new_attach_file_name[len(new_attach_file_name)-4:].lower()
+
+        if user_is_editing_someones_profile or attachment_number_is_invalid:
             raise Exception
+        
+        if mime_type_is_incorrect or file_extension_incorrect:
+            return jsonify({"success" : False})
     except:
-        return jsonify({"success" : False}), 400 # Return 400 error code
+        return jsonify({"url" : url_for("get400WebPage")}), 400 # Returns error code 400 (invalid input)
     #---------------
 
     connection_to_db = psycopg2.connect(DATABASE_URL)
@@ -826,13 +881,10 @@ def changeAttachment(user_id, attachment_number):
 
     #--Update profile info for the user in the DB--
     if attachment_number == 1: # Change attachment 1
-        new_attach_file_name = "%i_attachment_1.pdf" % attachment_number
         db_cursor.execute("UPDATE profile_info SET Attachment1FileName = %s, Attachment1ByteData = %s, Attachment1MIMEType = %s WHERE UserID = %s", (new_attach_file_name, psycopg2.Binary(file_bytes), "application/pdf", user_id))
     elif attachment_number == 2: # Change attachment 2
-        new_attach_file_name = "%i_attachment_2.pdf" % attachment_number
         db_cursor.execute("UPDATE profile_info SET Attachment2FileName = %s, Attachment2ByteData = %s, Attachment2MIMEType = %s WHERE UserID = %s", (new_attach_file_name, psycopg2.Binary(file_bytes), "application/pdf", user_id))
     elif attachment_number == 3: # Change attachment 3
-        new_attach_file_name = "%i_attachment_3.pdf" % attachment_number
         db_cursor.execute("UPDATE profile_info SET Attachment3FileName = %s, Attachment3ByteData = %s, Attachment3MIMEType = %s WHERE UserID = %s", (new_attach_file_name, psycopg2.Binary(file_bytes), "application/pdf", user_id))
         
     connection_to_db.commit()
@@ -841,4 +893,4 @@ def changeAttachment(user_id, attachment_number):
     db_cursor.close()
     connection_to_db.close()
 
-    return send_file(path_or_file=io.BytesIO(file_bytes), mimetype="application/pdf", as_attachment=False) # Send the new attachment back to the front end so it can display it to the user
+    return send_file(path_or_file=io.BytesIO(file_bytes), mimetype="application/pdf", download_name = new_attach_file_name, as_attachment=False) # Send the new attachment back to the front end so it can display it to the user

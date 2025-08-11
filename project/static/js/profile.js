@@ -1,11 +1,17 @@
 //--Retreive temporary values passed through HTML--
-userID = document.getElementById("userID").textContent; //Retreive the user_id for later
-currentUserID = document.getElementById("currentUserID").textContent; //Retreive for later
+const userID = document.getElementById("userID").textContent; //Retreive the user_id for later
+const currentUserID = document.getElementById("currentUserID").textContent; //Retreive for later
+const attachment1Filename = document.getElementById("attachment1Filename").textContent; //Retreive for later
+const attachment2Filename = document.getElementById("attachment2Filename").textContent; //Retreive for later
+const attachment3Filename = document.getElementById("attachment3Filename").textContent; //Retreive for later
 //-------------------------------------------------
 
 //--Remove the temporary HTML elements--
 document.getElementById("userID").remove();
 document.getElementById("currentUserID").remove();
+document.getElementById("attachment1Filename").remove();
+document.getElementById("attachment2Filename").remove();
+document.getElementById("attachment3Filename").remove();
 //--------------------------------------
 
 //--Check if the user is looking at their own profile--
@@ -30,14 +36,10 @@ fetch("/p/"+userID+"/get_pfp", {method : "GET"}) //Call fetch send a request to 
             newFileElement.id = "profile_picture";
             document.body.appendChild(newFileElement); //Add a new child to form (add the element to the HTML file)
             //----------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         }
 });
 
-fetch("/p/"+userID+"/get_attachment/1", {method : "GET"}) //Call fetch send a request to the backend
+fetch("/p/"+userID+"/get_attachment/1/0", {method : "GET"}) //Call fetch send a request to the backend
     .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
         if (responseFromFetch.status === 400){ //Input was rejected by backend
             return responseFromFetch.json(); //Extract the JSON data sent and send it to the next then()
@@ -48,10 +50,6 @@ fetch("/p/"+userID+"/get_attachment/1", {method : "GET"}) //Call fetch send a re
             newElement.id = "attachment_1";
             document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
             //----------------------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         } else{ //Backend sent the attachment
             return responseFromFetch.blob(); //Extract the binary data of the file that was sent and send it to the next then()
         }
@@ -59,19 +57,17 @@ fetch("/p/"+userID+"/get_attachment/1", {method : "GET"}) //Call fetch send a re
         if (dataExtractedFromResponse != null && dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
-            const newFileElement = document.createElement("iframe");
-            newFileElement.src = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            const newFileElement = document.createElement("a");
+            newFileElement.href = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
             newFileElement.id = "attachment_1";
+            newFileElement.target = "_blank"; //Opens a new window on click
+            newFileElement.textContent = attachment1Filename;
             document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
             //----------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         }
 });
 
-fetch("/p/"+userID+"/get_attachment/2", {method : "GET"}) //Call fetch send a request to the backend
+fetch("/p/"+userID+"/get_attachment/2/0", {method : "GET"}) //Call fetch send a request to the backend
     .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
         if (responseFromFetch.status === 400){ //Input was rejected by backend
             return responseFromFetch.json(); //Extract the JSON data sent and send it to the next then()
@@ -82,10 +78,6 @@ fetch("/p/"+userID+"/get_attachment/2", {method : "GET"}) //Call fetch send a re
             newElement.id = "attachment_2";
             document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
             //----------------------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         } else{ //Backend sent the attachment
             return responseFromFetch.blob(); //Extract the binary data of the file that was sent and send it to the next then()
         }
@@ -93,19 +85,17 @@ fetch("/p/"+userID+"/get_attachment/2", {method : "GET"}) //Call fetch send a re
         if (dataExtractedFromResponse != null && dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
-            const newFileElement = document.createElement("iframe");
-            newFileElement.src = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            const newFileElement = document.createElement("a");
+            newFileElement.href = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
             newFileElement.id = "attachment_2";
+            newFileElement.target = "_blank";
+            newFileElement.textContent = attachment2Filename;
             document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
             //----------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         }
 });
 
-fetch("/p/"+userID+"/get_attachment/3", {method : "GET"}) //Call fetch send a request to the backend
+fetch("/p/"+userID+"/get_attachment/3/0", {method : "GET"}) //Call fetch send a request to the backend
     .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
         if (responseFromFetch.status === 400){ //Input was rejected by backend
             return responseFromFetch.json(); //Extract the JSON data sent and send it to the next then()
@@ -116,10 +106,6 @@ fetch("/p/"+userID+"/get_attachment/3", {method : "GET"}) //Call fetch send a re
             newElement.id = "attachment_3";
             document.body.appendChild(newElement); //Add a new child to body (add the element to the HTML file)
             //----------------------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         } else{ //Backend sent the attachment
             return responseFromFetch.blob(); //Extract the binary data of the file that was sent and send it to the next then()
         }
@@ -127,15 +113,13 @@ fetch("/p/"+userID+"/get_attachment/3", {method : "GET"}) //Call fetch send a re
         if (dataExtractedFromResponse != null && dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
-            const newFileElement = document.createElement("iframe");
-            newFileElement.src = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            const newFileElement = document.createElement("a");
+            newFileElement.href = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
             newFileElement.id = "attachment_3";
+            newFileElement.target = "_blank";
+            newFileElement.textContent = attachment3Filename;
             document.body.appendChild(newFileElement); //Add a new child to body (add the element to the HTML file)
             //----------------------------------------
-
-            //--Style the new element--
-            //TODO: this
-            //-------------------------
         }
 });
 
@@ -151,17 +135,13 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     //-------------------------------
 
     //--Set up elements that allow for change in profile picture--
-    document.getElementById("profile_picture").style.cursor = "pointer"; //Changes the pointer so it looks clickable
+    document.getElementById("profile_picture").style.opacity= 0.5; //Changes the pointer so it looks changable
     const pfp_input_btn = document.createElement("input");
     pfp_input_btn.type = "file";
     pfp_input_btn.accept = "image/png"; //Window shown to user defaults to pngs only
     pfp_input_btn.id = "pfp_input_btn";
     pfp_input_btn.name = "pfp_input_btn";
     document.body.appendChild(pfp_input_btn);
-
-    //----Style pfp input button----
-    //TODO: THIS
-    //------------------------------
 
     //----Add event listener----
     pfp_input_btn.addEventListener("change", async event => {
@@ -172,7 +152,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
             const fileMIMEType = newPFP.type; //Get the MIME type of the file
             const fileSize = newPFP.size; // Get the size of the file in bytes
 
-            const wrongFileType = fileMIMEType === "image/png";
+            const wrongFileType = !(fileMIMEType === "image/png");
             const fileTooLarge = fileSize > 16000000; // checks if the file size is greater than 16MB
 
             if (wrongFileType){//User input failed front-end check
@@ -191,9 +171,11 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     body : formData
                 });
 
-                if (response.status === 400){ //Backend rejected input
+                if (response.success === false){ //Backend rejected input
                     document.getElementById("pfp_error_message").hidden = false;//Display the error message to the user
                     document.getElementById("pfp_too_large").hidden = true;//Display to user
+                } else if (response.status === 400){//Backend rejected input due to front end tampering
+                    window.location.replace(results.url); //Send the user to the 400 error page
                 } else if (response.status === 413){ //Input is too large
                     document.getElementById("pfp_too_large").hidden = false;//Display to user
                     document.getElementById("pfp_error_message").hidden = true;//Display to user
@@ -211,17 +193,13 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     //------------------------------------------------------------
 
     //--Set up elements that allow for change in attachment--
-    document.getElementById("attachment_1").style.cursor = "pointer"; //Changes the pointer so it looks clickable
+    document.getElementById("attachment_1").style.opacity = 0.5; //Changes the pointer so it looks changable
     const attach_input_1 = document.createElement("input");
     attach_input_1.type = "file";
     attach_input_1.accept = "application/pdf"; //Window shown to user defaults to PDFs only
     attach_input_1.id = "attach_input_1";
     attach_input_1.name = "attach_input_1";
     document.body.appendChild(attach_input_1);
-
-    //----Style app input button----
-    //TODO: THIS
-    //------------------------------
 
     //----Add event listener----
     attach_input_1.addEventListener("change", async event => {
@@ -232,7 +210,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
             const fileMIMEType = newAttach.type; //Get the MIME type of the file
             const fileSize = newAttach.size; // Get the size of the file in bytes
 
-            const wrongFileType = fileMIMEType === "application/pdf";
+            const wrongFileType = !(fileMIMEType === "application/pdf");
             const fileTooLarge = fileSize > 16000000; // checks if the file size is greater than 16MB
 
             if (wrongFileType){//User input failed front-end check
@@ -251,9 +229,11 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     body : formData
                 });
 
-                if (response.status === 400){ //Backend rejected input
+                if (response.success === false){ //Backend rejected input
                     document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
                     document.getElementById("attachment_too_large").hidden = true;
+                } else if (response.status === 400){//Backend rejected input due to front end tampering
+                    window.location.replace(results.url); //Send the user to the 400 error page
                 } else if (response.status === 413){ //Input is too large
                     document.getElementById("attachment_too_large").hidden = false;
                     document.getElementById("attachment_error_message").hidden = true;
@@ -261,17 +241,24 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
                     let currentAttach = document.getElementById("attachment_1");
 
+                    //--Call the backend to get the file name--
+                    const fileNameRequest = await fetch("/p/"+userID+"/get_attachment/1/1", {method: "GET"});
+                    const fileNameResponse = await fileNameRequest.json();
+
+                    if (!fileNameResponse.fileName){ //Does not exist -> URL was tampered by front-end and error was thrown
+                        window.location.replace(fileNameResponse.url); //Redirect to error page
+                    }
+                    //-----------------------------------------
+
                     //--Remove the old attachment and add the new one--
                     currentAttach.remove(); //Remove old attachment
-                    currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
+                    currentAttach = document.createElement("a"); //Remake the element to hold the new attachment
                     currentAttach.id = "attachment_1";
                     document.body.appendChild(currentAttach);
-                    currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    currentAttach.href = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    currentAttach.target = "_blank";
+                    currentAttach.textContent = fileNameResponse.fileName;
                     //-------------------------------------------------
-
-                    //--Style the new attachment--
-                    //todo: this
-                    //----------------------------
                     
                     document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
                     document.getElementById("attachment_too_large").hidden = true;
@@ -283,17 +270,13 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     //-------------------------------------------------------
 
     //--Set up elements that allow for change in attachment--
-    document.getElementById("attachment_2").style.cursor = "pointer"; //Changes the pointer so it looks clickable
+    document.getElementById("attachment_2").style.opacity = 0.5; //Changes the pointer so it looks changable
     const attach_input_2 = document.createElement("input");
     attach_input_2.type = "file";
     attach_input_2.accept = "application/pdf"; //Window shown to user defaults to PDFs only
     attach_input_2.id = "attach_input_2";
     attach_input_2.name = "attach_input_2";
     document.body.appendChild(attach_input_2);
-
-    //----Style app input button----
-    //TODO: THIS
-    //------------------------------
 
     //----Add event listener----
     attach_input_2.addEventListener("change", async event => {
@@ -304,7 +287,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
             const fileMIMEType = newAttach.type; //Get the MIME type of the file
             const fileSize = newAttach.size; // Get the size of the file in bytes
 
-            const wrongFileType = fileMIMEType === "application/pdf";
+            const wrongFileType = !(fileMIMEType === "application/pdf");
             const fileTooLarge = fileSize > 16000000; // checks if the file size is greater than 16MB
 
             if (wrongFileType){//User input failed front-end check
@@ -323,9 +306,11 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     body : formData
                 });
 
-                if (response.status === 400){ //Backend rejected input
+                if (response.success === false){ //Backend rejected input
                     document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
                     document.getElementById("attachment_too_large").hidden = true;
+                } else if(response.status === 400){//Backend rejected input due to front end tampering
+                    window.location.replace(results.url); //Send the user to the 400 error page
                 } else if(response.status === 413){ //Input is too large
                     document.getElementById("attachment_too_large").hidden = false;
                     document.getElementById("attachment_error_message").hidden = true;
@@ -333,17 +318,24 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
                     let currentAttach = document.getElementById("attachment_2");
 
+                    //--Call the backend to get the file name--
+                    const fileNameRequest = await fetch("/p/"+userID+"/get_attachment/2/1", {method: "GET"});
+                    const fileNameResponse = await fileNameRequest.json();
+
+                    if (!fileNameResponse.fileName){ //Does not exist -> URL was tampered by front-end and error was thrown
+                        window.location.replace(fileNameResponse.url); //Redirect to error page
+                    }
+                    //-----------------------------------------
+
                     //--Remove the old attachment and add the new one--
                     currentAttach.remove(); //Remove old attachment
-                    currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
+                    currentAttach = document.createElement("a"); //Remake the element to hold the new attachment
                     currentAttach.id = "attachment_2";
                     document.body.appendChild(currentAttach);
-                    currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    currentAttach.href = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    currentAttach.target="_blank";
+                    currentAttach.textContent = fileNameResponse.fileName;
                     //-------------------------------------------------
-
-                    //--Style the new attachment--
-                    //todo: this
-                    //----------------------------
                     
                     document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
                     document.getElementById("attachment_too_large").hidden = true;
@@ -355,17 +347,13 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     //-------------------------------------------------------
 
     //--Set up elements that allow for change in attachment--
-    document.getElementById("attachment_3").style.cursor = "pointer"; //Changes the pointer so it looks clickable
+    document.getElementById("attachment_3").style.opacity = 0.5; //Changes the pointer so it looks changable
     const attach_input_3 = document.createElement("input");
     attach_input_3.type = "file";
     attach_input_3.accept = "application/pdf"; //Window shown to user defaults to PDFs only
     attach_input_3.id = "attach_input_3";
     attach_input_3.name = "attach_input_3";
     document.body.appendChild(attach_input_3);
-
-    //----Style app input button----
-    //TODO: THIS
-    //------------------------------
 
     //----Add event listener----
     attach_input_3.addEventListener("change", async event => {
@@ -376,7 +364,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
             const fileMIMEType = newAttach.type; //Get the MIME type of the file
             const fileSize = newAttach.size; // Get the size of the file in bytes
 
-            const wrongFileType = fileMIMEType === "application/pdf";
+            const wrongFileType = !(fileMIMEType === "application/pdf");
             const fileTooLarge = fileSize > 16000000; // checks if the file size is greater than 16MB
 
             if (wrongFileType){//User input failed front-end check
@@ -395,27 +383,36 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     body : formData
                 });
 
-                if (response.status === 400){ //Backend rejected input
+                if (response.success === false){ //Backend rejected input
                     document.getElementById("attachment_error_message").hidden = false;//Display the error message to the user
                     document.getElementById("attachment_too_large").hidden = true;
-                } else if(response.status == 413){ //Input is too large
+                } else if (response.status === 400){ //Backend rejected input due to front end tampering
+                    window.location.replace(results.url); //Send the user to the 400 error page
+                } else if(response.status === 413){ //Input is too large
                     document.getElementById("attachment_too_large").hidden = false;
                     document.getElementById("attachment_error_message").hidden = true;
                 } else{ //Backend sent back a file to render
                     const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
                     let currentAttach = document.getElementById("attachment_3");
 
+                    //--Call the backend to get the file name--
+                    const fileNameRequest = await fetch("/p/"+userID+"/get_attachment/3/1", {method: "GET"});
+                    const fileNameResponse = await fileNameRequest.json();
+
+                    if (!fileNameResponse.fileName){ //Does not exist -> URL was tampered by front-end and error was thrown
+                        window.location.replace(fileNameResponse.url); //Redirect to error page
+                    }
+                    //-----------------------------------------
+
                     //--Remove the old attachment and add the new one--
                     currentAttach.remove(); //Remove old attachment
-                    currentAttach = document.createElement("iframe"); //Remake the element to hold the new attachment
+                    currentAttach = document.createElement("a"); //Remake the element to hold the new attachment
                     currentAttach.id = "attachment_3";
                     document.body.appendChild(currentAttach);
-                    currentAttach.src = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    currentAttach.href = URL.createObjectURL(fileBlob); //Create a URL of the fileBlob so that the HTML file can render it properly
+                    currentAttach.target = "_blank";
+                    currentAttach.textContent = fileNameResponse.fileName;
                     //-------------------------------------------------
-
-                    //--Style the new attachment--
-                    //todo: this
-                    //----------------------------
                     
                     document.getElementById("attachment_error_message").hidden = true; //Hide error message if it isn't already hidden
                     document.getElementById("attachment_too_large").hidden = true;
@@ -438,6 +435,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
     document.getElementById("password").disabled = false;
     document.getElementById("password").hidden = false;
     document.getElementById("password_label").hidden = false;
+    document.getElementById("username_label").hidden = false;
     //-------------------------------------------------------------
 
     //--Enable delete account button--
@@ -460,9 +458,9 @@ document.getElementById("profile_info").addEventListener("submit", async event =
     const invalidFnameFormat = !(regex.test(document.getElementById("fname").value));
     const invalidLnameFormat = !(regex.test(document.getElementById("lname").value));
 
-    const passwordTooShort = document.getElementById("password").value < 6 && document.getElementById("password").value != 0;
+    const passwordTooShort = document.getElementById("password").value.length < 6 && document.getElementById("password").value.length != 0;
 
-    const bioTooLong = document.getElementById("bio").value > 300
+    const bioTooLong = document.getElementById("bio").value.length > 300
 
     if (invalidUsernameLength || invalidUsernameFormat || invalidFnameFormat || invalidFnameLength || invalidLnameLength || invalidLnameFormat || passwordTooShort || bioTooLong){ //Form failed front-end checks
         document.getElementById("error_message").hidden = false; //Display message to user
@@ -502,6 +500,7 @@ document.getElementById("profile_info").addEventListener("submit", async event =
             document.getElementById("password").disabled = true;
             document.getElementById("password").hidden = true;
             document.getElementById("password_label").hidden = true;
+            document.getElementById("username_label").hidden = true;
             //-----------------------------------------------------------------
 
             //--Updates each profile attribute to reflect the changes the user made--
@@ -517,12 +516,27 @@ document.getElementById("profile_info").addEventListener("submit", async event =
                 document.getElementById("fname").value = document.getElementById("fname").placeholder; //Restore the attribute 
             } else{ //User did change attribute
                 document.getElementById("fname").placeholder = document.getElementById("fname").value; //Replace the attribute
+
+                
+                if (document.getElementById("fname").value.length > 20){ //the new fname is more than 20 characters long
+                    const shortenedFname = document.getElementById("fname").value.substring(0, 17) + "...";
+
+                    document.getElementById("fname").value = shortenedFname; //Replace the fname visible on the website with the shortend version
+                    document.getElementById("fname").placeholder = shortenedFname; //Replace the fname visible on the website with the shortend version
+                }
             }
 
             if (document.getElementById("lname").value.length == 0){//User did not change the attribute
                 document.getElementById("lname").value = document.getElementById("lname").placeholder; //Restore the attribute 
             } else{ //User did change attribute
                 document.getElementById("lname").placeholder = document.getElementById("lname").value; //Replace the attribute
+
+                if (document.getElementById("lname").value.length > 20){ //the new lname is more than 20 characters long
+                    const shortenedLname = document.getElementById("lname").value.substring(0, 17) + "...";
+
+                    document.getElementById("lname").value = shortenedLname; //Replace the lname visible on the website with the shortend version
+                    document.getElementById("lname").placeholder = shortenedLname; //Replace the lname visible on the website with the shortend version
+                }
             }
 
             if (document.getElementById("bio").value.length == 0){//User did not change the attribute
@@ -539,12 +553,12 @@ document.getElementById("profile_info").addEventListener("submit", async event =
             document.getElementById("attach_input_3").remove();
             //---------------------------------------------------------------
             
-            //--Change the pointers back to normal--
-            document.getElementById("profile_picture").style.cursor = "default";
-            document.getElementById("attachment_1").style.cursor = "default";
-            document.getElementById("attachment_2").style.cursor = "default";
-            document.getElementById("attachment_3").style.cursor = "default";
-            //--------------------------------------
+            //--Change the attachments/profile picture back to normal--
+            document.getElementById("profile_picture").style.opacity = 1;
+            document.getElementById("attachment_1").style.opacity = 1;
+            document.getElementById("attachment_2").style.opacity = 1;
+            document.getElementById("attachment_3").style.opacity = 1;
+            //---------------------------------------------------------
 
             //--Hide the error messages--
             document.getElementById("error_message").hidden = true;
@@ -557,9 +571,8 @@ document.getElementById("profile_info").addEventListener("submit", async event =
             document.getElementById("delete_button").disabled = true;
             document.getElementById("delete_button").hidden = true;
             //---------------------------------
-        } else{ //An error occurred in the backend
-            document.getElementById("something_went_wrong_message").hidden = false; //Reveals the error message to the user
-            document.getElementById("error_message").hidden = true; //Hides the error message from the user if shown
+        } else{ //An error occurred in the backend as a result of malformed user input
+            window.location.replace(results.url); //Send the user to the 400 error page
         }
         //-------------------------
     }
