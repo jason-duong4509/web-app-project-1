@@ -284,5 +284,242 @@ body{
 /*------------------*/
 
 /*--Dynamic styles--*/
+@media(orientation: landscape){
+    meta[name="viewport"]{
+        content: "width=device-width";
+    }
+}
 
+@media(max-width: 400px) and (orientation: portrait){
+    meta[name="viewport"]{
+        content: "width=device-width, initial-scale=1.0";
+    }
+    
+    body{
+        width: 300px;
+        height: 600px;
+    }
+
+    #profile_picture{
+        width: 80px;
+        height: 80px;
+        top: 0px;
+        left: 50%;
+        transform: translate(-179%, 60%);
+    }
+    
+    #edit_profile_button{
+        transform: translate(5%, 487%);
+        width: 80px;
+        height: 30px;
+        top: 0px;
+        left: 50%;
+        font-size: 13px;
+    }
+    
+    #back_button{
+        width: 60px;
+        height: 25px;
+        top: 0px;
+        transform: translate(-240%, 600%);
+        font-size: 15px;
+    }
+    
+    #fname{
+        font-size: 20px;
+        position: absolute;
+        width: 200px;
+        top: 0px;
+        left: 50%;
+        transform: translate(-25%, 250%);
+    }
+    
+    #lname{
+        font-size: 20px;
+        text-align: right;
+        position: absolute;
+        width: 200px;
+        top: 0px;
+        left: 50%;
+        transform: translate(-25%, 370%);
+    }
+    
+    #bio_label{
+        font-size: 20px;
+        top: 0px;
+        left: 50%;
+        transform: translate(-280%, 890%);
+    }
+    
+    #bio{
+        font-size: 15px;
+        top: 0px;
+        left: 50%;
+        transform: translate(-50%, 150%);
+        width: 290px;
+        height: 150px;
+    }
+    
+    #attachments_label{
+        font-size: 20px;
+        transform: translate(-132%, 1100%);
+    }
+    
+    #username{
+        font-size: 17px;
+        top: 0px;
+        left: 50%;
+        transform: translate(-14%, 10%);
+        width: 170px;
+    }
+    
+    #username_label{
+        font-size: 17px;
+        top: 0px;
+        left: 50%;
+        transform: translate(-135%, 20%);
+    }
+    
+    #attachment_1{
+        top: 0px;
+        left: 50%;
+        font-size: 15px;
+        transform: translate(-50.8%, 2500%);
+        width: 290px;
+        text-align: left;
+    }
+    
+    #attachment_2{
+        left: 50%;
+        font-size: 15px;
+        transform: translate(-50.8%, 2800%);
+        width: 290px;
+        text-align: left;
+    }
+    
+    #attachment_3{
+        left: 50%;
+        font-size: 15px;
+        transform: translate(-50.8%, 3100%);
+        width: 290px;
+        text-align: left;
+    }
+    
+    #password{
+        top: 0px;
+        left: 50%;
+        transform: translate(-14%, 120%);
+        font-size: 17px;
+        width: 170px;
+        text-align: right;
+    }
+    
+    #password_label{
+        font-size: 17px;
+        top: 0px;
+        left: 50%;
+        transform: translate(-135%, 130%);
+    }
+    
+    #save_changes{
+        transform: translate(-70%, 487%);
+        width: 85px;
+        height: 30px;
+        top: 0px;
+        left: 50%;
+        font-size: 11px;
+    }
+    
+    #delete_button{
+        transform: translate(68%, 487%);
+        width: 90px;
+        height: 30px;
+        top: 0px;
+        left: 50%;
+        font-size: 11px;
+    }
+    
+    #pfp_input_btn{
+        width: 80px;
+        height: 80px;
+        top: 0px;
+        left: 50%;
+        transform: translate(-179%, 60%);
+    }
+    
+    #attach_input_1{
+        top: 0px;
+        left: 50%;
+        font-size: 15px;
+        transform: translate(-50.8%, 1900%);
+        width: 290px;
+        text-align: left;
+    }
+    
+    #attach_input_2{
+        top: 0px;
+        left: 50%;
+        font-size: 15px;
+        transform: translate(-50.8%, 2125%);
+        width: 290px;
+        text-align: left;
+    }
+    
+    #attach_input_3{
+        top: 0px;
+        left: 50%;
+        font-size: 15px;
+        transform: translate(-50.8%, 2350%);
+        width: 290px;
+        text-align: left;
+    }
+    
+    #error_message{
+        top: 0px;
+        left: 50%;
+        font-size: 12px;
+        transform: translate(-37%, 640%);
+        width: 240px;
+    }
+    
+    #something_went_wrong_message{
+        top: 0px;
+        left: 50%;
+        font-size: 12px;
+        transform: translate(-37%, 1380%);
+        width: 240px;
+    }
+    
+    #pfp_error_message{
+        top: 0px;
+        left: 50%;
+        font-size: 12px;
+        transform: translate(-19%, 770%);
+        width: 150px;
+    }
+    
+    #pfp_too_large{
+        top: 0px;
+        left: 50%;
+        font-size: 12px;
+        transform: translate(-28%, 770%);
+        width: 210px;
+    }
+    
+    #attachment_error_message{
+        top: 0px;
+        left: 50%;
+        font-size: 12px;
+        width: 150px;
+        transform: translate(-10%, 2800%);
+    }
+    
+    #attachment_too_large{
+        top: 0px;
+        left: 50%;
+        font-size: 12px;
+        width: 150px;
+        transform: translate(-10%, 1350%);
+    }
+}
 /*------------------*/
