@@ -290,7 +290,7 @@ body{
     }
 }
 
-@media(max-width: 400px) and (orientation: portrait){
+@media(max-width: 450px) and (orientation: portrait){
     meta[name="viewport"]{
         content: "width=device-width, initial-scale=1.0";
     }
