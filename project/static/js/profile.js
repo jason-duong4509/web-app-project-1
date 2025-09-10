@@ -1,3 +1,8 @@
+import profileUI from "./profile-react"; //Import the react file
+import {createRoot} from 'react-dom/client' //Import createRoot so that react can attach itself onto the desired HTML element
+
+createRoot(document.getElementById("profile_ui")).render(<profileUI/>);//Tell react to latch onto the profile_ui HTML element and render profileUI within the container
+
 //--Retreive temporary values passed through HTML--
 const userID = document.getElementById("userID").textContent; //Retreive the user_id for later
 const currentUserID = document.getElementById("currentUserID").textContent; //Retreive for later
