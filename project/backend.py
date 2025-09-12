@@ -274,7 +274,7 @@ def createAccount():
                 return jsonify({"success" : False}) # Let the front-end know that the back-end rejected the input
         #--------------------------
         #-----------------------
-    except e:
+    except Exception e:
         print("ERROR: " + e)
         return jsonify({"success": None}) # Let the front-end know that an error has occurred
     #----------------
