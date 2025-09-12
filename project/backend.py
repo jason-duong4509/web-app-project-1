@@ -275,7 +275,7 @@ def createAccount():
         #--------------------------
         #-----------------------
     except Exception as e:
-        print("ERROR: " + e)
+        print(f"ERROR: {e}")
         return jsonify({"success": None}) # Let the front-end know that an error has occurred
     #----------------
 
