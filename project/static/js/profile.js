@@ -1,6 +1,22 @@
-import profileUI from "./profile-react"; //Import the react file
-import {createRoot} from 'react-dom/client'; //Import createRoot so that react can attach itself onto the desired HTML element
-import React from "react"; //Import react to use it
+"use strict";
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var _profileReact = require("./profile-react");
+
+var _profileReact2 = _interopRequireDefault(_profileReact);
+
+//Import the react file
+
+var _reactDomClient = require('react-dom/client');
+
+//Import createRoot so that react can attach itself onto the desired HTML element
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+//Import react to use it
 
 //--Retreive temporary values passed through HTML and store it in a JSON object--
 let userData = {
