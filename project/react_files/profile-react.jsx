@@ -2,7 +2,7 @@
 function Profile({userData}) {
   //--Renders the UI when the user is editing the profile--
   return (
-    <>
+    <React.Fragment>
       {/*--Profile form elements (username, bio, fname, password, etc)--*/}
       <form id="profile_info">
           {userData.isEditingProfile && <label for="username" id="username_label">Username:</label>}
@@ -62,7 +62,7 @@ function Profile({userData}) {
 
       {/*--Render the following if the user is editing their profile--*/}
       {userData.isEditingProfile && (
-        <>
+        <React.Fragment>
           <input type="file" accept="image/png" id="pfp_input_btn" name="pfp_input_btn"></input>
           <input type="file" accept="application/pdf" id="attach_input_1" name="attach_input_1"></input>
           <input type="file" accept="application/pdf" id="attach_input_2" name="attach_input_2"></input>
@@ -79,10 +79,10 @@ function Profile({userData}) {
           {userData.updateProfileErrorMessage == "ATTACHMENT_ERROR_MESSAGE" && <p id="attachment_error_message" style="color:red;" hidden>Only PDF files are allowed.</p>}
           {userData.updateProfileErrorMessage == "ATTACHMENT_TOO_LARGE" && <p id="attachment_too_large" style="color:red;" hidden>Only PDFs up to 16MB are accepted.</p>}
           {/*--------------------------*/}
-        </>
+        </React.Fragment>
       )}
       {/*-------------------------------------------------------------*/}
-    </>
+    </React.Fragment>
   )
   //-------------------------------------------------------  
 }
