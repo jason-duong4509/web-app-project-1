@@ -1,5 +1,6 @@
 import profileUI from "./profile-react"; //Import the react file
-import {createRoot} from 'react-dom/client' //Import createRoot so that react can attach itself onto the desired HTML element
+import {createRoot} from 'react-dom/client'; //Import createRoot so that react can attach itself onto the desired HTML element
+import React from "react"; //Import react to use it
 
 //--Retreive temporary values passed through HTML and store it in a JSON object--
 let userData = {
@@ -29,8 +30,8 @@ let userData = {
 };
 //-------------------------------------------------------------------------------
 
-const profile = createRoot(document.getElementById("profile_ui")).render(<profileUI/>);//Tell react to latch onto the profile_ui HTML element
-profile.render(<profileUI userData={userData}/>) //render profileUI inside the container
+const profile = createRoot(document.getElementById("profile_ui"));//Tell react to latch onto the profile_ui HTML element
+profile.render(React.createElement(profileUI, {userData : userData})) //render profileUI inside the container
 
 //--Check if the user is looking at their own profile--
 if (userData.userID != userData.currentUserID){ //User is looking at another user's profile
@@ -118,14 +119,14 @@ fetch("/p/"+userID+"/get_attachment/3/0", {method : "GET"}) //Call fetch send a 
 });
 //--------------------
 
-profile.render(<profileUI userData={userData}/>) //Re-render the profile UI using the current up to date information
+profile.render(React.createElement(profileUI, {userData : userData})) //render profileUI inside the container
 
 //--Functions--
 document.getElementById("edit_profile_button").addEventListener("click", event =>{
     event.preventDefault(); //Stops the event (clicking the button) from triggering its default behavior 
     
     userData.isEditingProfile = true; //Tells react to load the UI as if the user is editing their profile
-    profile.render(<profileUI userData={userData}/>) //Re-render the profile UI using the current up to date information
+    profile.render(React.createElement(profileUI, {userData : userData})) //render profileUI inside the container
 
     //----Add event listener----
     const pfp_input_btn = document.getElementById("pfp_input_btn");
@@ -166,7 +167,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     userData.updateProfileErrorMessage = "NONE"; //Reset the error message
                 }
             }
-            profile.render(<profileUI userData={userData}/>) //Re-render the profile UI using the current up to date information
+            profile.render(React.createElement(profileUI, {userData : userData})) //render profileUI inside the container
         }
     });
     //--------------------------
@@ -226,7 +227,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     userData.updateProfileErrorMessage = "NONE"; //Reset error message
                 }
             }
-            profile.render(<profileUI userData={userData}/>) //Re-render the profile UI using the current up to date information
+            profile.render(React.createElement(profileUI, {userData : userData})) //render profileUI inside the container
         }
     });
     //--------------------------
@@ -286,7 +287,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     userData.updateProfileErrorMessage = "NONE"; //Reset error message
                 }
             }
-            profile.render(<profileUI userData={userData}/>) //Re-render the profile UI using the current up to date information
+            profile.render(React.createElement(profileUI, {userData : userData})) //render profileUI inside the container
         }
     });
     //--------------------------
@@ -346,7 +347,7 @@ document.getElementById("edit_profile_button").addEventListener("click", event =
                     userData.updateProfileErrorMessage = "NONE"; //Reset error message
                 }
             }
-            profile.render(<profileUI userData={userData}/>) //Re-render the profile UI using the current up to date information
+            profile.render(React.createElement(profileUI, {userData : userData})) //render profileUI inside the container
         }
     });
     //--------------------------
@@ -425,6 +426,6 @@ document.getElementById("profile_info").addEventListener("submit", async event =
         }
         //-------------------------
     }
-    profile.render(<profileUI userData={userData}/>) //Re-render the profile UI using the current up to date information
+    profile.render(React.createElement(profileUI, {userData : userData})) //render profileUI inside the container
 });
 //-------------
