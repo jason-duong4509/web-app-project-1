@@ -15,8 +15,14 @@ Import send_file so that flask can send user-related files (profile picture) to 
 Import session so that flask can manage sessions.
 Import url_for so that flask can dynamically generate URLs during runtime.
 Import escape so that flask can insert HTML escape characters before sending any user input back to the front-end.
+Import send_from_directory to enable save file retrieval from locations outside of the default directories (for getting react files).
 """
-from flask import Flask, request, jsonify, render_template, send_file, session, url_for, escape
+from flask import Flask, request, jsonify, render_template, send_file, session, url_for, escape, send_from_directory
+
+"""
+Import SocketIO from flask_socketio to create web sockets so the back-end can send live updates to the front-end.
+"""
+from flask_socketio import SocketIO
 
 """
 Import LoginManager to help with handling log in functionality.
@@ -92,6 +98,8 @@ webApp = Flask(__name__)
 webApp.secret_key = SECRET_KEY # Sets the secret key for flask to the one stored on Render
 webApp.config['MAX_CONTENT_LENGTH'] = 16 * 1000 * 1000 # Sets the maximum allowed size of data sent from the front-end until flask raises a 413 (Payload Too Large) error. Max size is 16MB
 
+socketio = SocketIO(webApp) # Set up a web socket for this web app
+
 """
 Set-up flask limiter.
 Configure the limiter to apply to all routes.
@@ -130,6 +138,13 @@ def load_user(user_id):
     return None # Reaches here if user_id is not valid (not present in the database)
     #---------------------------------
 #-------------------------
+
+#--Set up a web socket connection--
+@socketio.on("connect") # Runs the following function when the front end attempts to connect to the backend via web socket
+def establish_socket_connection():
+    if not current_user.is_authenticated: # The front end somehow managed to connect to this socket without being logged in (should not happen under normal circumstances)
+        return False # Remove the connection between the front and back end
+#----------------------------------
 
 #--"Teardown" method--
 """
@@ -522,6 +537,7 @@ def saveProfileChanges():
     connection_to_db.commit()
     db_cursor.close()
     connection_to_db.close()
+    emit("message", {"id" : user_id}) # Send a message over the web socket to the front end telling it that the profile information for user_id has changed
     return jsonify({"success" : True})
     
 """
@@ -729,7 +745,7 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
         return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid. Double check that you're using the right link.") # returns an error page to the user
     #--------------------------------
 
-    return #TODO: FIGURE OUT HOW TO SERVE A REACT FILE
+    return send_from_directory("../frontend/dist/index.html") # Grab the react file and serve it
 
 """
 Function that returns the profile picture of a given user ID.
@@ -889,6 +905,7 @@ def changePFP(user_id):
     db_cursor.close()
     connection_to_db.close()
 
+    emit("message", {"id" : user_id}) # Send a message over the web socket to the front end telling it that the profile information for user_id has changed
     return send_file(path_or_file=io.BytesIO(new_pfp_bytes), mimetype="image/png", as_attachment=False) # Send the new PFP back to the front end so it can display it to the user
 
 """
@@ -940,4 +957,5 @@ def changeAttachment(user_id, attachment_number):
     db_cursor.close()
     connection_to_db.close()
 
+    emit("message", {"id" : user_id}) # Send a message over the web socket to the front end telling it that the profile information for user_id has changed
     return send_file(path_or_file=io.BytesIO(file_bytes), mimetype="application/pdf", download_name = new_attach_file_name, as_attachment=False) # Send the new attachment back to the front end so it can display it to the user

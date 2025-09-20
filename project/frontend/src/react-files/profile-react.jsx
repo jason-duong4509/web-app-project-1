@@ -1,5 +1,5 @@
-import {submitProfileInfo, changeAttachment3, changeAttachment2, changeAttachment1, changeProfilePicture, setEditProfileState, initializeWebSocket, initializeData, closeWebSocket} from "../js/profile" //Import functions to use it
-import "../css/profile" //Import css
+import {submitProfileInfo, changeAttachment3, changeAttachment2, changeAttachment1, changeProfilePicture, setEditProfileState, initializeWebSocket, initializeData, closeWebSocket} from "../js/profile.js" //Import functions to use it
+import "../css/profile.css" //Import css
 
 //Component function Profile() that simply loads the profile UI
 function Profile({navigateTo}) {

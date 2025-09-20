@@ -1,7 +1,9 @@
+import { io } from "socket.io-client"; //Import io to use web sockets
+
 //Define a userData JSON so this file can keep track of profile changes easily
 let userData = {
-    userID: null,
-    currentUserID: null,
+    userID: null, //userID of profile we are viewing
+    currentUserID: null, //userID of the user
     attachment1: {
         name: null,
         file: null,
@@ -102,7 +104,7 @@ export async function initializeData(viewingUserID, returnFunction){
     //----------------------
 
     //--Fetch attachment 3--
-    fetch("/p/"+userID+"/get_attachment/3/0", {method : "GET"}) //Call fetch send a request to the backend
+    fetch("/p/"+viewingUserID+"/get_attachment/3/0", {method : "GET"}) //Call fetch send a request to the backend
     .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
         if (responseFromFetch.status === 400){ //Input was rejected by backend
             return responseFromFetch.json(); //Extract the JSON data sent and send it to the next then()
@@ -128,10 +130,15 @@ export async function initializeData(viewingUserID, returnFunction){
 //Function to set up a web socket for real time updates from the backend
 export function initializeWebSocket(returnFunction){
     if (webSocket == null){//Haven't yet made a websocket
-        webSocket = new WebSocket("INSERT BACKEND URL HERE");
+        webSocket = io(); //Connects to the backend (no params mean that it'll default to using the same domain which is the case here)
 
-        webSocket.addEventListener("message", (response) => {
-            returnFunction(response.json()) //Use the function given by react to update its internal state. Pass in the backend's sent message as the new state
+        webSocket.on("message", (response) => { //Runs when the front end receives a message from the backend 
+            let profileID = response.json(); //Get the JSON format from the response object
+            profileID = profileID.id; //Get the ID passed from the backend
+
+            if (profileID == userData.userID){ //The information sent by the backend is information for the profile we are viewing (prevents refreshing data for profiles we are not viewing) 
+                initializeData(profileID, returnFunction); //Call this JS function to get the new state of this profile and update it using the given react use state function
+            }
         });
     }
 }
