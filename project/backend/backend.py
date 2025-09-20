@@ -700,7 +700,7 @@ def getInitialProfileData(user_id):
     #-----------------------------------
 
     #--Prepare user data to send back to front-end--
-    editing_disabled = !(current_user.id == user_id) # Editing is disabled if the userID belonging to the viewing profile is not the current user's ID
+    editing_disabled = current_user.id != user_id # Editing is disabled if the userID belonging to the viewing profile is not the current user's ID
 
     return jsonify({ # Return all of the needed user data in the form of JSON to the front end
         "userID" : user_id,
