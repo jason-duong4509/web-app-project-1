@@ -80,7 +80,7 @@ import string
 """
 Import the User class so that User objects can be made.
 """
-from User import User
+from .User import User
 
 """
 Import bcrypt to hash passwords.
