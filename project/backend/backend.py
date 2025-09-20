@@ -6,6 +6,12 @@ Author: Jason Duong
 """
 
 """
+Import eventlet so that monkey_patch() can import its needed modules before others like flask import conflicting ones.
+"""
+import eventlet
+eventlet.monkey_patch()
+
+"""
 Import the Flask framework so it can be used.
 Import request to handle requests from the front-end.
 Import jsonify so communications to the front-end are in the form of JSON.
