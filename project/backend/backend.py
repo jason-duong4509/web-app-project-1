@@ -754,6 +754,7 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
         if user_id < 1: # Invalid userID given
             raise Exception
     except:
+        print("VIEW PROFILE ERROR PAGE")
         return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid. Double check that you're using the right link.") # returns an error page to the user
     #--------------------------------
 
