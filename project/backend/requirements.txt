@@ -5,3 +5,4 @@ flask-login
 python-magic
 bcrypt
 Flask-Limiter
+flask-socketio
