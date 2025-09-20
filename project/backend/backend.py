@@ -757,6 +757,7 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
         return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid. Double check that you're using the right link.") # returns an error page to the user
     #--------------------------------
 
+    print("SERVED INDEX.HTML")
     return send_from_directory("../frontend/dist/", "index.html") # Grab the react file and serve it
 
 """
