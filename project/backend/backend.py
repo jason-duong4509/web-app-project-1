@@ -14,10 +14,14 @@ Import render_template so that flask can grab and serve HTML files from /templat
 Import send_file so that flask can send user-related files (profile picture) to the front-end.
 Import session so that flask can manage sessions.
 Import url_for so that flask can dynamically generate URLs during runtime.
-Import escape so that flask can insert HTML escape characters before sending any user input back to the front-end.
 Import send_from_directory to enable save file retrieval from locations outside of the default directories (for getting react files).
 """
-from flask import Flask, request, jsonify, render_template, send_file, session, url_for, escape, send_from_directory
+from flask import Flask, request, jsonify, render_template, send_file, session, url_for, send_from_directory
+
+"""
+Import escape so that backend can insert HTML escape characters before sending any user input back to the front-end.
+"""
+from markupsafe import escape
 
 """
 Import SocketIO from flask_socketio to create web sockets so the back-end can send live updates to the front-end.
