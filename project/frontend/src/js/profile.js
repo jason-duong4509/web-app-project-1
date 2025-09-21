@@ -131,6 +131,7 @@ export async function initializeData(viewingUserID, returnFunction){
     });
     //----------------------
 
+    console.log("right before react state change " + userData.fname);
     returnFunction(userData); //use react's given use state function to update state of UI
 }
 
