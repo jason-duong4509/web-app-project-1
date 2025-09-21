@@ -40,6 +40,7 @@ export async function initializeData(viewingUserID, returnFunction){
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else{ //dataExtractedFromResponse.url = null. JSON was sent instead
             userData = dataExtractedFromResponse; //dataExtractedFromResponse contains the user JSON data
+            console.log("INITIAL DATA SUCCESS" + userData);
         }
     });
     //---------------------------
@@ -57,6 +58,7 @@ export async function initializeData(viewingUserID, returnFunction){
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else{ //dataExtractedFromResponse.url = null. File was sent instead
             userData.profilePicture = URL.createObjectURL(dataExtractedFromResponse);//Add the URL of the image to the user's data
+            console.log("PFP SUCCESS" + userData);
         }
     });
     //-------------------------
@@ -78,6 +80,7 @@ export async function initializeData(viewingUserID, returnFunction){
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
             userData.attachment1.file = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            console.log("ATTACH 1 SUCCESS" + userData);
         }
     });
     //----------------------
@@ -99,6 +102,7 @@ export async function initializeData(viewingUserID, returnFunction){
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
             userData.attachment2.file = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            console.log("ATTACH 2 SUCCESS" + userData);
         }
     });
     //----------------------
@@ -120,6 +124,7 @@ export async function initializeData(viewingUserID, returnFunction){
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
             userData.attachment3.file = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            console.log("ATTACH 3 SUCCESS" + userData);
         }
     });
     //----------------------

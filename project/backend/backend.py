@@ -173,7 +173,6 @@ Function that is called when the user accesses an invalid (does not exist) link.
 """
 @webApp.errorhandler(404) # Accessing invalid links returns a HTTPS 404 error (page not found error)
 def invalidLink(error_code):
-    print("LINKED YOU VISITED IS INVALID")
     return render_template("error.html", error_message="Uh oh! The linked you visited is not valid. Double check that you're using the right link.") # returns an error page to the user
 
 """
@@ -746,7 +745,6 @@ Function that returns information about a given user (through their UserID).
 @webApp.route("/p/<user_id>", methods = ["GET"])
 @login_required
 def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a param as user_id
-    print("THIS RAN")
     #--Check if user_id is a number--
     try:
         user_id = int(user_id) # Converts the user_id parameter into an integer to allow comparison with entries in the database
@@ -754,11 +752,9 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
         if user_id < 1: # Invalid userID given
             raise Exception
     except:
-        print("VIEW PROFILE ERROR PAGE")
         return render_template("error.html", error_message = "Uh oh! The linked you visited is not valid. Double check that you're using the right link.") # returns an error page to the user
     #--------------------------------
 
-    print("SERVED INDEX.HTML")
     return send_from_directory("static/dist/", "index.html") # Grab the react file and serve it
 
 """
