@@ -40,7 +40,7 @@ export async function initializeData(viewingUserID, returnFunction){
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else{ //dataExtractedFromResponse.url = null. JSON was sent instead
             userData = dataExtractedFromResponse; //dataExtractedFromResponse contains the user JSON data
-            console.log("INITIAL DATA SUCCESS" + userData);
+            console.log("INITIAL DATA SUCCESS" + userData.fname);
         }
     });
     //---------------------------
@@ -58,7 +58,7 @@ export async function initializeData(viewingUserID, returnFunction){
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else{ //dataExtractedFromResponse.url = null. File was sent instead
             userData.profilePicture = URL.createObjectURL(dataExtractedFromResponse);//Add the URL of the image to the user's data
-            console.log("PFP SUCCESS" + userData);
+            console.log("PFP SUCCESS" + userData.profilePicture);
         }
     });
     //-------------------------
@@ -69,6 +69,7 @@ export async function initializeData(viewingUserID, returnFunction){
         if (responseFromFetch.status === 400){ //Input was rejected by backend
             return responseFromFetch.json(); //Extract the JSON data sent and send it to the next then()
         } else if (responseFromFetch.status === 404){ //Attachment does not exist response
+            console.log("ATTACH 1 SUCCESS" + userData);
             //--Insert HTML element that says "No File Attached"--
             userData.attachment1 = null;
             //----------------------------------------------------
@@ -80,7 +81,6 @@ export async function initializeData(viewingUserID, returnFunction){
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
             userData.attachment1.file = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
-            console.log("ATTACH 1 SUCCESS" + userData);
         }
     });
     //----------------------
