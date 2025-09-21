@@ -46,6 +46,8 @@ export async function initializeData(viewingUserID, returnFunction){
     });
     //---------------------------
 
+    console.log("right after initial data " + userData.fname);
+
     //--Fetch profile picture--
     fetch("/p/"+viewingUserID+"/get_pfp", {method : "GET"}) //Call fetch send a request to the backend
     .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
@@ -64,6 +66,8 @@ export async function initializeData(viewingUserID, returnFunction){
         }
     });
     //-------------------------
+
+    console.log("right after get pfp " + userData.fname);
 
     //--Fetch attachment 1--
     fetch("/p/"+viewingUserID+"/get_attachment/1/0", {method : "GET"}) //Call fetch send a request to the backend
@@ -87,6 +91,8 @@ export async function initializeData(viewingUserID, returnFunction){
     });
     //----------------------
 
+    console.log("right after get attach1 " + userData.fname);
+
     //--Fetch attachment 2--
     fetch("/p/"+viewingUserID+"/get_attachment/2/0", {method : "GET"}) //Call fetch send a request to the backend
     .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
@@ -108,6 +114,8 @@ export async function initializeData(viewingUserID, returnFunction){
         }
     });
     //----------------------
+
+    console.log("right after get attach2 " + userData.fname);
 
     //--Fetch attachment 3--
     fetch("/p/"+viewingUserID+"/get_attachment/3/0", {method : "GET"}) //Call fetch send a request to the backend
