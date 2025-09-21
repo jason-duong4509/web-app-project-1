@@ -40,13 +40,9 @@ export async function initializeData(viewingUserID, returnFunction){
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else{ //dataExtractedFromResponse.url = null. JSON was sent instead
             userData = dataExtractedFromResponse; //dataExtractedFromResponse contains the user JSON data
-            console.log("INITIAL DATA SUCCESS" + userData.fname);
-            console.log("INITIAL DATA SUCCESS (DATAEXTRACTEDFROMRESPONSE)" + dataExtractedFromResponse.fname);
         }
     });
     //---------------------------
-
-    console.log("right after initial data " + userData.fname);
 
     //--Fetch profile picture--
     await fetch("/p/"+viewingUserID+"/get_pfp", {method : "GET"}) //Call fetch send a request to the backend
@@ -61,13 +57,9 @@ export async function initializeData(viewingUserID, returnFunction){
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else{ //dataExtractedFromResponse.url = null. File was sent instead
             userData.profilePicture = URL.createObjectURL(dataExtractedFromResponse);//Add the URL of the image to the user's data
-            console.log("PFP SUCCESS" + userData.profilePicture);
-            console.log("PFP SUCCESS (DATAEXTRACTEDFROMRESPONSE)" + URL.createObjectURL(dataExtractedFromResponse));
         }
     });
     //-------------------------
-
-    console.log("right after get pfp " + userData.fname);
 
     //--Fetch attachment 1--
     await fetch("/p/"+viewingUserID+"/get_attachment/1/0", {method : "GET"}) //Call fetch send a request to the backend
@@ -75,7 +67,6 @@ export async function initializeData(viewingUserID, returnFunction){
         if (responseFromFetch.status === 400){ //Input was rejected by backend
             return responseFromFetch.json(); //Extract the JSON data sent and send it to the next then()
         } else if (responseFromFetch.status === 404){ //Attachment does not exist response
-            console.log("ATTACH 1 SUCCESS" + userData);
             //--Insert HTML element that says "No File Attached"--
             userData.attachment1 = null;
             //----------------------------------------------------
@@ -90,8 +81,6 @@ export async function initializeData(viewingUserID, returnFunction){
         }
     });
     //----------------------
-
-    console.log("right after get attach1 " + userData.fname);
 
     //--Fetch attachment 2--
     await fetch("/p/"+viewingUserID+"/get_attachment/2/0", {method : "GET"}) //Call fetch send a request to the backend
@@ -110,12 +99,9 @@ export async function initializeData(viewingUserID, returnFunction){
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
             userData.attachment2.file = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
-            console.log("ATTACH 2 SUCCESS" + userData);
         }
     });
     //----------------------
-
-    console.log("right after get attach2 " + userData.fname);
 
     //--Fetch attachment 3--
     await fetch("/p/"+viewingUserID+"/get_attachment/3/0", {method : "GET"}) //Call fetch send a request to the backend
@@ -134,12 +120,10 @@ export async function initializeData(viewingUserID, returnFunction){
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
             userData.attachment3.file = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
-            console.log("ATTACH 3 SUCCESS" + userData);
         }
     });
     //----------------------
-
-    console.log("right before react state change " + userData.fname);
+    
     returnFunction(userData); //use react's given use state function to update state of UI
 }
 
@@ -169,6 +153,7 @@ export function closeWebSocket(){
 
 export function setEditProfileState(newState){
     userData.isEditingProfile = newState;
+    console.log("CHANGE EDIT STATE IN JS " + userData.isEditingProfile);
     return userData;
 }
 

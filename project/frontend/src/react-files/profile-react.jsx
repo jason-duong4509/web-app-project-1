@@ -1,5 +1,5 @@
 import {submitProfileInfo, changeAttachment3, changeAttachment2, changeAttachment1, changeProfilePicture, setEditProfileState, initializeWebSocket, initializeData, closeWebSocket} from "../js/profile.js" //Import functions to use it
-import "../css/profile.css" //Import css
+import "../../../backend/static/css/profile.css" //Import css
 import React from "react" //Import react to use useEffect() and useState()
 
 //Component function Profile() that simply loads the profile UI
@@ -24,6 +24,7 @@ function Profile({navigateTo}) {
 
   //--Turn profile edits on--
   function turnOnProfileEdits(){
+    console.log("TURN ON PROFILE EDITS")
     updateUserData(setEditProfileState(true)) //Call JS file to change profile state then update the UI with the new state
   }
   //-------------------------
@@ -62,7 +63,6 @@ function Profile({navigateTo}) {
   if (userData == null){//Ensures that react renders nothing until JS is done preparing the initial state of the UI
     return <></>
   } else{//JS is done preparing the initial state of the UI
-    console.log(userData.fname)
     //--Renders the UI--
     return (
       <>
