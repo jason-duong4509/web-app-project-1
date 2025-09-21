@@ -1,5 +1,6 @@
 import {submitProfileInfo, changeAttachment3, changeAttachment2, changeAttachment1, changeProfilePicture, setEditProfileState, initializeWebSocket, initializeData, closeWebSocket} from "../js/profile.js" //Import functions to use it
 import "../css/profile.css" //Import css
+import React from "react" //Import react to use useEffect()
 
 //Component function Profile() that simply loads the profile UI
 function Profile({navigateTo}) {
