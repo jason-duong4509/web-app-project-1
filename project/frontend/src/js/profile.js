@@ -41,6 +41,7 @@ export async function initializeData(viewingUserID, returnFunction){
         } else{ //dataExtractedFromResponse.url = null. JSON was sent instead
             userData = dataExtractedFromResponse; //dataExtractedFromResponse contains the user JSON data
             console.log("INITIAL DATA SUCCESS" + userData.fname);
+            console.log("INITIAL DATA SUCCESS (DATAEXTRACTEDFROMRESPONSE)" + dataExtractedFromResponse.fname);
         }
     });
     //---------------------------
@@ -59,6 +60,7 @@ export async function initializeData(viewingUserID, returnFunction){
         } else{ //dataExtractedFromResponse.url = null. File was sent instead
             userData.profilePicture = URL.createObjectURL(dataExtractedFromResponse);//Add the URL of the image to the user's data
             console.log("PFP SUCCESS" + userData.profilePicture);
+            console.log("PFP SUCCESS (DATAEXTRACTEDFROMRESPONSE)" + URL.createObjectURL(dataExtractedFromResponse));
         }
     });
     //-------------------------
