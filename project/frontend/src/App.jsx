@@ -1,4 +1,5 @@
 import ProfileUI from "./react-files/profile-react" //Import the react file that contains everything needed to load the profile UI
+import React from "react" //Import react to use useState()
 
 function App() {
   const [newPage, navigateTo] = React.useState("profile") //Define a use state function for when we want to switch UIs through react (DOES NOTHING RIGHT NOW SINCE THERE'S ONLY ONE REACT UI FOR THIS PROJECT)
