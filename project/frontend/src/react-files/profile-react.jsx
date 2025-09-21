@@ -62,6 +62,7 @@ function Profile({navigateTo}) {
   if (userData == null){//Ensures that react renders nothing until JS is done preparing the initial state of the UI
     return <></>
   } else{//JS is done preparing the initial state of the UI
+    console.log("IS EDIT BUTTON REMOVED " + userData.isEditingProfile)
     //--Renders the UI--
     return (
       <>
