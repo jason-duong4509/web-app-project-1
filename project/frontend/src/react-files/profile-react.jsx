@@ -1,13 +1,13 @@
 import {submitProfileInfo, changeAttachment3, changeAttachment2, changeAttachment1, changeProfilePicture, setEditProfileState, initializeWebSocket, initializeData, closeWebSocket} from "../js/profile.js" //Import functions to use it
 import "../css/profile.css" //Import css
-import React from "react" //Import react to use useEffect()
+import {useState, useEffect} from "react" //Import react to use useEffect() and useState()
 
 //Component function Profile() that simply loads the profile UI
 function Profile({navigateTo}) {
-  const [userData, updateUserData] = React.useState(null) //Define use state function so that the profile UI can be updated
+  const [userData, updateUserData] = useState(null) //Define use state function so that the profile UI can be updated
 
   //--Open a web socket for real time data updates--
-  React.useEffect(() => {
+  useEffect(() => {
     initializeWebSocket((jsonData) => {updateUserData(jsonData)}) //Call JS' initializeWebSocket() function and pass a function as a parameter so JS can use it once it receives a websocket connection
     return () => { //Return (cleanup) function that runs when the component unmounts
       closeWebSocket() //Call JS function to close the websocket
@@ -16,7 +16,7 @@ function Profile({navigateTo}) {
   //------------------------------------------------
 
   //--Run this exactly once to give the UI some initial data--
-  React.useEffect(() => {
+  useEffect(() => {
     const profileID = window.location.pathname.substring(3) //Get the profie ID from the URL
     initializeData(profileID, updateUserData) //Call JS function to get initial profile data. Pass in profile ID for identification plus the UI's useState function for state changes later
   }, {}) //useEffect(doSomethingHere, rerun condition). useEffect() reruns if the rerun condition changes. By using {}, this'll never change therefore this runs once
