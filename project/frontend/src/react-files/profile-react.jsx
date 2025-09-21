@@ -1,5 +1,4 @@
 import {submitProfileInfo, changeAttachment3, changeAttachment2, changeAttachment1, changeProfilePicture, setEditProfileState, initializeWebSocket, initializeData, closeWebSocket} from "../js/profile.js" //Import functions to use it
-import "../../../backend/static/css/profile.css" //Import css
 import React from "react" //Import react to use useEffect() and useState()
 
 //Component function Profile() that simply loads the profile UI
@@ -25,7 +24,7 @@ function Profile({navigateTo}) {
   //--Turn profile edits on--
   function turnOnProfileEdits(){
     console.log("TURN ON PROFILE EDITS")
-    updateUserData(setEditProfileState(true)) //Call JS file to change profile state then update the UI with the new state
+    setEditProfileState(true, updateUserData) //Call JS file to change profile state then update the UI with the new state
   }
   //-------------------------
 
@@ -66,6 +65,9 @@ function Profile({navigateTo}) {
     //--Renders the UI--
     return (
       <>
+        {/*--Import CSS--*/}
+        <link rel="stylesheet" href="../../public/profile.css"/>
+        {/*--------------*/}
         {/*--Profile form elements (username, bio, fname, password, etc)--*/}
         <form id="profile_info" onSubmit={saveProfileChanges}>
             {userData.isEditingProfile && <label for="username" id="username_label">Username:</label>}

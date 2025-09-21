@@ -123,7 +123,7 @@ export async function initializeData(viewingUserID, returnFunction){
         }
     });
     //----------------------
-    
+
     returnFunction(userData); //use react's given use state function to update state of UI
 }
 
@@ -151,10 +151,10 @@ export function closeWebSocket(){
     }
 }
 
-export function setEditProfileState(newState){
+export function setEditProfileState(newState, returnFunction){
     userData.isEditingProfile = newState;
     console.log("CHANGE EDIT STATE IN JS " + userData.isEditingProfile);
-    return userData;
+    returnFunction(userData);
 }
 
 //Change profile picture
