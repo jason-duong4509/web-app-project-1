@@ -759,7 +759,7 @@ def onViewProfile(user_id): # Takes whatever is after "/p/" and passes it as a p
     #--------------------------------
 
     print("SERVED INDEX.HTML")
-    return send_from_directory("../frontend/dist/", "index.html") # Grab the react file and serve it
+    return send_from_directory("/dist/", "index.html") # Grab the react file and serve it
 
 """
 Function that returns the profile picture of a given user ID.

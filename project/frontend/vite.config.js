@@ -4,5 +4,5 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/frontend/dist/", //Tell react to use relative path names instead of absolute
+  base: "/dist/", //Change the pathname for react so it can grab the right files
 })
