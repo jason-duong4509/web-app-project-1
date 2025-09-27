@@ -31,8 +31,9 @@ from markupsafe import escape
 
 """
 Import SocketIO from flask_socketio to create web sockets so the back-end can send live updates to the front-end.
+Import emit so that the backend can push messages to the front end
 """
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 
 """
 Import LoginManager to help with handling log in functionality.
