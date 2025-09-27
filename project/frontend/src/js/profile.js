@@ -31,7 +31,7 @@ let webSocket;
 
 //Function to initializ data into the react UI
 export async function initializeData(viewingUserID, returnFunction){
-    const newUserDataObject = {};
+    let newUserDataObject = {};
     //--Fetch initial user data--
     await fetch("/p/"+viewingUserID+"/getData", {method : "GET"}) //Call fetch send a request to the backend
     .then(responseFromFetch => { //Interpret the response given from the backend and extract any contents given by the backend
