@@ -23,7 +23,6 @@ function Profile({navigateTo}) {
 
   //--Turn profile edits on--
   function turnOnProfileEdits(){
-    console.log("TURN ON PROFILE EDITS")
     setEditProfileState(true, updateUserData) //Call JS file to change profile state then update the UI with the new state
   }
   //-------------------------
@@ -62,7 +61,6 @@ function Profile({navigateTo}) {
   if (userData == null){//Ensures that react renders nothing until JS is done preparing the initial state of the UI
     return <></>
   } else{//JS is done preparing the initial state of the UI
-    console.log("IS EDIT BUTTON REMOVED " + userData.isEditingProfile)
     //--Renders the UI--
     return (
       <>
@@ -95,7 +93,6 @@ function Profile({navigateTo}) {
         
         {/*--Changes whether the edit profile button exists or not--*/}
         {!userData.editDisabled && !userData.isEditingProfile && <button type="button" onClick={turnOnProfileEdits} id="edit_profile_button">Edit Profile</button>}
-        {!userData.editDisabled && userData.isEditingProfile && <button type="button" onClick={turnOnProfileEdits} id="edit_profile_button">TEST</button>}
         {/*---------------------------------------------------------*/}
 
         {/*--Render the profile picture--*/}
