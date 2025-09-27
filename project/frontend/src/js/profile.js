@@ -99,7 +99,7 @@ export async function initializeData(viewingUserID, returnFunction){
         if (dataExtractedFromResponse != null && dataExtractedFromResponse.url){ //Checks if the url field exists (if not this is null and is considered falsy in JS)
             window.location.replace(dataExtractedFromResponse.url); //Switch window to 400 error page
         } else if (dataExtractedFromResponse != null){ //dataExtractedFromResponse.url = null. File was sent instead
-            usernewUserDataObjectData.attachment2.file = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
+            newUserDataObject.attachment2.file = URL.createObjectURL(dataExtractedFromResponse); //Create a URL of the file blob so that the HTML file can render it properly
         }
     });
     //----------------------
@@ -125,6 +125,7 @@ export async function initializeData(viewingUserID, returnFunction){
     });
     //----------------------
 
+    console.log("attach1: " + newUserDataObject.attachment1 + " attach2: " + newUserDataObject.attachment2 + " attach3: " + newUserDataObject.attachment3);
     copyUserdata(newUserDataObject);
     returnFunction(newUserDataObject); //use react's given use state function to update state of UI
 }
@@ -137,9 +138,7 @@ export function initializeWebSocket(returnFunction){
         webSocket.on("message", (jsonResponse) => { //Runs when the front end receives a message from the backend 
             const profileID = jsonResponse.id;//Get the ID passed from the backend
             
-            console.log("RECEIVED PROFILE UPDATE FROM: " + profileID);
             if (profileID == userData.userID){ //The information sent by the backend is information for the profile we are viewing (prevents refreshing data for profiles we are not viewing) 
-                console.log("TIME TO UPDATE PROFILE")
                 initializeData(profileID, returnFunction); //Call this JS function to get the new state of this profile and update it using the given react use state function
             }
         });
@@ -243,7 +242,7 @@ export async function changeProfilePicture(returnFunction){
             const formData = new FormData(); //Creates a FormData object to pass to the backend
             formData.append("newPFP", newPFP); //Adds the new pfp file as a value with key 'newpfp'
 
-            const response = await fetch("/p/"+userID+"/submit_pfp", { //Send response to backend
+            const response = await fetch("/p/"+userData.userID+"/submit_pfp", { //Send response to backend
                 method : "POST",
                 body : formData
             });
@@ -287,7 +286,7 @@ export async function changeAttachment1(returnFunction){
             const formData = new FormData(); //Creates a FormData object to pass to the backend
             formData.append("newAttach", newAttach); //Adds the new PDF file as a value with key 'newAttach'
 
-            const response = await fetch("/p/"+userID+"/change_attachment/1", { //Send response to backend
+            const response = await fetch("/p/"+userData.userID+"/change_attachment/1", { //Send response to backend
                 method : "POST",
                 body : formData
             });
@@ -302,7 +301,7 @@ export async function changeAttachment1(returnFunction){
                 const fileBlob = await response.blob(); //Get the binary data of the file that was sent 
 
                 //--Call the backend to get the file name--
-                const fileNameRequest = await fetch("/p/"+userID+"/get_attachment/1/1", {method: "GET"});
+                const fileNameRequest = await fetch("/p/"+userData.userID+"/get_attachment/1/1", {method: "GET"});
                 const fileNameResponse = await fileNameRequest.json();
 
                 if (!fileNameResponse.fileName){ //Does not exist -> URL was tampered by front-end and error was thrown
@@ -347,7 +346,7 @@ export async function changeAttachment2(returnFunction){
             const formData = new FormData(); //Creates a FormData object to pass to the backend
             formData.append("newAttach", newAttach); //Adds the new PDF file as a value with key 'newAttach'
 
-            const response = await fetch("/p/"+userID+"/change_attachment/2", { //Send response to backend
+            const response = await fetch("/p/"+userData.userID+"/change_attachment/2", { //Send response to backend
                 method : "POST",
                 body : formData
             });
@@ -362,7 +361,7 @@ export async function changeAttachment2(returnFunction){
                 const fileBlob = await response.blob(); //Get the binary data of the file that was sent
 
                 //--Call the backend to get the file name--
-                const fileNameRequest = await fetch("/p/"+userID+"/get_attachment/2/1", {method: "GET"});
+                const fileNameRequest = await fetch("/p/"+userData.userID+"/get_attachment/2/1", {method: "GET"});
                 const fileNameResponse = await fileNameRequest.json();
 
                 if (!fileNameResponse.fileName){ //Does not exist -> URL was tampered by front-end and error was thrown
@@ -407,7 +406,7 @@ export async function changeAttachment3(returnFunction){
             const formData = new FormData(); //Creates a FormData object to pass to the backend
             formData.append("newAttach", newAttach); //Adds the new PDF file as a value with key 'newAttach'
 
-            const response = await fetch("/p/"+userID+"/change_attachment/3", { //Send response to backend
+            const response = await fetch("/p/"+userData.userID+"/change_attachment/3", { //Send response to backend
                 method : "POST",
                 body : formData
             });
@@ -422,7 +421,7 @@ export async function changeAttachment3(returnFunction){
                 const fileBlob = await response.blob(); //Get the binary data of the file that was sent
 
                 //--Call the backend to get the file name--
-                const fileNameRequest = await fetch("/p/"+userID+"/get_attachment/3/1", {method: "GET"});
+                const fileNameRequest = await fetch("/p/"+userData.userID+"/get_attachment/3/1", {method: "GET"});
                 const fileNameResponse = await fileNameRequest.json();
 
                 if (!fileNameResponse.fileName){ //Does not exist -> URL was tampered by front-end and error was thrown
