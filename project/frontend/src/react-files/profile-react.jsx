@@ -67,7 +67,7 @@ function Profile({navigateTo}) {
     return (
       <>
         {/*--Import CSS--*/}
-        <link rel="stylesheet" href="static/dist/assets/profile.css"/>
+        <link rel="stylesheet" href="/static/dist/assets/profile.css"/>
         {/*--------------*/}
         {/*--Profile form elements (username, bio, fname, password, etc)--*/}
         <form id="profile_info" onSubmit={saveProfileChanges}>
