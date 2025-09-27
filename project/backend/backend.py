@@ -548,7 +548,7 @@ def saveProfileChanges():
     connection_to_db.commit()
     db_cursor.close()
     connection_to_db.close()
-    emit("message", {"id" : user_id}) # Send a message over the web socket to the front end telling it that the profile information for user_id has changed
+    emit("message", {"id" : current_user.id}) # Send a message over the web socket to the front end telling it that the profile information for user_id has changed
     return jsonify({"success" : True})
     
 """
