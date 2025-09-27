@@ -134,9 +134,8 @@ export function initializeWebSocket(returnFunction){
     if (webSocket == null){//Haven't yet made a websocket
         webSocket = io(); //Connects to the backend (no params mean that it'll default to using the same domain which is the case here)
 
-        webSocket.on("message", (response) => { //Runs when the front end receives a message from the backend 
-            let profileID = response.json(); //Get the JSON format from the response object
-            profileID = profileID.id; //Get the ID passed from the backend
+        webSocket.on("message", (jsonResponse) => { //Runs when the front end receives a message from the backend 
+            const profileID = jsonResponse.id;//Get the ID passed from the backend
 
             if (profileID == userData.userID){ //The information sent by the backend is information for the profile we are viewing (prevents refreshing data for profiles we are not viewing) 
                 initializeData(profileID, returnFunction); //Call this JS function to get the new state of this profile and update it using the given react use state function
