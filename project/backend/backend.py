@@ -548,7 +548,7 @@ def saveProfileChanges():
     connection_to_db.commit()
     db_cursor.close()
     connection_to_db.close()
-    socketio.emit("message", {"id" : current_user.id}, broadcast=True) # Send a message over the web socket to the front end telling it that the profile information for user_id has changed. Broadcast = True will send the message to all connected users instead of only the one who made this request
+    socketio.emit("message", {"id" : current_user.id}) # Send a message over the web socket to the front end telling it that the profile information for user_id has changed
     return jsonify({"success" : True})
     
 """
@@ -916,7 +916,7 @@ def changePFP(user_id):
     db_cursor.close()
     connection_to_db.close()
 
-    socketio.emit("message", {"id" : user_id}, broadcast=True) # Send a message over the web socket to the front end telling it that the profile information for user_id has changed. Broadcast=True to send the message to every connected user
+    socketio.emit("message", {"id" : user_id}) # Send a message over the web socket to the front end telling it that the profile information for user_id has changed
     return send_file(path_or_file=io.BytesIO(new_pfp_bytes), mimetype="image/png", as_attachment=False) # Send the new PFP back to the front end so it can display it to the user
 
 """
@@ -968,5 +968,5 @@ def changeAttachment(user_id, attachment_number):
     db_cursor.close()
     connection_to_db.close()
 
-    socketio.emit("message", {"id" : user_id}, broadcast=True) # Send a message over the web socket to the front end telling it that the profile information for user_id has changed. Broadcast=True to send the message to every connected user
+    socketio.emit("message", {"id" : user_id}) # Send a message over the web socket to the front end telling it that the profile information for user_id has changed
     return send_file(path_or_file=io.BytesIO(file_bytes), mimetype="application/pdf", download_name = new_attach_file_name, as_attachment=False) # Send the new attachment back to the front end so it can display it to the user
