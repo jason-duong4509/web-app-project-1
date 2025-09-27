@@ -80,7 +80,7 @@ function Profile({navigateTo}) {
             {userData.isEditingProfile && <input type="text" name="lname" id="lname" value="" placeholder={userData.lname}></input>}
             
             <label id="bio_label" for="bio">About</label>
-            {!userData.isEditingProfile && <textarea name="bio" id="bio" placeholder={userData.bio} disabled>{userData.bio}</textarea>}
+            {!userData.isEditingProfile && <textarea name="bio" id="bio" value={userData.bio} placeholder={userData.bio} disabled></textarea>}
             {userData.isEditingProfile && <textarea name="bio" id="bio" placeholder={userData.bio}></textarea>}
             
             {userData.isEditingProfile && <label for="password" id="password_label">Password:</label>}
