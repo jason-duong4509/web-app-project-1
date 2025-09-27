@@ -468,7 +468,7 @@ export async function submitProfileInfo(event, returnFunction){
     } else{ //User input accepted by front-end
         //--Send the form--
         const newProfileInfo = new FormData(event.target); //Convert the form's inputs into a FormData object
-        newProfileInfo.append("user_id", userID); //Add the userID of the profile to the form
+        newProfileInfo.append("user_id", userData.userID); //Add the userID of the profile to the form
         const request = await fetch("/p/edit/save", {
             method: "POST",
             body: newProfileInfo
