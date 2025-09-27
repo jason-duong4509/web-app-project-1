@@ -152,9 +152,71 @@ export function closeWebSocket(){
 }
 
 export function setEditProfileState(newState, returnFunction){
-    userData.isEditingProfile = newState;
+    const newUserDataObject = {isEditingProfile: newState}; //Change isEditingProfile state to newState
+    transferUserData(newUserDataObject); //Call a helper function to perform a deep copy and transfer JSON data from the old userData to this new object
     console.log("CHANGE EDIT STATE IN JS " + userData.isEditingProfile);
-    returnFunction(userData);
+    returnFunction(newUserDataObject);
+}
+
+//Perform a deep copy of the old userData object and place it into newUserDataObject
+function transferUserData(newUserDataObject){
+    if (newUserDataObject.userID == null){//Hasn't been changed
+        newUserDataObject.userID = userData.userID; //Copy over ONLY the value
+    }
+
+    if (newUserDataObject.currentUserID == null){//Hasn't been changed
+        newUserDataObject.currentUserID = userData.currentUserID; //Copy over ONLY the value
+    }
+
+    if (newUserDataObject.attachment1 == null){//Hasn't been changed
+        newUserDataObject.attachment1 = userData.attachment1; //Copy over ONLY the value
+    }
+
+    if (newUserDataObject.attachment2 == null){//Hasn't been changed
+        newUserDataObject.attachment2 = userData.attachment2; //Copy over ONLY the value
+    }
+    
+    if (newUserDataObject.attachment3 == null){//Hasn't been changed
+        newUserDataObject.attachment3 = userData.attachment3; //Copy over ONLY the value
+    }
+
+    if (newUserDataObject.fname == null){//Hasn't been changed
+        newUserDataObject.fname = userData.fname; //Copy over ONLY the value
+    }
+
+    if (newUserDataObject.lname == null){//Hasn't been changed
+        newUserDataObject.lname = userData.lname; //Copy over ONLY the value
+    }
+
+    if (newUserDataObject.bio == null){//Hasn't been changed
+        newUserDataObject.bio = userData.bio; //Copy over ONLY the value
+    }
+
+    if (newUserDataObject.deleteAccLink == null){//Hasn't been changed
+        newUserDataObject.deleteAccLink = userData.deleteAccLink; //Copy over ONLY the value
+    }
+    
+    if (newUserDataObject.username == null){//Hasn't been changed
+        newUserDataObject.username = userData.username; //Copy over ONLY the value
+    }
+
+    if (newUserDataObject.isEditingProfile == null){//Hasn't been changed
+        newUserDataObject.isEditingProfile = userData.isEditingProfile; //Copy over ONLY the value
+    }
+
+    if (newUserDataObject.editingDisabled == null){//Hasn't been changed
+        newUserDataObject.editingDisabled = userData.editingDisabled; //Copy over ONLY the value
+    }
+
+    if (newUserDataObject.profilePicture == null){//Hasn't been changed
+        newUserDataObject.profilePicture = userData.profilePicture; //Copy over ONLY the value
+    }
+
+    if (newUserDataObject.updateProfileErrorMessage == null){//Hasn't been changed
+        newUserDataObject.updateProfileErrorMessage = userData.updateProfileErrorMessage; //Copy over ONLY the value
+    }
+
+    userData = newUserDataObject; //Change the reference of userData to the its new object version
 }
 
 //Change profile picture
