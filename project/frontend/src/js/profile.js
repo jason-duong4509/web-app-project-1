@@ -127,6 +127,7 @@ export async function initializeData(viewingUserID, returnFunction){
 
     console.log("attach1: " + newUserDataObject.attachment1 + " attach2: " + newUserDataObject.attachment2 + " attach3: " + newUserDataObject.attachment3);
     copyUserdata(newUserDataObject);
+    console.log("attach1: " + newUserDataObject.attachment1 + " attach2: " + newUserDataObject.attachment2 + " attach3: " + newUserDataObject.attachment3);
     returnFunction(newUserDataObject); //use react's given use state function to update state of UI
 }
 
