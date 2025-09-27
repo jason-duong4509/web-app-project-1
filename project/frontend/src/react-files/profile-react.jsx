@@ -95,7 +95,7 @@ function Profile({navigateTo}) {
         
         {/*--Changes whether the edit profile button exists or not--*/}
         {!userData.editDisabled && !userData.isEditingProfile && <button type="button" onClick={turnOnProfileEdits} id="edit_profile_button">Edit Profile</button>}
-        {userData.editDisabled && userData.isEditingProfile && <button type="button" onClick={turnOnProfileEdits} id="edit_profile_button">TEST</button>}
+        {!userData.editDisabled && userData.isEditingProfile && <button type="button" onClick={turnOnProfileEdits} id="edit_profile_button">TEST</button>}
         {/*---------------------------------------------------------*/}
 
         {/*--Render the profile picture--*/}
