@@ -170,15 +170,18 @@ function copyUserdata(newUserDataObject){
         newUserDataObject.currentUserID = userData.currentUserID; //Copy over ONLY the value
     }
 
-    if (newUserDataObject.attachment1 == null){//Hasn't been changed
+    const attachment1Exists = userData.attachment1 != null && userData.attachment1.name != null && userData.attachment1.file != null;
+    if (newUserDataObject.attachment1 == null && attachment1Exists){//Hasn't been changed and the old userData has an attachment
         newUserDataObject.attachment1 = userData.attachment1; //Copy over ONLY the value
     }
 
-    if (newUserDataObject.attachment2 == null){//Hasn't been changed
+    const attachment2Exists = userData.attachment2 != null && userData.attachment2.name != null && userData.attachment2.file != null;
+    if (newUserDataObject.attachment2 == null && attachment2Exists){//Hasn't been changed
         newUserDataObject.attachment2 = userData.attachment2; //Copy over ONLY the value
     }
-    
-    if (newUserDataObject.attachment3 == null){//Hasn't been changed
+
+    const attachment3Exists = userData.attachment3 != null && userData.attachment3.name != null && userData.attachment3.file != null;
+    if (newUserDataObject.attachment3 == null && attachment3Exists){//Hasn't been changed
         newUserDataObject.attachment3 = userData.attachment3; //Copy over ONLY the value
     }
 
