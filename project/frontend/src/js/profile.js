@@ -125,9 +125,7 @@ export async function initializeData(viewingUserID, returnFunction){
     });
     //----------------------
 
-    console.log("attach1: " + newUserDataObject.attachment1 + " attach2: " + newUserDataObject.attachment2 + " attach3: " + newUserDataObject.attachment3);
     copyUserdata(newUserDataObject);
-    console.log("attach1: " + newUserDataObject.attachment1 + " attach2: " + newUserDataObject.attachment2 + " attach3: " + newUserDataObject.attachment3);
     returnFunction(newUserDataObject); //use react's given use state function to update state of UI
 }
 
@@ -263,7 +261,9 @@ export async function changeProfilePicture(returnFunction){
                 newUserDataObject.updateProfileErrorMessage = "NONE"; //Reset the error message
             }
         }
+        console.log("is editing profile" + newUserDataObject.isEditingProfile);
         copyUserdata(newUserDataObject);
+        console.log("is editing profile" + newUserDataObject.isEditingProfile);
         returnFunction(newUserDataObject); //Call the given react function to update state 
     };
 }
