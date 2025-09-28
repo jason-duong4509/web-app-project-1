@@ -137,7 +137,7 @@ export function initializeWebSocket(returnFunction){
         webSocket.on("message", (jsonResponse) => { //Runs when the front end receives a message from the backend 
             const profileID = jsonResponse.id;//Get the ID passed from the backend
             
-            if (profileID == userData.userID){ //The information sent by the backend is information for the profile we are viewing (prevents refreshing data for profiles we are not viewing) 
+            if (userData.currentUserID != profileID && profileID == userData.userID){ //The information sent by the backend is information for the profile we are viewing (prevents refreshing data for profiles we are not viewing) 
                 initializeData(profileID, returnFunction); //Call this JS function to get the new state of this profile and update it using the given react use state function
             }
         });
