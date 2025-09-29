@@ -128,7 +128,7 @@ body{
     position: absolute;
     font-size: 17px;
     top: 10px;
-    transform: translate(177%, -4%);
+    transform: translate(540%, -4%);
 }
 
 #attachment_1{
@@ -172,7 +172,7 @@ body{
     top: 10px;
     background-color: blanchedalmond;
     border: none;
-    transform: translate(125%, 150%);
+    transform: translate(-38.5%, 150%);
     font-size: 17px;
     width: 185px;
     text-align: right;
@@ -182,12 +182,12 @@ body{
     position: absolute;
     font-size: 17px;
     top: 10px;
-    transform: translate(190%, 170%);
+    transform: translate(-196%, 170%);
 }
 
 #save_changes{
     position: absolute;
-    transform: translate(-85%, -690%);
+    transform: translate(-220%, -690%);
     width: 200px;
     height: 38px;
     top: 410px;
@@ -224,7 +224,7 @@ body{
 #attach_input_1{
     position: absolute;
     font-size: 20px;
-    transform: translate(-150%, 940%);
+    transform: translate(-150%, 1760%);
     width: 250px;
     height: 22.67px;
     text-align: left;
@@ -239,7 +239,7 @@ body{
 #attach_input_2{
     position: absolute;
     font-size: 20px;
-    transform: translate(-41.3%, 940%);
+    transform: translate(-41.3%, 1760%);
     width: 250px;
     height: 22.67px;
     text-align: left;
@@ -254,7 +254,7 @@ body{
 #attach_input_3{
     position: absolute;
     font-size: 20px;
-    transform: translate(67.2%, 940%);
+    transform: translate(67.2%, 1760%);
     width: 250px;
     height: 22.67px;
     text-align: left;

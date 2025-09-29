@@ -79,13 +79,13 @@ function Profile({navigateTo}) {
         <form id="profile_info" onSubmit={saveProfileChanges}>
             {userData.isEditingProfile && <label for="username" id="username_label">Username:</label>}
             {!userData.isEditingProfile && <input type="text" name="username" id="username" value={userData.username} placeholder={userData.username} disabled></input>}
-            {userData.isEditingProfile && <input type="text" onChange={(event) => {updateFnameField(event.target.value)}} name="username" id="username" value={usernameField} placeholder={userData.username}></input>}
+            {userData.isEditingProfile && <input type="text" onChange={(event) => {updateUsernameField(event.target.value)}} name="username" id="username" value={usernameField} placeholder={userData.username}></input>}
 
             {!userData.isEditingProfile && <input type="text" name="fname" id="fname" value={userData.fname} placeholder={userData.fname} disabled></input>}
             {userData.isEditingProfile && <input type="text" onChange={(event) => {updateFnameField(event.target.value)}} name="fname" id="fname" value={fnameField} placeholder={userData.fname}></input>}
             
             {!userData.isEditingProfile && <input type="text" name="lname" id="lname" value={userData.lname} placeholder={userData.lname} disabled></input>}
-            {userData.isEditingProfile && <input type="text" onChange={(event) => {updateFnameField(event.target.value)}} name="lname" id="lname" value={lnameField} placeholder={userData.lname}></input>}
+            {userData.isEditingProfile && <input type="text" onChange={(event) => {updateLnameField(event.target.value)}} name="lname" id="lname" value={lnameField} placeholder={userData.lname}></input>}
             
             <label id="bio_label" for="bio">About</label>
             {!userData.isEditingProfile && <textarea name="bio" id="bio" value={userData.bio} placeholder={userData.bio} disabled></textarea>}
