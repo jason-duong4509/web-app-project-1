@@ -4,6 +4,9 @@ import React from "react" //Import react to use useEffect() and useState()
 //Component function Profile() that simply loads the profile UI
 function Profile({navigateTo}) {
   const [userData, updateUserData] = React.useState(null) //Define use state function so that the profile UI can be updated
+  const [usernameField, updateUsernameField] = React.useState("") //Internal state in react to handle form inputs properly
+  const [fnameField, updateFnameField] = React.useState("") //Internal state in react to handle form inputs properly
+  const [lnameField, updateLnameField] = React.useState("") //Internal state in react to handle form inputs properly
 
   //--Open a web socket for real time data updates--
   React.useEffect(() => {
@@ -61,6 +64,11 @@ function Profile({navigateTo}) {
   if (userData == null){//Ensures that react renders nothing until JS is done preparing the initial state of the UI
     return <></>
   } else{//JS is done preparing the initial state of the UI
+    if (!userData.isEditingProfile && !(usernameField == "" && fnameField == "" && lnameField == "")){ //User is not editing their profile right now and the input field values have not been wiped
+        updateUsernameField("") //Wipe field value
+        updateFnameField("") //Wipe field value
+        updateLnameField("") //Wipe field value
+    }
     //--Renders the UI--
     return (
       <>
@@ -71,13 +79,13 @@ function Profile({navigateTo}) {
         <form id="profile_info" onSubmit={saveProfileChanges}>
             {userData.isEditingProfile && <label for="username" id="username_label">Username:</label>}
             {!userData.isEditingProfile && <input type="text" name="username" id="username" value={userData.username} placeholder={userData.username} disabled></input>}
-            {userData.isEditingProfile && <input type="text" name="username" id="username" value="" placeholder={userData.username}></input>}
+            {userData.isEditingProfile && <input type="text" onChange={(event) => {updateFnameField(event.target.value)}} name="username" id="username" value={usernameField} placeholder={userData.username}></input>}
 
             {!userData.isEditingProfile && <input type="text" name="fname" id="fname" value={userData.fname} placeholder={userData.fname} disabled></input>}
-            {userData.isEditingProfile && <input type="text" name="fname" id="fname" value="" placeholder={userData.fname}></input>}
+            {userData.isEditingProfile && <input type="text" onChange={(event) => {updateFnameField(event.target.value)}} name="fname" id="fname" value={fnameField} placeholder={userData.fname}></input>}
             
             {!userData.isEditingProfile && <input type="text" name="lname" id="lname" value={userData.lname} placeholder={userData.lname} disabled></input>}
-            {userData.isEditingProfile && <input type="text" name="lname" id="lname" value="" placeholder={userData.lname}></input>}
+            {userData.isEditingProfile && <input type="text" onChange={(event) => {updateFnameField(event.target.value)}} name="lname" id="lname" value={lnameField} placeholder={userData.lname}></input>}
             
             <label id="bio_label" for="bio">About</label>
             {!userData.isEditingProfile && <textarea name="bio" id="bio" value={userData.bio} placeholder={userData.bio} disabled></textarea>}
