@@ -151,12 +151,12 @@ function Profile({navigateTo}) {
             </form>
 
             {/*--Renders error messages--*/}
-            {userData.updateProfileErrorMessage == "ERROR_MESSAGE" && <p id="error_message" style="color:red;" hidden>Unable to save changes. Please check your information and try again.</p>}
-            {userData.updateProfileErrorMessage == "SOMETHING_WENT_WRONG_MESSAGE" && <p id="something_went_wrong_message" style="color:red;" hidden>An error occurred. Please try again.</p>}
-            {userData.updateProfileErrorMessage == "PFP_ERROR_MESSAGE" && <p id="pfp_error_message" style="color:red;" hidden>Only PNG files are allowed.</p>}
-            {userData.updateProfileErrorMessage == "PFP_TOO_LARGE" && <p id="pfp_too_large" style="color:red;" hidden>Only PNGs up to 16MB are accepted.</p>}
-            {userData.updateProfileErrorMessage == "ATTACHMENT_ERROR_MESSAGE" && <p id="attachment_error_message" style="color:red;" hidden>Only PDF files are allowed.</p>}
-            {userData.updateProfileErrorMessage == "ATTACHMENT_TOO_LARGE" && <p id="attachment_too_large" style="color:red;" hidden>Only PDFs up to 16MB are accepted.</p>}
+            {userData.updateProfileErrorMessage == "ERROR_MESSAGE" && <p id="error_message" style={{color:red}} hidden>Unable to save changes. Please check your information and try again.</p>}
+            {userData.updateProfileErrorMessage == "SOMETHING_WENT_WRONG_MESSAGE" && <p id="something_went_wrong_message" style={{color:red}} hidden>An error occurred. Please try again.</p>}
+            {userData.updateProfileErrorMessage == "PFP_ERROR_MESSAGE" && <p id="pfp_error_message" style={{color:red}} hidden>Only PNG files are allowed.</p>}
+            {userData.updateProfileErrorMessage == "PFP_TOO_LARGE" && <p id="pfp_too_large" style={{color:red}} hidden>Only PNGs up to 16MB are accepted.</p>}
+            {userData.updateProfileErrorMessage == "ATTACHMENT_ERROR_MESSAGE" && <p id="attachment_error_message" style={{color:red}} hidden>Only PDF files are allowed.</p>}
+            {userData.updateProfileErrorMessage == "ATTACHMENT_TOO_LARGE" && <p id="attachment_too_large" style={{color:red}} hidden>Only PDFs up to 16MB are accepted.</p>}
             {/*--------------------------*/}
           </>
         )}
