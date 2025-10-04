@@ -486,6 +486,7 @@ export async function submitProfileInfo(event, returnFunction){
             newUserDataObject.updateProfileErrorMessage = "ERROR_MESSAGE";
         } else if (results.success === true){//Form was accepted by backend
             newUserDataObject.isEditingProfile = false;
+            newUserDataObject.updateProfileErrorMessage = "NONE";
 
             //--Updates each profile attribute to reflect the changes the user made--
             if (document.getElementById("username").value.length != 0){//User changed the attribute
